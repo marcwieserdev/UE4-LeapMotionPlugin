@@ -4,7 +4,6 @@ ULeapController::ULeapController(const FPostConstructInitializeProperties &init)
 {
 	bWantsInitializeComponent = true;
 	bAutoActivate = true;
-	bEnabled = true;
 }
 
 ULeapController::~ULeapController()
