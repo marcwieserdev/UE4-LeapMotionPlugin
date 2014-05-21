@@ -19,7 +19,7 @@ public:
 
 	void setFrame(Leap::Controller &leap, int history = 0);
 	void setFrame(const Leap::Frame &frame);
-
+	const Leap::Frame &getFrame() const;
 private:
 	Leap::Frame _frame;
 };

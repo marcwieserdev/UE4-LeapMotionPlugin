@@ -24,7 +24,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost right hand"), Category = Leap)
 	class UHand *rightmost();
-
+	
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = Leap)
 	class UHand *getIndex(int32 index);
 
