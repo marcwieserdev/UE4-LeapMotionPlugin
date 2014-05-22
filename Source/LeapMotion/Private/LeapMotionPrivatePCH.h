@@ -2,6 +2,8 @@
 
 #include "FLeapMotion.h"
 #include "ModuleManager.h"
+#include "Pointable.h"
+#include "PointableList.h"
 #include "Hand.h"
 #include "HandList.h"
 #include "LeapFrame.h"
