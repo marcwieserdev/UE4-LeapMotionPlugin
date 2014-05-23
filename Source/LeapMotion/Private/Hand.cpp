@@ -8,6 +8,59 @@ UHand::~UHand()
 {
 }
 
+UFinger *UHand::Finger(int32 id)
+{
+	UFinger *newfinger;
+
+	newfinger = ConstructObject<UFinger>(UFinger::StaticClass());
+	newfinger->setFinger(_hand.finger(id));
+	return (newfinger);
+}
+
+UFingerList *UHand::getFingerList()
+{
+	UFingerList *newfinger;
+
+	newfinger = ConstructObject<UFingerList>(UFingerList::StaticClass());
+	newfinger->setFingerList(_hand.fingers());
+	return (newfinger);
+}
+
+UPointable *UHand::Pointable(int32 id)
+{
+	UPointable *newpointable;
+
+	newpointable = ConstructObject<UPointable>(UPointable::StaticClass());
+	newpointable->setPointable(_hand.finger(id));
+	return (newpointable);
+}
+
+UPointableList *UHand::getPointableList()
+{
+	UPointableList *newpointable;
+
+	newpointable = ConstructObject<UPointableList>(UPointableList::StaticClass());
+	newpointable->setPointableList(_hand.pointables());
+	return (newpointable);
+}
+UTool *UHand::Tool(int32 id)
+{
+	UTool *newtool;
+
+	newtool = ConstructObject<UTool>(UTool::StaticClass());
+	newtool->setTool(_hand.tool(id));
+	return (newtool);
+}
+
+UToolList *UHand::getToolList()
+{
+	UToolList *newtools;
+
+	newtools = ConstructObject<UToolList>(UToolList::StaticClass());
+	newtools->setToolList(_hand.tools());
+	return (newtools);
+}
+
 bool UHand::isLeft() const
 {
 	return (_hand.isLeft());

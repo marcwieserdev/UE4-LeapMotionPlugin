@@ -20,60 +20,61 @@ public:
 	~UPointable();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "direction", CompactNodeTitle="", Keywords = "direction"), Category = Leap)
-	FVector Direction() const;
+	virtual FVector Direction() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle="", Keywords = "frame"), Category = Leap)
-	class ULeapFrame *frame();
+	virtual class ULeapFrame *frame();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hand", CompactNodeTitle="", Keywords = "hand"), Category = Leap)
-	class UHand *Hand();
+	virtual class UHand *Hand();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle="", Keywords = "get id"), Category = Leap)
-	int32 Id() const;
+	virtual int32 Id() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isExtended", CompactNodeTitle="", Keywords = "is extended"), Category = Leap)
-	bool isExtended() const;
+	virtual bool isExtended() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isFinger", CompactNodeTitle="", Keywords = "is finger"), Category = Leap)
-	bool isFinger() const;
+	virtual bool isFinger() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isTool", CompactNodeTitle="", Keywords = "is tool"), Category = Leap)
-	bool isTool() const;
+	virtual bool isTool() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle="", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	virtual bool IsValid() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "length", CompactNodeTitle="", Keywords = "get length"), Category = Leap)
-	float Length() const;
+	virtual float Length() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle="==", Keywords = "equal"), Category = Leap)
-	bool equal(const UPointable *other) const;
+	virtual bool equal(const UPointable *other) const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "different", CompactNodeTitle="!=", Keywords = "different"), Category = Leap)
-	bool different(const UPointable *other) const;
+	virtual bool different(const UPointable *other) const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "stabilizedTipPosition", CompactNodeTitle="", Keywords = "stabilized tip position"), Category = Leap)
-	FVector stabilizedTipPosition();
+	virtual FVector stabilizedTipPosition();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "timeVisible", CompactNodeTitle="", Keywords = "get time visible"), Category = Leap)
-	float timeVisible() const;
+	virtual float timeVisible() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "tipPosition", CompactNodeTitle="", Keywords = "tip position"), Category = Leap)
-	FVector tipPosition() const;
+	virtual FVector tipPosition() const;
 	
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "tipVelocity", CompactNodeTitle="", Keywords = "tip velocity"), Category = Leap)
-	FVector tipVelocity() const;
+	virtual FVector tipVelocity() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "touchDistance", CompactNodeTitle="", Keywords = "touch distance"), Category = Leap)
-	float touchDistance() const;
+	virtual float touchDistance() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "touchZone", CompactNodeTitle="", Keywords = "touch zone"), Category = Leap)
-	LeapZone touchZone() const;
+	virtual LeapZone touchZone() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle="", Keywords = "get width"), Category = Leap)
-	float Width() const;
+	virtual float Width() const;
 
 	void setPointable(const Leap::Pointable &pointable);
+	const Leap::Pointable &getPointable() const;
 private:
 	Leap::Pointable _pointable;
 };

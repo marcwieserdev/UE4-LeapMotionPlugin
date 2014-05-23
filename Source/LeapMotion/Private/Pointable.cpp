@@ -132,3 +132,8 @@ void UPointable::setPointable(const Leap::Pointable &pointable)
 {
 	_pointable = pointable;
 }
+
+const Leap::Pointable &UPointable::getPointable() const
+{
+	return (_pointable);
+}

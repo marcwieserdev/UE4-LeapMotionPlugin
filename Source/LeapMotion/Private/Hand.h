@@ -10,6 +10,24 @@ class UHand : public UObject
 public:
 	~UHand();
 	
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFinger", CompactNodeTitle = "", Keywords = "get finger"), Category = Leap)
+	class UFinger *Finger(int32 id);
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFingerList", CompactNodeTitle = "", Keywords = "get finger list"), Category = Leap)
+	class UFingerList *getFingerList();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getPointable", CompactNodeTitle = "", Keywords = "get pointable"), Category = Leap)
+	class UPointable *Pointable(int32 id);
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getPointableList", CompactNodeTitle = "", Keywords = "get pointable list"), Category = Leap)
+	class UPointableList *getPointableList();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getTool", CompactNodeTitle = "", Keywords = "get tool"), Category = Leap)
+	class UTool *Tool(int32 id);
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getToolList", CompactNodeTitle = "", Keywords = "get tool list"), Category = Leap)
+	class UToolList *getToolList();
+
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isLeft", CompactNodeTitle = "", Keywords = "is left"), Category = Leap)
 	bool isLeft() const;
 	

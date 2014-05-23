@@ -2,7 +2,11 @@
 
 #include "FLeapMotion.h"
 #include "ModuleManager.h"
+#include "Tool.h"
+#include "Finger.h"
 #include "Pointable.h"
+#include "FingerList.h"
+#include "ToolList.h"
 #include "PointableList.h"
 #include "Hand.h"
 #include "HandList.h"
