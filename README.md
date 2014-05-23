@@ -3,11 +3,18 @@ UE4-LeapMotionPlugin
 
 A plugin for exposing Leap Motion SDK to UE4 blueprint
 
-Actually this features are done :
+Actually this features are done :<br/>
+get all informations on :
 <ul>
-<li>get all informations on Frame</li>
-<li>get all informations on HandList</li>
-<li>get all informations on Hand</li>
+<li>Frame</li>
+<li>HandList</li>
+<li>Hand</li>
+<li>FingerList</li>
+<li>Finger</li>
+<li>PointableList</li>
+<li>Pointable</li>
+<li>ToolList</li>
+<li>Tool</li>
 </ul>
 ====================
 
