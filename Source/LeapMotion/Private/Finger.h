@@ -10,6 +10,9 @@ class UFinger : public UPointable
 public:
 	~UFinger();
 
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "bone", CompactNodeTitle = "", Keywords = "get bone"), Category = Leap)
+	class UBone *Bone(enum BoneType type);
+
 	FVector Direction() const;
 	class ULeapFrame *frame();
 	class UHand *Hand();

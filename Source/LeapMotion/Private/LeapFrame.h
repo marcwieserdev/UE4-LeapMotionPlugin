@@ -29,7 +29,7 @@ public:
 	class UPointableList *pointables();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getTimestamp", CompactNodeTitle = "", Keywords = "get timestamp"), Category = Leap)
-	int64 TimeStamp() const;
+	int32 TimeStamp() const;
 
 	void setFrame(Leap::Controller &leap, int history = 0);
 	void setFrame(const Leap::Frame &frame);

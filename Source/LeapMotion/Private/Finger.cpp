@@ -8,6 +8,36 @@ UFinger::~UFinger()
 {
 }
 
+UBone *UFinger::Bone(BoneType type)
+{
+	Leap::Bone::Type rtype;
+	Leap::Bone rbone;
+	UBone *bone;
+
+	bone = ConstructObject<UBone>(UBone::StaticClass());
+	switch(type)
+	{
+	case TYPE_METACARPAL:
+		rtype = Leap::Bone::TYPE_METACARPAL;
+		break;
+	case TYPE_PROXIMAL:
+		rtype = Leap::Bone::TYPE_PROXIMAL;
+		break;
+	case TYPE_INTERMEDIATE:
+		rtype = Leap::Bone::TYPE_INTERMEDIATE;
+		break;
+	case TYPE_DISTAL:
+		rtype = Leap::Bone::TYPE_DISTAL;
+		break;
+	default:
+		rtype = Leap::Bone::TYPE_METACARPAL;
+		break;
+	}
+	rbone = _finger.bone(rtype);
+	bone->setBone(rbone);
+	return (bone);
+}
+
 FVector UFinger::Direction() const
 {
 	Leap::Vector vect;

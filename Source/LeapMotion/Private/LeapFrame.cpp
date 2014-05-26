@@ -10,7 +10,7 @@ ULeapFrame::~ULeapFrame()
 
 float ULeapFrame::currentFramePerSecond() const
 {
-	return (_frame.currentFramePerSecond());
+	return (_frame.currentFramesPerSecond());
 }
 
 bool ULeapFrame::IsValid() const
@@ -54,7 +54,7 @@ UPointableList *ULeapFrame::pointables()
 	return (pointablelist);
 }
 
-int64 ULeapFrame::TimeStamp() const
+int32 ULeapFrame::TimeStamp() const
 {
 	return (_frame.timestamp());
 }
