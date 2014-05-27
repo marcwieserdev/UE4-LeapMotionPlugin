@@ -32,6 +32,7 @@ Binaries
 
 Plugin precompile for Win64 is <a href="http://www.marc-wieser.fr/UE4Editor-LeapMotion.rar">here</a><br/>
 Requires Binaries are <a href="http://www.marc-wieser.fr/Requires_plugin_Leap_Motion_UE4.rar">here</a><br/>
+You can download a demo project with source code and SLN for easiest re compilation <a href="http://www.marc-wieser.fr/DemoLeapMotion.rar">here</a><br/>
 
 ====================
 
