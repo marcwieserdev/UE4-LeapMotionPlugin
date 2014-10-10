@@ -1,7 +1,7 @@
 leap-ue4
 ====================
 
-A plugin for exposing Leap Motion SDK to UE4 blueprint. Forked to have event driven architecture, this release contains old the setup updated with compile fixes to UE4.4.
+A plugin for exposing Leap Motion SDK to UE4 blueprint. Forked to have event driven architecture, however this first release still contains old the setup updated with compile fixes for UE4.4.
 
 Actually this features are done :<br/>
 get all informations on :
@@ -21,18 +21,13 @@ get all informations on :
 How to install it
 ====================
 
-You simply have to create a folder Plugins in your game directory and place the code with binaries,<br/>
-and place the requires Binaries into the folder of your plateform into the folder Binaries of your game project<br/>
-and if it haven't, just place the requires Binaries into the folder of executable of UE4 editor.<br/>
-
-====================
-
-Binaries
-====================
-
-Plugin precompile for Win64 is <a href="http://www.marc-wieser.fr/UE4Editor-LeapMotion.rar">here</a><br/>
-Requires Binaries are <a href="http://www.marc-wieser.fr/Requires_plugin_Leap_Motion_UE4.rar">here</a><br/>
-You can download a demo project with source code and SLN for easiest re compilation <a href="http://www.marc-wieser.fr/DemoLeapMotion.rar">here</a><br/>
+1. Create new or open a project. 
+2. Browse to your project root (typically found at *Documents/Unreal Project/{Your Project Root}*)
+3. Copy *Plugins* folder into your Project root.
+4. Copy *Binaries* folder into your Project root.
+5. Restart the Editor and open your project again.
+6. Select Window->Plugins. Click on Installed and you should see a category called Input and a plugin called Leap Motion now available. It should be automatically enabled, if not, Select Enabled. The Editor will warn you to restart, click restart.
+7. The plugin should be enabled and ready to use.
 
 ====================
 

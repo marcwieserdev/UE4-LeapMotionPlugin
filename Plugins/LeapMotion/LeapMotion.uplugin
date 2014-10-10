@@ -8,7 +8,7 @@
 	"CreatedByURL" : "https://github.com/getnamo/leap-ue4",
 	"EngineVersion" : 1579795,
 	"Description" : "Plugin binding the Leap Motion in an event driven architecture, exposed to blueprint.",
-	"Category" : "Virtual Reality",
+	"Category" : "Input.Controller",
 	
     "Modules" :
 	[
