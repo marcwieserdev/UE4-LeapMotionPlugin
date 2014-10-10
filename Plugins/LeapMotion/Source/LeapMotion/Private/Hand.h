@@ -91,6 +91,9 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle = "", Keywords = "get id"), Category = Leap)
 	int32 Id() const;
 
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
+	UFingerList* fingers();
+
 	bool operator!=(const UHand &) const;
 
 	bool operator==(const UHand &) const;

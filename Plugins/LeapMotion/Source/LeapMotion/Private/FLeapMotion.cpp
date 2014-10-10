@@ -1,5 +1,4 @@
 #include "LeapMotionPrivatePCH.h"
-#include "LeapMotion.generated.inl"
 
 void FLeapMotion::StartupModule()
 {

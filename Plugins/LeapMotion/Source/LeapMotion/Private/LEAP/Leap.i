@@ -30,7 +30,9 @@
 %ignore Leap::Tool::Tool(ToolImplementation*);
 %ignore Leap::Bone::Bone(BoneImplementation*);
 %ignore Leap::Hand::Hand(HandImplementation*);
+%ignore Leap::Arm::Arm(HandImplementation*);
 %ignore Leap::Gesture::Gesture(GestureImplementation*);
+%ignore Leap::Image::Image(ImageImplementation*);
 %ignore Leap::Screen::Screen(ScreenImplementation*);
 %ignore Leap::Frame::Frame(FrameImplementation*);
 %ignore Leap::Controller::Controller(ControllerImplementation*);
@@ -110,6 +112,7 @@
 
 %leapattrib( Leap::Bone, Vector, prevJoint );
 %leapattrib( Leap::Bone, Vector, nextJoint );
+%leapattrib( Leap::Bone, Vector, center );
 %leapattrib( Leap::Bone, Vector, direction );
 %constattrib( Leap::Bone, float, length );
 %constattrib( Leap::Bone, float, width );
@@ -133,11 +136,21 @@
 %constattrib( Leap::Hand, float, pinchStrength );
 %constattrib( Leap::Hand, float, palmWidth );
 %leapattrib( Leap::Hand, Vector, stabilizedPalmPosition )
+%leapattrib( Leap::Hand, Vector, wristPosition )
 %constattrib( Leap::Hand, float, timeVisible );
 %constattrib( Leap::Hand, float, confidence );
 %constattrib( Leap::Hand, bool, isLeft );
 %constattrib( Leap::Hand, bool, isRight );
 %leapattrib( Leap::Hand, Frame, frame );
+%leapattrib( Leap::Hand, Arm, arm );
+
+%constattrib( Leap::Arm, float, width );
+%leapattrib( Leap::Arm, Vector, center );
+%leapattrib( Leap::Arm, Vector, direction );
+%leapattrib( Leap::Arm, Matrix, basis )
+%leapattrib( Leap::Arm, Vector, elbowPosition );
+%leapattrib( Leap::Arm, Vector, wristPosition );
+%constattrib( Leap::Arm, bool, isValid );
 
 %constattrib( Leap::Gesture, Leap::Gesture::Type, type )
 %constattrib( Leap::Gesture, Leap::Gesture::State, state )
@@ -167,6 +180,17 @@
 %constattrib( Leap::KeyTapGesture, float, progress );
 %leapattrib( Leap::KeyTapGesture, Pointable, pointable );
 
+%constattrib( Leap::Image, int32_t, id );
+%constattrib( Leap::Image, int, width );
+%constattrib( Leap::Image, int, height );
+%constattrib( Leap::Image, int, distortionWidth );
+%constattrib( Leap::Image, int, distortionHeight );
+%constattrib( Leap::Image, float, rayOffsetX );
+%constattrib( Leap::Image, float, rayOffsetY );
+%constattrib( Leap::Image, float, rayScaleX );
+%constattrib( Leap::Image, float, rayScaleY );
+%constattrib( Leap::Image, bool, isValid );
+
 # Count is made a const attribute in C# but renamed to __len__ in Python
 #if SWIGCSHARP
 %constattrib( Leap::PointableList, int, count );
@@ -174,6 +198,7 @@
 %constattrib( Leap::ToolList, int, count );
 %constattrib( Leap::HandList, int, count );
 %constattrib( Leap::GestureList, int, count );
+%constattrib( Leap::ImageList, int, count );
 %constattrib( Leap::ScreenList, int, count );
 %constattrib( Leap::DeviceList, int, count );
 #endif
@@ -183,6 +208,7 @@
 %constattrib( Leap::ToolList, bool, isEmpty );
 %constattrib( Leap::HandList, bool, isEmpty );
 %constattrib( Leap::GestureList, bool, isEmpty );
+%constattrib( Leap::ImageList, bool, isEmpty );
 %constattrib( Leap::ScreenList, bool, isEmpty );
 %constattrib( Leap::DeviceList, bool, isEmpty );
 
@@ -206,8 +232,10 @@
 %leapattrib( Leap::Frame, FingerList, fingers );
 %leapattrib( Leap::Frame, ToolList, tools );
 %leapattrib( Leap::Frame, HandList, hands );
+%leapattrib( Leap::Frame, ImageList, images );
 %constattrib( Leap::Frame, bool, isValid );
 %leapattrib( Leap::Frame, InteractionBox, interactionBox );
+%constattrib( Leap::Frame, int, serializeLength );
 
 %constattrib( Leap::Screen, int32_t, id );
 %leapattrib( Leap::Screen, Vector, horizontalAxis );
@@ -223,6 +251,7 @@
 %constattrib( Leap::Device, bool, isValid );
 %constattrib( Leap::Device, bool, isEmbedded );
 %constattrib( Leap::Device, bool, isStreaming );
+%constattrib( Leap::Device, bool, isFlipped );
 %constattrib( Leap::Device, Leap::Device::Type, type );
 
 %leapattrib( Leap::InteractionBox, Vector, center );
@@ -240,7 +269,9 @@
 %staticattrib( Leap::Tool, static const Tool&, invalid);
 %staticattrib( Leap::Bone, static const Bone&, invalid);
 %staticattrib( Leap::Hand, static const Hand&, invalid);
+%staticattrib( Leap::Arm, static const Arm&, invalid);
 %staticattrib( Leap::Gesture, static const Gesture&, invalid);
+%staticattrib( Leap::Image, static const Image&, invalid);
 %staticattrib( Leap::Screen, static const Screen&, invalid );
 %staticattrib( Leap::Device, static const Device&, invalid );
 %staticattrib( Leap::InteractionBox, static const InteractionBox&, invalid );
@@ -275,7 +306,19 @@
 
 #endif
 
+%ignore Leap::Frame::serialize() const;
+%ignore Leap::Frame::deserialize(const std::string&);
+%ignore Leap::Image::data() const;
+%ignore Leap::Image::distortion() const;
+
 #if SWIGCSHARP
+
+%include "arrays_csharp.i"
+%apply unsigned char INOUT[] { unsigned char* };
+%apply float OUTPUT[] { float* };
+
+%rename(SerializeWithArg) Leap::Frame::serialize(unsigned char*) const;
+%rename(DeserializeWithLength) Leap::Frame::deserialize(const unsigned char*, int length);
 
 %rename("%(lowercamelcase)s", %$isvariable) "";
 %ignore Leap::DEG_TO_RAD;
@@ -284,12 +327,185 @@
 
 SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 
+%rename(DataWithArg) Leap::Image::data(unsigned char*) const;
+%rename(DistortionWithArg) Leap::Image::distortion(float*) const;
+
+%typemap(cscode) Leap::Image %{
+  /**
+  * The image data.
+  *
+  * The image data is a set of 8-bit intensity values. The buffer is
+  * ``image.Width * image.Height`` bytes long.
+  *
+  * \include Image_data_1.txt
+  *
+  * @since 2.1.0
+  */
+  public byte[] Data {
+    get {
+      byte[] ret = new byte[Width * Height];
+      DataWithArg(ret);
+      return ret;
+    }
+  }
+  /**
+  * The distortion calibration map for this image.
+  *
+  * The calibration map is a 64x64 grid of points. Each point is defined by
+  * a pair of 32-bit floating point values. Each point in the map
+  * represents a ray projected into the camera. The value of
+  * a grid point defines the pixel in the image data containing the brightness
+  * value produced by the light entering along the corresponding ray. By
+  * interpolating between grid data points, you can find the brightness value
+  * for any projected ray. Grid values that fall outside the range [0..1] do
+  * not correspond to a value in the image data and those points should be ignored.
+  *
+  * \include Image_distortion_1.txt
+  *
+  * The calibration map can be used to render an undistorted image as well as to
+  * find the true angle from the camera to a feature in the raw image. The
+  * distortion map itself is designed to be used with GLSL shader programs.
+  * In other contexts, it may be more convenient to use the Image Rectify()
+  * and Warp() functions.
+  *
+  * Distortion is caused by the lens geometry as well as imperfections in the
+  * lens and sensor window. The calibration map is created by the calibration
+  * process run for each device at the factory (and which can be rerun by the
+  * user).
+  *
+  * Note, in a future release, there will be two distortion maps per image;
+  * one containing the horizontal values and the other containing the vertical values.
+  * @since 2.1.0
+  */
+  public float[] Distortion {
+    get {
+      float[] ret = new float[DistortionWidth * DistortionHeight];
+      DistortionWithArg(ret);
+      return ret;
+    }
+  }
+%}
+
+%typemap(cscode) Leap::Frame %{
+  public byte[] Serialize {
+    get {
+      byte[] ptr = new byte[SerializeLength];
+      SerializeWithArg(ptr);
+      return ptr;
+    }
+  }
+
+  public void Deserialize(byte[] arg) {
+    DeserializeWithLength(arg, arg.Length);
+  }
+%}
+
 #elif SWIGPYTHON
+
+%include "carrays.i"
+%array_class(unsigned char, byteArray)
+%array_class(float, floatArray)
+
+%extend Leap::Image {
+%pythoncode {
+  def data(self):
+      ptr = byte_array(self.width * self.height)
+      LeapPython.Image_data(self, ptr)
+      return ptr
+  def distortion(self):
+      ptr = float_array(self.distortion_width * self.distortion_height)
+      LeapPython.Image_distortion(self, ptr)
+      return ptr
+  __swig_getmethods__["data"] = data
+  if _newclass:data = _swig_property(data)
+  __swig_getmethods__["distortion"] = distortion
+  if _newclass:distortion = _swig_property(distortion)
+%}}
+
+%extend Leap::Frame {
+%pythoncode {
+  def serialize(self):
+      length = self.serialize_length
+      str = byte_array(length)
+      LeapPython.Frame_serialize(self, str)
+      return (str, length)
+  def deserialize(self, tup):
+      LeapPython.Frame_deserialize(self, tup[0], tup[1])
+  __swig_getmethods__["serialize"] = serialize
+  if _newclass:serialize = _swig_property(serialize)
+%}}
 
 %rename("%(camelcase)s", %$isclass) "";
 %rename("%(camelcase)s", %$isconstructor) "";
 
 #elif SWIGJAVA
+
+%include "arrays_java.i"
+%apply signed char[] { unsigned char* };
+%apply float[] { float* };
+
+%typemap(javacode) Leap::Image %{
+  /**
+  * The image data.
+  *
+  * The image data is a set of 8-bit intensity values. The buffer is
+  * ``image.width() * image.height()`` bytes long.
+  *
+  * \include Image_data_1.txt
+  *
+  * @since 2.1.0
+  */
+  public byte[] data() {
+    byte[] ptr = new byte[width() * height()];
+    LeapJNI.Image_data(swigCPtr, this, ptr);
+    return ptr;
+  }
+  /**
+  * The distortion calibration map for this image.
+  *
+  * The calibration map is a 64x64 grid of points. Each point is defined by
+  * a pair of 32-bit floating point values. Each point in the map
+  * represents a ray projected into the camera. The value of
+  * a grid point defines the pixel in the image data containing the brightness
+  * value produced by the light entering along the corresponding ray. By
+  * interpolating between grid data points, you can find the brightness value
+  * for any projected ray. Grid values that fall outside the range [0..1] do
+  * not correspond to a value in the image data and those points should be ignored.
+  *
+  * \include Image_distortion_1.txt
+  *
+  * The calibration map can be used to render an undistorted image as well as to
+  * find the true angle from the camera to a feature in the raw image. The
+  * distortion map itself is designed to be used with GLSL shader programs.
+  * In other contexts, it may be more convenient to use the Image rectify()
+  * and warp() functions.
+  *
+  * Distortion is caused by the lens geometry as well as imperfections in the
+  * lens and sensor window. The calibration map is created by the calibration
+  * process run for each device at the factory (and which can be rerun by the
+  * user).
+  *
+  * Note, in a future release, there will be two distortion maps per image;
+  * one containing the horizontal values and the other containing the vertical values.
+  * @since 2.1.0
+  */
+  public float[] distortion() {
+    float[] ptr = new float[distortionWidth() * distortionHeight()];
+    LeapJNI.Image_distortion(swigCPtr, this, ptr);
+    return ptr;
+  }
+%}
+
+%typemap(javacode) Leap::Frame %{
+  public byte[] serialize() {
+    byte[] ptr = new byte[serializeLength()];
+    LeapJNI.Frame_serialize(swigCPtr, this, ptr);
+    return ptr;
+  }
+  public void deserialize(byte[] str) {
+    LeapJNI.Frame_deserialize(swigCPtr, this, str, str.length);
+  }
+%}
 
 %ignore Leap::DEG_TO_RAD;
 %ignore Leap::RAD_TO_DEG;
@@ -715,6 +931,7 @@ extern "C" BOOL WINAPI DllMain(
 %leap_list_helper(Finger);
 %leap_list_helper(Tool);
 %leap_list_helper(Gesture);
+%leap_list_helper(Image);
 %leap_list_helper(Hand);
 %leap_list_helper(Screen);
 %leap_list_helper(Device);
@@ -781,6 +998,8 @@ extern "C" BOOL WINAPI DllMain(
 %rename(__str__) *::toString;
 
 #endif
+
+
 
 %include "LeapMath.h"
 %include "Leap.h"

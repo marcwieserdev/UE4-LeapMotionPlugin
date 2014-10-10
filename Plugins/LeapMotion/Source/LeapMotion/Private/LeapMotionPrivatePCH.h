@@ -4,6 +4,8 @@
 #include "ModuleManager.h"
 #include "Hand.h"
 #include "HandList.h"
+#include "Finger.h"
+#include "FingerList.h"
 #include "LeapFrame.h"
 #include "LeapController.h"
 #include "Core.h"

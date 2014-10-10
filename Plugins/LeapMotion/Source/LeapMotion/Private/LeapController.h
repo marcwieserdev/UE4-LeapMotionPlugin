@@ -1,7 +1,6 @@
 #pragma once
 
 #include "LeapMotionPrivatePCH.h"
-#include "LeapFrame.h"
 #include "LeapController.generated.h"
 
 UCLASS(ClassGroup=VR, meta=(BlueprintSpawnableComponent))

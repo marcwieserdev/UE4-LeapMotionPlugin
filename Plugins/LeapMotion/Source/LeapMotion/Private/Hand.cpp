@@ -229,3 +229,13 @@ bool UHand::operator==(const UHand &hand) const
 {
 	return (hand._hand == this->_hand);
 }
+
+//Finger additions
+
+UFingerList* UHand::fingers()
+{
+	UFingerList* fingers;
+	fingers = ConstructObject<UFingerList>(UFingerList::StaticClass());
+	fingers->setFingerList(_hand.fingers());
+	return (fingers);
+}
