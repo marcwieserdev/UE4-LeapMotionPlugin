@@ -11,9 +11,9 @@ class ULeapController : public UActorComponent
 
 public:
 	~ULeapController();
-	virtual void InitializeComponent() OVERRIDE;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) OVERRIDE;
-	virtual void BeginDestroy() OVERRIDE;	
+	virtual void InitializeComponent() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = Leap)
 	bool isConnected() const;

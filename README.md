@@ -1,7 +1,7 @@
-UE4-LeapMotionPlugin
+leap-ue4
 ====================
 
-A plugin for exposing Leap Motion SDK to UE4 blueprint
+A plugin for exposing Leap Motion SDK to UE4 blueprint. Forked to have event driven architecture, this release contains old the setup updated with compile fixes to UE4.4.
 
 Actually this features are done :<br/>
 get all informations on :
@@ -42,6 +42,13 @@ How to use it
 When you create a class blueprint you have a component Leap motion, if you place it on your scene you will have access to all the function of the
 controller, so you can get the frame and do what you want with features currently developed.<br/>
 <br/>
+
 All the Blueprint nodes keep the name of the function in the <a href="https://developer.leapmotion.com/">documentation of leapmotion</a><br/>
 <br/>
-Don't hesitate to get me feedback by mail at <a href="mailto:contact@marc-wieser.fr">contact@marc-wieser.fr</a> or on the <a href="https://forums.unrealengine.com/showthread.php?6783-Plugin-Leap-Motion-exposing-to-blueprint-WIP">Epic Games forums</a>
+
+====================
+
+Credits
+====================
+Original Plugin by Marc Wieser.
+Event-driven fork by Getnamo.

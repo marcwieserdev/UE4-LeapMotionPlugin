@@ -1,4 +1,5 @@
 #include "LeapMotionPrivatePCH.h"
+#include "Pointable.h"
 
 UPointable::UPointable(const FPostConstructInitializeProperties &init) : UObject(init)
 {
@@ -16,7 +17,7 @@ FVector UPointable::Direction() const
 	return (FVector(-vect.z, vect.x, vect.y));
 }
 
-ULeapFrame *UPointable::frame()
+ULeapFrame *UPointable::Frame()
 {
 	ULeapFrame *rframe;
 

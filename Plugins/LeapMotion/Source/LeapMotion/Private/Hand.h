@@ -38,7 +38,7 @@ public:
 	FVector Direction() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "get frame"), Category = Leap)
-	class ULeapFrame *frame();
+	class ULeapFrame *Frame();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "strength", CompactNodeTitle = "", Keywords = "get strength"), Category = Leap)
 	float grabStrength() const;

@@ -60,7 +60,7 @@ FVector UHand::Direction() const
 	return (FVector(-vect.z, vect.x, vect.y));
 }
 
-ULeapFrame *UHand::frame()
+ULeapFrame *UHand::Frame()
 {
 	ULeapFrame *rframe;
 

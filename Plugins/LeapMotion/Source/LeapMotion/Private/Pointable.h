@@ -23,7 +23,7 @@ public:
 	virtual FVector Direction() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle="", Keywords = "frame"), Category = Leap)
-	virtual class ULeapFrame *frame();
+	virtual class ULeapFrame *Frame();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hand", CompactNodeTitle="", Keywords = "hand"), Category = Leap)
 	virtual class UHand *Hand();

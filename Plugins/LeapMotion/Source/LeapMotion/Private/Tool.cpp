@@ -1,4 +1,5 @@
 #include "LeapMotionPrivatePCH.h"
+#include "Tool.h"
 
 UTool::UTool(const FPostConstructInitializeProperties &init) : UPointable(init)
 {

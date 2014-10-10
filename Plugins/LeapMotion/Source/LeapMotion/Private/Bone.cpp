@@ -1,4 +1,5 @@
 #include "LeapMotionPrivatePCH.h"
+#include "Bone.h"
 
 UBone::UBone(const FPostConstructInitializeProperties &init) : UObject(init)
 {

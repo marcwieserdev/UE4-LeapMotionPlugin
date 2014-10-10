@@ -3,11 +3,11 @@
 	
 	"FriendlyName" : "Leap Motion Plugin",
 	"Version" : 1,
-	"VersionName" : "1.0",
-	"CreatedBy" : "Marc Wieser",
-	"CreatedByURL" : "http://www.marc-wieser.fr",
+	"VersionName" : "0.5",
+	"CreatedBy" : "Fork: Getnamo, Original: Marc Wieser",
+	"CreatedByURL" : "https://github.com/getnamo/leap-ue4",
 	"EngineVersion" : 1579795,
-	"Description" : "This is a plugin supporting LeapMotion for blueprints",
+	"Description" : "Plugin binding the Leap Motion in an event driven architecture, exposed to blueprint.",
 	"Category" : "Virtual Reality",
 	
     "Modules" :

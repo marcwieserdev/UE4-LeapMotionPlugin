@@ -12,6 +12,6 @@ class FLeapMotion : public ILeapMotion
 {
 public:
 
-	virtual void StartupModule() OVERRIDE;
-	virtual void ShutdownModule() OVERRIDE;
+	virtual void StartupModule() override;
+	virtual void ShutdownModule() override;
 };

@@ -1,4 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
+#include "ToolList.h"
+#include "Tool.h"
 
 UToolList::UToolList(const FPostConstructInitializeProperties &init) : UObject(init)
 {

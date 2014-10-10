@@ -1,4 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
+#include "FingerList.h"
+#include "Finger.h"
 
 UFingerList::UFingerList(const FPostConstructInitializeProperties &init) : UObject(init)
 {

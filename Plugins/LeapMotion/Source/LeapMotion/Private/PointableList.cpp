@@ -1,4 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
+#include "PointableList.h"
+#include "Pointable.h"
 
 UPointableList::UPointableList(const FPostConstructInitializeProperties &init) : UObject(init)
 {

@@ -1,4 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
+#include "Finger.h"
+#include "Bone.h"
 
 UFinger::UFinger(const FPostConstructInitializeProperties &init) : UPointable(init)
 {

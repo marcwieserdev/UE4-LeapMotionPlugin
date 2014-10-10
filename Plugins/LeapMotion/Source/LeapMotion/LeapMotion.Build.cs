@@ -6,6 +6,16 @@ namespace UnrealBuildTool.Rules
 {
 	public class LeapMotion : ModuleRules
 	{
+        private string ModulePath
+        {
+            get { return Path.GetDirectoryName(RulesCompiler.GetModuleFilename(this.GetType().Name)); }
+        }
+
+        private string LibraryPath
+        {
+            get { return Path.GetFullPath(Path.Combine(ModulePath, "Private/libs")); }
+        }
+
 		public LeapMotion(TargetInfo Target)
 		{
 			PublicIncludePaths.AddRange(
@@ -45,7 +55,22 @@ namespace UnrealBuildTool.Rules
 					// ... add any modules that your module loads dynamically here ...
 				}
 				);
-            PublicAdditionalLibraries.Add("Leap.lib");
+
+            LoadLeapLib(Target);
 		}
+
+        public bool LoadLeapLib(TargetInfo Target)
+        {
+            bool isLibrarySupported = false;
+
+            if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
+            {
+                isLibrarySupported = true;
+                
+                PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, "Leap.lib"));
+            }
+
+            return isLibrarySupported;
+        }
 	}
 }

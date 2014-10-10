@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LeapMotionPrivatePCH.h"
+#include "Pointable.h"
 #include "Tool.generated.h"
 
 UCLASS(BlueprintType)
