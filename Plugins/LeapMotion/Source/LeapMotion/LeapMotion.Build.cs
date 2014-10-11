@@ -28,6 +28,7 @@ namespace UnrealBuildTool.Rules
 			PrivateIncludePaths.AddRange(
 				new string[] {
 					"LeapMotion/Private",
+                    "LeapMotion/Private/Interface"
 					// ... add other private include paths required here ...
 				}
 				);
@@ -38,6 +39,7 @@ namespace UnrealBuildTool.Rules
 					"Engine",
 					"Core",
                     "CoreUObject",
+                    "Slate"
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);

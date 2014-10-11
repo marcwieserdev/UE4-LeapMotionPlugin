@@ -14,7 +14,7 @@ FVector UPointable::Direction() const
 	Leap::Vector vect;
 
 	vect = _pointable.direction();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 ULeapFrame *UPointable::Frame()
@@ -80,7 +80,7 @@ FVector UPointable::stabilizedTipPosition()
 	Leap::Vector vect;
 
 	vect = _pointable.stabilizedTipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UPointable::timeVisible() const
@@ -93,7 +93,7 @@ FVector UPointable::tipPosition() const
 	Leap::Vector vect;
 
 	vect = _pointable.tipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UPointable::tipVelocity() const
@@ -101,7 +101,7 @@ FVector UPointable::tipVelocity() const
 	Leap::Vector vect;
 
 	vect = _pointable.tipVelocity();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UPointable::touchDistance() const

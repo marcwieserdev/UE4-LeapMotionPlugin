@@ -1,7 +1,27 @@
 #pragma once
 
 #include "LeapMotionPrivatePCH.h"
+#include "LeapEventInterface.h"
+#include <vector>
 #include "LeapController.generated.h"
+
+//Used for Reliable State Tracking
+struct LeapHandStateData{
+	bool grabbed;
+	bool pinched;
+	int32 fingerCount;
+	int32 id;
+};
+
+class LeapStateData{
+public:
+	bool hasStateForId(int32 hId, LeapHandStateData& state);
+	LeapHandStateData stateForId(int32 hId);
+	void setStateForId(LeapHandStateData handState, int32 hId);
+
+	std::vector<LeapHandStateData> handStates;
+	int32 handCount;
+};
 
 UCLASS(ClassGroup=VR, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
@@ -26,8 +46,20 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isServiceConnected", CompactNodeTitle = "", Keywords = "is service connected"), Category = Leap)
 	bool isServiceConnected() const;
 
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
+	void optimizeForHMD(bool useTopdown) const;
+
 	const Leap::Controller &getData() const;
+
+
+	//Leap Event Interface forwarding
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")
+	void SetInterfaceDelegate(UObject* newDelegate);
 
 private:
 	Leap::Controller	_leap;
+	UObject* _interfaceDelegate;
+	LeapStateData _pastState;
+
+	void InterfaceEventTick(float deltaTime);
 };

@@ -45,7 +45,7 @@ FVector UFinger::Direction() const
 	Leap::Vector vect;
 
 	vect = _finger.direction();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 ULeapFrame *UFinger::frame()
@@ -111,7 +111,7 @@ FVector UFinger::stabilizedTipPosition()
 	Leap::Vector vect;
 
 	vect = _finger.stabilizedTipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UFinger::timeVisible() const
@@ -124,7 +124,7 @@ FVector UFinger::tipPosition() const
 	Leap::Vector vect;
 
 	vect = _finger.tipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UFinger::tipVelocity() const
@@ -132,7 +132,7 @@ FVector UFinger::tipVelocity() const
 	Leap::Vector vect;
 
 	vect = _finger.tipVelocity();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UFinger::touchDistance() const

@@ -27,7 +27,7 @@ FVector UBone::Center() const
 	Leap::Vector vect;
 
 	vect = _bone.center();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UBone::Direction() const
@@ -35,7 +35,7 @@ FVector UBone::Direction() const
 	Leap::Vector vect;
 
 	vect = _bone.direction();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 bool UBone::IsValid() const
@@ -53,7 +53,7 @@ FVector UBone::nextJoint() const
 	Leap::Vector vect;
 
 	vect = _bone.nextJoint();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 bool UBone::equal(const UBone *other) const
@@ -71,7 +71,7 @@ FVector UBone::prevJoint() const
 	Leap::Vector vect;
 
 	vect = _bone.prevJoint();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 BoneType UBone::Type() const

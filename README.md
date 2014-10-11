@@ -31,15 +31,41 @@ How to install it
 
 ====================
 
-How to use it
+How to use it - Blueprint - Event Driven
 ====================
 
-When you create a class blueprint you have a component Leap motion, if you place it on your scene you will have access to all the function of the
+1. Open desired blueprint where you want to receive the leap events.
+2. Click on Blueprint Props and Scroll down in the details panel to Interfaces.
+3. Add the interface called LeapEventInterface
+4. Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.
+5. (Optional, recommended) Drag from the return value, save this as a blueprint variable e.g. Leap.
+6. Drag from the return value or your new Leap blueprint variable (get) and type 'Leap' to narrow results. Select Set Delegate.
+7. To the input which says 'Select Asset' connect a reference to self (Right click on graph type 'Self' it will be the only node available).
+8. (Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use.
+9. You're ready to go.
+
+Now you can Right click anywhere on Event graph and type 'Leap Event' and you will see all the available events you can receive.
+
+====================
+
+How to use it - Blueprint - Polling
+====================
+
+When you create a class blueprint you can add a component called LeapController, if you place it on your scene you will have access to all the function of the
 controller, so you can get the frame and do what you want with features currently developed.<br/>
 <br/>
 
 All the Blueprint nodes keep the name of the function in the <a href="https://developer.leapmotion.com/">documentation of leapmotion</a><br/>
 <br/>
+
+====================
+
+Todo
+====================
+-Convenience Classes
+-Wiki
+-Better Documentation
+-C++ how to use
 
 ====================
 

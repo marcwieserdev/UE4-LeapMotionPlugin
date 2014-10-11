@@ -8,6 +8,15 @@ UHand::~UHand()
 {
 }
 
+UArm *UHand::Arm()
+{
+	UArm *rArm;
+
+	rArm = ConstructObject<UArm>(UArm::StaticClass());
+	rArm->setArm(_hand.arm());
+	return (rArm);
+}
+
 bool UHand::isLeft() const
 {
 	return (_hand.isLeft());
@@ -28,7 +37,7 @@ FVector UHand::palmNormal() const
 	Leap::Vector vect;
 
 	vect = _hand.palmNormal();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UHand::palmPosition() const
@@ -36,7 +45,7 @@ FVector UHand::palmPosition() const
 	Leap::Vector vect;
 
 	vect = _hand.palmPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UHand::palmVelocity() const
@@ -44,7 +53,7 @@ FVector UHand::palmVelocity() const
 	Leap::Vector vect;
 
 	vect = _hand.palmVelocity();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UHand::confidence() const
@@ -57,7 +66,7 @@ FVector UHand::Direction() const
 	Leap::Vector vect;
 
 	vect = _hand.direction();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 ULeapFrame *UHand::Frame()
@@ -149,7 +158,7 @@ FVector UHand::rotationAxis(const ULeapFrame *frame)
 
 	rframe = frame->getFrame();
 	vect = _hand.rotationAxis(rframe);
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UHand::rotationProbability(const ULeapFrame *frame)
@@ -181,7 +190,7 @@ FVector UHand::sphereCenter()
 	Leap::Vector vect;
 
 	vect = _hand.sphereCenter();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UHand::SphereRadius() const
@@ -194,7 +203,7 @@ FVector UHand::stabilizedPalmPosition()
 	Leap::Vector vect;
 
 	vect = _hand.stabilizedPalmPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UHand::timeVisible() const
@@ -209,7 +218,7 @@ FVector UHand::Translation(const ULeapFrame *frame)
 
 	rframe = frame->getFrame();
 	vect = _hand.translation(rframe);
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UHand::translationProbability(const ULeapFrame *frame) const

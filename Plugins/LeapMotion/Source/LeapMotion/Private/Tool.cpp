@@ -14,7 +14,7 @@ FVector UTool::Direction() const
 	Leap::Vector vect;
 
 	vect = _tool.direction();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 ULeapFrame *UTool::frame()
@@ -80,7 +80,7 @@ FVector UTool::stabilizedTipPosition()
 	Leap::Vector vect;
 
 	vect = _tool.stabilizedTipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UTool::timeVisible() const
@@ -93,7 +93,7 @@ FVector UTool::tipPosition() const
 	Leap::Vector vect;
 
 	vect = _tool.tipPosition();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 FVector UTool::tipVelocity() const
@@ -101,7 +101,7 @@ FVector UTool::tipVelocity() const
 	Leap::Vector vect;
 
 	vect = _tool.tipVelocity();
-	return (FVector(-vect.z, vect.x, vect.y));
+	return (convertAndScaleLeapToUE(vect));
 }
 
 float UTool::touchDistance() const

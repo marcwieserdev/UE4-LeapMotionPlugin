@@ -10,6 +10,9 @@ class UHand : public UObject
 public:
 	~UHand();
 	
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "arm", CompactNodeTitle = "", Keywords = "arm"), Category = Leap)
+	class UArm* Arm();
+
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isLeft", CompactNodeTitle = "", Keywords = "is left"), Category = Leap)
 	bool isLeft() const;
 	
@@ -92,7 +95,7 @@ public:
 	int32 Id() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
-	UFingerList* fingers();
+	class UFingerList* fingers();
 
 	bool operator!=(const UHand &) const;
 
