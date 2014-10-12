@@ -30,7 +30,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandGrabbed", CompactNodeTitle = "", Keywords = "hand grab"), Category = "Leap Interface Event")
 	void LeapHandGrabbed(float strength, UHand* hand);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandReleased", CompactNodeTitle = "", Keywords = "hand released"), Category = "Leap Interface Event")
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandReleased", CompactNodeTitle = "", Keywords = "hand released ungrab"), Category = "Leap Interface Event")
 	void LeapHandReleased(float strength, UHand* hand);
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandPinched", CompactNodeTitle = "", Keywords = "hand pinch"), Category = "Leap Interface Event")
@@ -39,8 +39,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandUnpinched", CompactNodeTitle = "", Keywords = "hand unpinch"), Category = "Leap Interface Event")
 	void LeapHandUnpinched(float strength, UHand* hand);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandsDetected", CompactNodeTitle = "", Keywords = "hand count"), Category = "Leap Interface Event")
-	void LeapHandsDetected(int32 count);
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandCountChanged", CompactNodeTitle = "", Keywords = "hand count"), Category = "Leap Interface Event")
+	void HandCountChanged(int32 count);
 
 	//Fingers
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "FingerMoved", CompactNodeTitle = "", Keywords = "finger moved"), Category = "Leap Interface Event")
@@ -55,13 +55,15 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "RightFingerMoved", CompactNodeTitle = "", Keywords = "finger right most moved"), Category = "Leap Interface Event")
 	void LeapLeftMostFingerMoved(UFinger* finger);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "LeapFingerTouch", CompactNodeTitle = "", Keywords = "finger touched"), Category = "Leap Interface Event")
-	void LeapFingerTouch(UFinger* finger);	//emitted only for frontmost finger
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "LeapFrontFingerTouch", CompactNodeTitle = "", Keywords = "finger touched"), Category = "Leap Interface Event")
+	void LeapFrontFingerTouch(UFinger* finger);		//emitted only for frontmost finger, typically best use case
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "FingersDetected", CompactNodeTitle = "", Keywords = "finger count"), Category = "Leap Interface Event")
-	void LeapFingersDetected(int32 count);
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "FingerCountChanged", CompactNodeTitle = "", Keywords = "finger count"), Category = "Leap Interface Event")
+	void FingerCountChanged(int32 count);
 
-	//Arms
+	//Gestures
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "GestureDetected", CompactNodeTitle = "", Keywords = "gesture detect"), Category = "Leap Interface Event")
+	void GestureDetected(UGesture* gesture);
 
 	//Help identifying
 	virtual FString ToString();

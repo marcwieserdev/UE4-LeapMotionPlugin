@@ -80,8 +80,8 @@ ULeapController::ULeapController(const FPostConstructInitializeProperties &init)
 	bAutoActivate = true;
 	PrimaryComponentTick.bCanEverTick = true;	//the component automatically ticks so we don't have to
 
-	//Attach Input Mapping
-	//EKeys::AddKey(FKeyDetails(EKeysLeap::LeapLeftGrab, LOCTEXT("LeapLeftGrab", "Leap Left Grab"), FKeyDetails::GamepadKey));
+	//Attach Input Mapping - left for another day
+	//e.g. EKeys::AddKey(FKeyDetails(EKeysLeap::LeapLeftGrab, LOCTEXT("LeapLeftGrab", "Leap Left Grab"), FKeyDetails::GamepadKey));
 }
 
 ULeapController::~ULeapController()
@@ -121,7 +121,6 @@ ULeapFrame *ULeapController::getFrame(int32 history)
 {
 	ULeapFrame *rframe;
 
-
 	rframe = ConstructObject<ULeapFrame>(ULeapFrame::StaticClass());
 	rframe->setFrame(_leap, history);
 	return (rframe);
@@ -140,9 +139,41 @@ bool ULeapController::isServiceConnected() const
 void ULeapController::optimizeForHMD(bool useTopdown) const
 {
 	if (useTopdown)
+	{
 		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD);
+		LeapShouldRotateForHMD(true);
+	}
 	else
+	{
 		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_DEFAULT);
+		LeapShouldRotateForHMD(false);
+	}
+}
+
+void ULeapController::enableGesture(LeapGestureType type, bool enable)
+{
+	Leap::Gesture::Type rawType;
+
+	switch (type)
+	{
+	case GESTURE_TYPE_CIRCLE:
+		rawType = Leap::Gesture::TYPE_CIRCLE;
+		break;
+	case GESTURE_TYPE_KEY_TAP:
+		rawType = Leap::Gesture::TYPE_KEY_TAP;
+		break;
+	case GESTURE_TYPE_SCREEN_TAP:
+		rawType = Leap::Gesture::TYPE_SCREEN_TAP;
+		break;
+	case GESTURE_TYPE_SWIPE:
+		rawType = Leap::Gesture::TYPE_SWIPE;
+		break;
+	default:
+		rawType = Leap::Gesture::TYPE_INVALID;
+		break;
+	}
+
+	_leap.enableGesture(rawType, enable);
 }
 
 //Leap Event Interface - Event Driven System
@@ -167,6 +198,11 @@ bool handClosed(float strength)
 	return (strength == 1.f);
 }
 
+bool handPinched(float strength)
+{
+	return (strength > 0.8);
+}
+
 bool handForId(int32 checkId, Leap::HandList hands, Leap::Hand& returnHand)
 {
 	for (int i = 0; i < hands.count(); i++)
@@ -183,8 +219,6 @@ bool handForId(int32 checkId, Leap::HandList hands, Leap::Hand& returnHand)
 //Main Event driven tick
 void ULeapController::InterfaceEventTick(float DeltaTime)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Tick1!"));
-
 	//This is our tick event that is forwarded from the delegate
 	if (!_interfaceDelegate) return;
 
@@ -198,7 +232,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 	int handCount = frame.hands().count();
 
 	if (_pastState.handCount != handCount)
-		ILeapEventInterface::Execute_LeapHandsDetected(_interfaceDelegate, handCount);
+		ILeapEventInterface::Execute_HandCountChanged(_interfaceDelegate, handCount);
 
 	//Cycle through each hand
 	for (int i = 0; i < handCount; i++)
@@ -230,12 +264,17 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		//Pinching
 		float pinchStrength = hand.pinchStrength();
-		bool pinched = handClosed(pinchStrength);
+		bool pinched = handPinched(pinchStrength);
 
-		if (pinched && !pastHandState.pinched)
-			ILeapEventInterface::Execute_LeapHandPinched(_interfaceDelegate, pinchStrength, uHand);
-		else if (!pinched && pastHandState.pinched)
-			ILeapEventInterface::Execute_LeapHandUnpinched(_interfaceDelegate, pinchStrength, uHand);
+		//While grabbing disable pinching detection, this helps reduce spam
+		if (grabbed) pinched = pastHandState.pinched;
+		else
+		{
+			if (pinched && !pastHandState.pinched)
+				ILeapEventInterface::Execute_LeapHandPinched(_interfaceDelegate, pinchStrength, uHand);
+			else if (!pinched && pastHandState.pinched)
+				ILeapEventInterface::Execute_LeapHandUnpinched(_interfaceDelegate, pinchStrength, uHand);
+		}
 
 		//-Fingers-
 		Leap::FingerList fingers = hand.fingers();
@@ -243,7 +282,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		//Count
 		int fingerCount = fingers.count();
 		if ((pastHandState.fingerCount != fingerCount))
-			ILeapEventInterface::Execute_LeapFingersDetected(_interfaceDelegate, fingerCount);
+			ILeapEventInterface::Execute_FingerCountChanged(_interfaceDelegate, fingerCount);
 
 		UFinger *uFinger = ConstructObject<UFinger>(UFinger::StaticClass());
 		Leap::Finger finger;
@@ -277,8 +316,8 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		//touch only for front most finger
 		float touchDistance = finger.touchDistance();
-		if (touchDistance <= 0)
-			ILeapEventInterface::Execute_LeapFingerTouch(_interfaceDelegate, uFinger);
+		if (touchDistance <= 0.f)
+			ILeapEventInterface::Execute_LeapFrontFingerTouch(_interfaceDelegate, uFinger);
 
 		//Set the state data for next cycle
 		pastHandState.grabbed = grabbed;
@@ -289,6 +328,20 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 	}
 
 	_pastState.handCount = handCount;
+
+	//Gestures
+	for (int i = 0; i < frame.gestures().count(); i++)
+	{
+		Leap::Gesture gesture = frame.gestures()[i];
+
+		//emit gesture
+		if (gesture.type() != Leap::Gesture::TYPE_INVALID)
+		{
+			UGesture *uGesture = ConstructObject<UGesture>(UGesture::StaticClass());
+			uGesture->setGesture(gesture);
+			ILeapEventInterface::Execute_GestureDetected(_interfaceDelegate, uGesture);
+		}
+	}
 }
 
 #undef LOCTEXT_NAMESPACE

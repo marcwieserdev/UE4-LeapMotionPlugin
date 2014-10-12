@@ -8,14 +8,32 @@ class ULeapFrame : public UObject
 {
 	GENERATED_UCLASS_BODY()
 public:
-	//ULeapFrame(const ULeapFrame &cpy);
 	~ULeapFrame();
 	
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
 	bool IsValid() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = Leap)
-	class UHandList *hands();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hands", CompactNodeTitle = "", Keywords = "get hands"), Category = Leap)
+	class UHandList* Hands();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
+	class UFingerList* fingers();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = Leap)
+	class UGestureList* Gestures();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "interactionBox", CompactNodeTitle = "", Keywords = "get interaction box"), Category = Leap)
+	class UInteractionBox* InteractionBox();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = Leap)
+	class UPointableList* Pointables();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = Leap)
+	class ULeapImageList* Images();
+
+	//Todo: rotationAngle->Matrix, scaleFactor, translation, tools
+
+	//added interaction box, gestures, fingers, pointables
 
 	void setFrame(Leap::Controller &leap, int history = 0);
 	void setFrame(const Leap::Frame &frame);

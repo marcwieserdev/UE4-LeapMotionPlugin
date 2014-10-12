@@ -33,6 +33,7 @@ public:
 	LeapZone touchZone() const;
 	float Width() const;
 	void setFinger(const Leap::Finger &pointable);
+
 private:
 	Leap::Finger _finger;
 };

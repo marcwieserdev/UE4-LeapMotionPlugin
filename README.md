@@ -66,6 +66,11 @@ Available blueprint classes branching from LeapController:
 <li>Finger</li>
 <li>PointableList</li>
 <li>Pointable</li>
+<li>Gesture</li>
+<li>GestureList</li>
+<li>Image - Preliminary Support</li> 
+<li>ImageList</li> 
+<li>InteractionBox</li>
 <li>ToolList</li>
 <li>Tool</li>
 </ul>

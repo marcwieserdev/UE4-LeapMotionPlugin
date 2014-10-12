@@ -37,7 +37,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = Leap)
 	bool isConnected() const;
 
-	UFUNCTION(BlueprintCallable, Category = Leap)
+	//Frame
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "frame"), Category = Leap)
 	class ULeapFrame *getFrame(int32 history);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hasFocus", CompactNodeTitle = "", Keywords = "has Focus"), Category = Leap)
@@ -49,8 +50,10 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
 	void optimizeForHMD(bool useTopdown) const;
 
-	const Leap::Controller &getData() const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
+	void enableGesture(enum LeapGestureType type, bool enable = true);
 
+	const Leap::Controller &getData() const;
 
 	//Leap Event Interface forwarding
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")
