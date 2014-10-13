@@ -136,18 +136,19 @@ bool ULeapController::isServiceConnected() const
 	return (_leap.isServiceConnected());
 }
 
-void ULeapController::optimizeForHMD(bool useTopdown) const
+void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool autoShift) const
 {
 	if (useTopdown)
 	{
 		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD);
-		LeapShouldRotateForHMD(true);
+		LeapSetShouldAdjustForFacing(true);
 	}
 	else
 	{
 		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_DEFAULT);
-		LeapShouldRotateForHMD(false);
+		LeapSetShouldAdjustForFacing(false);
 	}
+	LeapSetShouldAdjustForHMD(autoRotate, autoShift);
 }
 
 void ULeapController::enableGesture(LeapGestureType type, bool enable)

@@ -10,4 +10,5 @@ Leap::Vector convertUEToLeap(FVector ueVector);
 Leap::Vector convertAndScaleUEToLeap(FVector ueVector);
 
 //HMD automation
-void LeapShouldRotateForHMD(bool shouldRotate);
+void LeapSetShouldAdjustForFacing(bool shouldRotate);
+void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset);

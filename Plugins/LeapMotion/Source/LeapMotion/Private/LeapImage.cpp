@@ -9,7 +9,7 @@ ULeapImage::~ULeapImage()
 }
 
 //Not properly supported at this time
-UTexture2D* LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const TArray<int8> &SrcData, const bool UseAlpha)
+/*UTexture2D* LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const TArray<int8> &SrcData, const bool UseAlpha)
 {
 	// Create the texture
 	UTexture2D* LeapTexture = UTexture2D::CreateTransient(SrcWidth, SrcHeight, PF_B8G8R8A8);
@@ -47,7 +47,7 @@ UTexture2D* LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const
 	LeapTexture->PlatformData->Mips[0].BulkData.Unlock();
 	LeapTexture->UpdateResource();
 	return LeapTexture;
-}
+}*/
 
 /*UTexture2D* ULeapImage::GetTexture()
 {

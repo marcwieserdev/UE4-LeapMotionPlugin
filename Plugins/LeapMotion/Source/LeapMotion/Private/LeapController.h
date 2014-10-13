@@ -47,8 +47,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isServiceConnected", CompactNodeTitle = "", Keywords = "is service connected"), Category = Leap)
 	bool isServiceConnected() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
-	void optimizeForHMD(bool useTopdown) const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", Keywords = "optimize hmd facing top"), Category = Leap)
+	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true) const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
 	void enableGesture(enum LeapGestureType type, bool enable = true);
