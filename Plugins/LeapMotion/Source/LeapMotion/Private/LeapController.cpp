@@ -93,9 +93,12 @@ bool ULeapController::isConnected() const
 	return _leap.isConnected();
 }
 
-void ULeapController::InitializeComponent()
+void ULeapController::OnRegister()
 {
-	Super::InitializeComponent();
+	Super::OnRegister();
+
+	//Attach the delegate pointer automatically
+	SetInterfaceDelegate(GetOwner());
 }
 
 void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -136,19 +139,35 @@ bool ULeapController::isServiceConnected() const
 	return (_leap.isServiceConnected());
 }
 
-void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool autoShift) const
+Leap::Controller::PolicyFlag ULeapController::buildPolicyFromBools(){
+	Leap::Controller::PolicyFlag policies = Leap::Controller::PolicyFlag::POLICY_DEFAULT;
+
+	if (_optimizeForHMD)
+		policies = static_cast<Leap::Controller::PolicyFlag>(policies | Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD);
+	if (_allowImages)
+		policies = static_cast<Leap::Controller::PolicyFlag>(policies | Leap::Controller::PolicyFlag::POLICY_IMAGES);
+	return policies;
+}
+
+void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool autoShift)
 {
+	//Set Policy Optimization
+	_optimizeForHMD = useTopdown;
+	_leap.setPolicyFlags(buildPolicyFromBools());
+
+	//Pass adjustment booleans
 	if (useTopdown)
-	{
-		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD);
 		LeapSetShouldAdjustForFacing(true);
-	}
 	else
-	{
-		_leap.setPolicyFlags(Leap::Controller::PolicyFlag::POLICY_DEFAULT);
 		LeapSetShouldAdjustForFacing(false);
-	}
+
 	LeapSetShouldAdjustForHMD(autoRotate, autoShift);
+}
+
+void ULeapController::enableImageSupport(bool allowImages)
+{
+	_allowImages = allowImages;
+	_leap.setPolicyFlags(buildPolicyFromBools());
 }
 
 void ULeapController::enableGesture(LeapGestureType type, bool enable)
@@ -178,9 +197,11 @@ void ULeapController::enableGesture(LeapGestureType type, bool enable)
 }
 
 //Leap Event Interface - Event Driven System
-
 void ULeapController::SetInterfaceDelegate(UObject* newDelegate)
 {
+
+	UE_LOG(LogClass, Log, TEXT("InterfaceObject: %s"), *newDelegate->GetName());
+
 	//Use this format to support both blueprint and C++ form
 	if (newDelegate->GetClass()->ImplementsInterface(ULeapEventInterface::StaticClass()))
 	{
@@ -220,7 +241,7 @@ bool handForId(int32 checkId, Leap::HandList hands, Leap::Hand& returnHand)
 //Main Event driven tick
 void ULeapController::InterfaceEventTick(float DeltaTime)
 {
-	//This is our tick event that is forwarded from the delegate
+	//This is our tick event that is forwarded from the delegate, check validity
 	if (!_interfaceDelegate) return;
 
 	//Pointers
@@ -267,7 +288,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		float pinchStrength = hand.pinchStrength();
 		bool pinched = handPinched(pinchStrength);
 
-		//While grabbing disable pinching detection, this helps reduce spam
+		//While grabbing disable pinching detection, this helps to reduce spam as pose confidence plummets
 		if (grabbed) pinched = pastHandState.pinched;
 		else
 		{
@@ -315,7 +336,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		uFinger->setFinger(finger);
 		ILeapEventInterface::Execute_LeapFrontMostFingerMoved(_interfaceDelegate, uFinger);
 
-		//touch only for front most finger
+		//touch only for front-most finger, most common use case
 		float touchDistance = finger.touchDistance();
 		if (touchDistance <= 0.f)
 			ILeapEventInterface::Execute_LeapFrontFingerTouch(_interfaceDelegate, uFinger);

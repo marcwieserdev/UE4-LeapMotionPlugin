@@ -25,8 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "distortionWidth", CompactNodeTitle = "", Keywords = "distortion width"), Category = Leap)
 	int32 DistortionWidth() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "height", CompactNodeTitle = "", Keywords = "height"), Category = Leap)
-	int32 Height() const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "height", CompactNodeTitle = "", Keywords = "get height"), Category = Leap)
+	int32 Height();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle = "", Keywords = "id"), Category = Leap)
 	int32 Id() const;
@@ -52,10 +52,12 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "warp", CompactNodeTitle = "", Keywords = "warp"), Category = Leap)
 	FVector Warp(FVector xy) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "width"), Category = Leap)
-	int32 Width() const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "get width"), Category = Leap)
+	int32 Width();
 
 	void setLeapImage(const Leap::Image &LeapImage);
+
 private:
+	UTexture2D* LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const TArray<int8> &SrcData, const bool UseAlpha);
 	Leap::Image _leapImage;
 };

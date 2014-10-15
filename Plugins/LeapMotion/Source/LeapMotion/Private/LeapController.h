@@ -5,6 +5,9 @@
 #include <vector>
 #include "LeapController.generated.h"
 
+//Todo: 
+//-change functions into read-only properties to reduce exec clutter. Can easily remove all const to stop call target bp errors.
+
 //Used for Reliable State Tracking
 struct LeapHandStateData{
 	bool grabbed;
@@ -23,14 +26,14 @@ public:
 	int32 handCount;
 };
 
-UCLASS(ClassGroup=VR, meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
 {
 	GENERATED_UCLASS_BODY()
 
 public:
 	~ULeapController();
-	virtual void InitializeComponent() override;
+	virtual void OnRegister() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	virtual void BeginDestroy() override;
 
@@ -47,22 +50,28 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isServiceConnected", CompactNodeTitle = "", Keywords = "is service connected"), Category = Leap)
 	bool isServiceConnected() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", Keywords = "optimize hmd facing top"), Category = Leap)
-	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true) const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", Keywords = "optimize hmd facing top set policy"), Category = Leap)
+	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableImageSupport", Keywords = "use allow images set policy"), Category = Leap)
+	void enableImageSupport(bool allowImages);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = Leap)
 	void enableGesture(enum LeapGestureType type, bool enable = true);
 
 	const Leap::Controller &getData() const;
 
-	//Leap Event Interface forwarding
+	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")
 	void SetInterfaceDelegate(UObject* newDelegate);
 
 private:
 	Leap::Controller	_leap;
 	UObject* _interfaceDelegate;
+	bool _optimizeForHMD;
+	bool _allowImages;	
 	LeapStateData _pastState;
 
+	Leap::Controller::PolicyFlag buildPolicyFromBools();
 	void InterfaceEventTick(float deltaTime);
 };
