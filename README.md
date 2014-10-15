@@ -35,11 +35,9 @@ All the Blueprint nodes and functions keep the same name as specified in the <a 
 
 <li>Add the interface called LeapEventInterface</li>
 <li>Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.</li>
-<img src="http://i.imgur.com/1RAf4Pn.png">
+<img src="http://i.imgur.com/y5caGWf.png">
 <li>(Optional, recommended) Drag from the return value, save this as a blueprint variable e.g. Leap.
-<li>Drag from the return value or your new Leap blueprint variable (get) and type 'Leap' to narrow results. Select Set Delegate.
-<li>To the input which says 'Select Asset' connect a reference to self (Right click on graph type 'Self' it will be the only node available).
-<li>(Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use.
+<li>(Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use. Keep auto rotate and auto shift if you want the plugin to automatically shift the leap positions to account for HMD movement.
 <li>You're ready to go.
 
 </ol>
@@ -51,6 +49,14 @@ Now you can Right click anywhere on Event graph and type 'Leap Event' and you wi
 
 ###Result###
 <img src="http://i.imgur.com/OE7Y3Ri.png">
+
+NB: You can get more detail by placing a sphere at each of the bone joints.
+
+
+###Gestures###
+Require enabling before receiving events, below is an example of how to get the Circle gesture to emit and how to filter it.
+
+<img src="http://i.imgur.com/czSJ1sg.png">
 
 ##How to use it - Blueprint - Polling##
 
