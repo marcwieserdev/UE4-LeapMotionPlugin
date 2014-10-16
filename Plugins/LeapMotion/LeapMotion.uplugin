@@ -14,7 +14,7 @@
 	[
 		{
 			"Name" : "LeapMotion",
-			"Type" : "Developer"
+			"Type" : "Runtime"
 		}
 	]
 }

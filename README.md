@@ -26,7 +26,6 @@ All the Blueprint nodes and functions keep the same name as specified in the <a 
 
 ##How to use it - Blueprint - Event Driven##
 
-
 <ol>
 <li>Open desired blueprint where you want to receive the leap events.</li>
 <li>Click on Blueprint Props and Scroll down in the details panel to Interfaces. </li>
@@ -81,6 +80,19 @@ Available blueprint classes branching from LeapController:
 <li>Tool</li>
 </ul>
 
+##Shipping/Packaged Builds##
+<ol>
+<li> Projects require code, if you are using blueprint only add an empty class and compile your project module.</li>
+<li> Add the following line to your DefaultEngine.ini </li>
+
+<i>EnabledPlugins=LeapMotion</i>
+
+under <i>[Plugins]</i>, create this category if missing.
+
+<li> Package your content</li>
+<li> In your packaged directory drag the <i>Binaries</i> folder from this plugin into your packaged project folder. E.g. if I have a packaged folder called <i>LeapPluginTest</i>
+find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. Add the binaries folder there.</li>
+</ol>
 
 ##Todo##
 
