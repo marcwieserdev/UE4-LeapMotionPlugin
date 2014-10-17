@@ -8,67 +8,6 @@ UHand::~UHand()
 {
 }
 
-UArm *UHand::Arm()
-{
-	UArm *rArm;
-
-	rArm = ConstructObject<UArm>(UArm::StaticClass());
-	rArm->setArm(_hand.arm());
-	return (rArm);
-}
-
-bool UHand::isLeft() const
-{
-	return (_hand.isLeft());
-}
-
-bool UHand::isRight() const
-{
-	return (_hand.isRight());
-}
-
-bool UHand::IsValid() const
-{
-	return (_hand.isValid());
-}
-
-FVector UHand::palmNormal() const
-{
-	Leap::Vector vect;
-
-	vect = _hand.palmNormal();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-FVector UHand::palmPosition() const
-{
-	Leap::Vector vect;
-
-	vect = _hand.palmPosition();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-FVector UHand::palmVelocity() const
-{
-	Leap::Vector vect;
-
-	vect = _hand.palmVelocity();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float UHand::confidence() const
-{
-	return (_hand.confidence());
-}
-
-FVector UHand::Direction() const
-{
-	Leap::Vector vect;
-
-	vect = _hand.direction();
-	return (convertAndScaleLeapToUE(vect));
-}
-
 ULeapFrame *UHand::Frame()
 {
 	ULeapFrame *rframe;
@@ -78,29 +17,12 @@ ULeapFrame *UHand::Frame()
 	return (rframe);
 }
 
-float UHand::grabStrength() const
+UFingerList* UHand::Fingers()
 {
-	return (_hand.grabStrength());
-}
-
-int32 UHand::Id() const
-{
-	return (_hand.id());
-}
-
-void UHand::setHand(const Leap::Hand &hand)
-{
-	_hand = hand;
-}
-
-float UHand::palmWidth() const
-{
-	return (_hand.palmWidth());
-}
-
-float UHand::pinchStrength() const
-{
-	return (_hand.pinchStrength());
+	UFingerList* fingers;
+	fingers = ConstructObject<UFingerList>(UFingerList::StaticClass());
+	fingers->setFingerList(_hand.fingers());
+	return (fingers);
 }
 
 float UHand::RotationAngle(ULeapFrame *frame)
@@ -111,7 +33,7 @@ float UHand::RotationAngle(ULeapFrame *frame)
 	return (_hand.rotationAngle(rframe));
 }
 
-float UHand::rotationAngleWithAxis(class ULeapFrame *frame, const FVector &axis)
+float UHand::RotationAngleWithAxis(class ULeapFrame *frame, const FVector &axis)
 {
 	Leap::Frame rframe;
 	Leap::Vector vector;
@@ -123,7 +45,7 @@ float UHand::rotationAngleWithAxis(class ULeapFrame *frame, const FVector &axis)
 	return (_hand.rotationAngle(rframe, vector));
 }
 
-FMatrix UHand::rotationMatrix(const ULeapFrame *frame)
+FMatrix UHand::RotationMatrix(const ULeapFrame *frame)
 {
 	Leap::Matrix matrix;
 	Leap::Frame rframe;
@@ -138,20 +60,8 @@ FMatrix UHand::rotationMatrix(const ULeapFrame *frame)
 	return (FMatrix(inX, inY, inZ, inW));
 }
 
-FMatrix UHand::basis()
-{
-	Leap::Matrix matrix;
-	FVector inX, inY, inZ, inW;
 
-	matrix = _hand.basis();
-	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	return (FMatrix(inX, inY, inZ, inW));
-}
-
-FVector UHand::rotationAxis(const ULeapFrame *frame)
+FVector UHand::RotationAxis(const ULeapFrame *frame)
 {
 	Leap::Frame rframe;
 	Leap::Vector vect;
@@ -161,7 +71,7 @@ FVector UHand::rotationAxis(const ULeapFrame *frame)
 	return (convertAndScaleLeapToUE(vect));
 }
 
-float UHand::rotationProbability(const ULeapFrame *frame)
+float UHand::RotationProbability(const ULeapFrame *frame)
 {
 	Leap::Frame rframe;
 
@@ -177,38 +87,12 @@ float UHand::ScaleFactor(const ULeapFrame *frame)
 	return (_hand.scaleFactor(rframe));
 }
 
-float UHand::scaleProbability(const ULeapFrame *frame)
+float UHand::ScaleProbability(const ULeapFrame *frame)
 {
 	Leap::Frame rframe;
 
 	rframe = frame->getFrame();
 	return (_hand.scaleProbability(rframe));
-}
-
-FVector UHand::sphereCenter()
-{
-	Leap::Vector vect;
-
-	vect = _hand.sphereCenter();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float UHand::SphereRadius() const
-{
-	return (_hand.sphereRadius());
-}
-
-FVector UHand::stabilizedPalmPosition()
-{
-	Leap::Vector vect;
-
-	vect = _hand.stabilizedPalmPosition();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float UHand::timeVisible() const
-{
-	return (_hand.timeVisible());
 }
 
 FVector UHand::Translation(const ULeapFrame *frame)
@@ -221,7 +105,7 @@ FVector UHand::Translation(const ULeapFrame *frame)
 	return (convertAndScaleLeapToUE(vect));
 }
 
-float UHand::translationProbability(const ULeapFrame *frame) const
+float UHand::TranslationProbability(const ULeapFrame *frame)
 {
 	Leap::Frame rframe;
 
@@ -239,12 +123,40 @@ bool UHand::operator==(const UHand &hand) const
 	return (hand._hand == this->_hand);
 }
 
-//Finger additions
 
-UFingerList* UHand::fingers()
+void UHand::setHand(const Leap::Hand &hand)
 {
-	UFingerList* fingers;
-	fingers = ConstructObject<UFingerList>(UFingerList::StaticClass());
-	fingers->setFingerList(_hand.fingers());
-	return (fingers);
+	_hand = hand;
+
+	//Set Properties
+	if (!Arm)
+		Arm = NewObject<UArm>(this, UArm::StaticClass());
+	Arm->setArm(_hand.arm());
+
+	PalmNormal = convertAndScaleLeapToUE(_hand.palmNormal());
+	PalmPosition = convertAndScaleLeapToUE(_hand.palmPosition());
+	PalmVelocity = convertAndScaleLeapToUE(_hand.palmVelocity());
+
+	Leap::Matrix matrix;
+	FVector inX, inY, inZ, inW;
+
+	matrix = _hand.basis();
+	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	Basis = (FMatrix(inX, inY, inZ, inW));
+
+	Confidence = _hand.confidence();
+	Direction = convertAndScaleLeapToUE(_hand.direction());
+	GrabStrength = _hand.grabStrength();
+	IsLeft = _hand.isLeft();
+	IsRight = _hand.isRight();
+	PalmWidth = _hand.palmWidth();
+	PinchStrength = _hand.pinchStrength();
+	SphereCenter = convertAndScaleLeapToUE(_hand.sphereCenter());
+	StabilizedPalmPosition = convertAndScaleLeapToUE(_hand.stabilizedPalmPosition());
+	TimeVisible = _hand.timeVisible();
+
+	Id = _hand.id();
 }

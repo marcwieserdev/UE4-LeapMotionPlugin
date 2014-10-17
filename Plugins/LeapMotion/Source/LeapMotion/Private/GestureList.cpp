@@ -8,17 +8,6 @@ UGestureList::~UGestureList()
 {
 }
 
-bool UGestureList::isEmpty() const
-{
-	return (_gestures.isEmpty());
-}
-
-int32 UGestureList::Count()
-{
-	return (_gestures.count());
-}
-
-
 UGesture* UGestureList::getIndex(int32 index)
 {
 	UGesture *gesture;
@@ -36,4 +25,7 @@ UGesture* UGestureList::operator[](int index)
 void UGestureList::setGestureList(const Leap::GestureList &GestureList)
 {
 	_gestures = GestureList;
+
+	Count = _gestures.count();
+	IsEmpty = _gestures.isEmpty();
 }

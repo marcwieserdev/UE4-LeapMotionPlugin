@@ -13,12 +13,6 @@ bool ULeapImageList::isEmpty() const
 	return (_leapImages.isEmpty());
 }
 
-int32 ULeapImageList::Count()
-{
-	return (_leapImages.count());
-}
-
-
 ULeapImage* ULeapImageList::getIndex(int32 index)
 {
 	ULeapImage* image;
@@ -36,4 +30,6 @@ ULeapImage* ULeapImageList::operator[](int index)
 void ULeapImageList::setLeapImageList(const Leap::ImageList &LeapImageList)
 {
 	_leapImages = LeapImageList;
+
+	Count = _leapImages.count();
 }

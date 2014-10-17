@@ -10,13 +10,13 @@ class UGestureList : public UObject
 public:
 	~UGestureList();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = Leap)
-	bool isEmpty() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture List")
+	bool IsEmpty;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "count", CompactNodeTitle = "", Keywords = "count length"), Category = Leap)
-	int32 Count();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture List")
+	int32 Count;
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "[]", Keywords = "get index"), Category = "Leap Gesture List")
 	class UGesture *getIndex(int32 index);
 
 	UGesture* operator[](int index);

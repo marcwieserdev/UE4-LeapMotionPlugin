@@ -22,7 +22,7 @@ UHandList* ULeapFrame::Hands()
 	return (handlist);
 }
 
-UFingerList* ULeapFrame::fingers()
+UFingerList* ULeapFrame::Fingers()
 {
 	UFingerList* fingerlist;
 

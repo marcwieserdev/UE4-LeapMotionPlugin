@@ -10,92 +10,92 @@ class UHand : public UObject
 public:
 	~UHand();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "arm", CompactNodeTitle = "", Keywords = "arm"), Category = Leap)
-	class UArm* Arm();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	class UArm* Arm;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isLeft", CompactNodeTitle = "", Keywords = "is left"), Category = Leap)
-	bool isLeft() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	bool IsLeft;
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isRight", CompactNodeTitle = "", Keywords = "is right"), Category = Leap)
-	bool isRight() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	bool IsRight;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "palmNormal", CompactNodeTitle = "", Keywords = "palm normal"), Category = Leap)
-	FVector palmNormal() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector PalmNormal;
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "palmPosition", CompactNodeTitle = "", Keywords = "palm position"), Category = Leap)
-	FVector palmPosition() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector PalmPosition;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "palmVelocity", CompactNodeTitle = "", Keywords = "palm velocity"), Category = Leap)
-	FVector palmVelocity() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector PalmVelocity;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "basis", CompactNodeTitle = "", Keywords = "get basis"), Category = Leap)
-	FMatrix basis();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FMatrix Basis;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "confidence", CompactNodeTitle = "", Keywords = "get confidence"), Category = Leap)
-	float confidence() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float Confidence;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "direction", CompactNodeTitle = "", Keywords = "get direction"), Category = Leap)
-	FVector Direction() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector Direction;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "get frame"), Category = Leap)
-	class ULeapFrame *Frame();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Frame"), Category = "Leap Hand")
+	class ULeapFrame* Frame();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "strength", CompactNodeTitle = "", Keywords = "get strength"), Category = Leap)
-	float grabStrength() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float GrabStrength;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "palmWidth", CompactNodeTitle = "", Keywords = "get palm Width"), Category = Leap)
-	float palmWidth() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float PalmWidth;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pinchStrength", CompactNodeTitle = "", Keywords = "get pinch strength"), Category = Leap)
-	float pinchStrength() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float PinchStrength;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rotationAngle", CompactNodeTitle = "", Keywords = "get rotation angle"), Category = Leap)
-	float RotationAngle(class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAngle"), Category = "Leap Hand")
+	float RotationAngle(class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rotationAngleWithAxis", CompactNodeTitle = "", Keywords = "get rotation angle axis"), Category = Leap)
-	float rotationAngleWithAxis(class ULeapFrame *frame, const FVector &axis);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAngleWithAxis"), Category = "Leap Hand")
+	float RotationAngleWithAxis(class ULeapFrame *otherFrame, const FVector &axis);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rotationMatrix", CompactNodeTitle = "", Keywords = "get rotation matrix"), Category = Leap)
-	FMatrix rotationMatrix(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationMatrix"), Category = "Leap Hand")
+	FMatrix RotationMatrix(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rotationAxis", CompactNodeTitle = "", Keywords = "get rotation axis"), Category = Leap)
-	FVector rotationAxis(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAxis"), Category = "Leap Hand")
+	FVector RotationAxis(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rotationProbability", CompactNodeTitle = "", Keywords = "get rotation probability"), Category = Leap)
-	float rotationProbability(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationProbability"), Category = "Leap Hand")
+	float RotationProbability(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "scaleFactor", CompactNodeTitle = "", Keywords = "get scale factor"), Category = Leap)
-	float ScaleFactor(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "ScaleFactor"), Category = "Leap Hand")
+	float ScaleFactor(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "scaleProbability", CompactNodeTitle = "", Keywords = "get scale probability"), Category = Leap)
-	float scaleProbability(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "ScaleProbability"), Category = "Leap Hand")
+	float ScaleProbability(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "sphereCenter", CompactNodeTitle = "", Keywords = "get sphere center"), Category = Leap)
-	FVector sphereCenter();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector SphereCenter;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "sphereRadius", CompactNodeTitle = "", Keywords = "get sphere radius"), Category = Leap)
-	float SphereRadius() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float SphereRadius;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "stabilizedPalmPosition", CompactNodeTitle = "", Keywords = "get stabilized palm position"), Category = Leap)
-	FVector stabilizedPalmPosition();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FVector StabilizedPalmPosition;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "timeVisible", CompactNodeTitle = "", Keywords = "get time visible"), Category = Leap)
-	float timeVisible() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	float TimeVisible;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "translation", CompactNodeTitle = "", Keywords = "get translation"), Category = Leap)
-	FVector Translation(const class ULeapFrame *frame);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Translation"), Category = "Leap Hand")
+	FVector Translation(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "translationProbability", CompactNodeTitle = "", Keywords = "get translation probability"), Category = Leap)
-	float translationProbability(const class ULeapFrame *frame) const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "TranslationProbability"), Category = "Leap Hand")
+	float TranslationProbability(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle = "", Keywords = "get id"), Category = Leap)
-	int32 Id() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	int32 Id;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
-	class UFingerList* fingers();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers"), Category = "Leap Hand")
+	class UFingerList* Fingers();
 
 	bool operator!=(const UHand &) const;
 

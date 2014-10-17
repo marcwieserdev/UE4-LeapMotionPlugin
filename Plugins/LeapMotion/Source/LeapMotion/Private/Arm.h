@@ -10,26 +10,26 @@ class UArm : public UObject
 public:
 	~UArm();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "basis", CompactNodeTitle = "", Keywords = "get basis"), Category = Leap)
-	FMatrix basis();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	FMatrix Basis;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "center", CompactNodeTitle = "", Keywords = "get center"), Category = Leap)
-	FVector Center();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	FVector Center;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "direction", CompactNodeTitle = "", Keywords = "get direction"), Category = Leap)
-	FVector Direction();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	FVector Direction;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "elbowPosition", CompactNodeTitle = "", Keywords = "get elbow position"), Category = Leap)
-	FVector elbowPosition();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	FVector ElbowPosition;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "get width"), Category = Leap)
-	float Width();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	float Width;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "wristPosition", CompactNodeTitle = "", Keywords = "get wrist position"), Category = Leap)
-	FVector wristPosition();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	FVector WristPosition;
 
 	bool operator!=(const UArm &) const;
 

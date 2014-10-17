@@ -10,13 +10,13 @@ class ULeapImageList : public UObject
 public:
 	~ULeapImageList();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = "Leap Image List")
 	bool isEmpty() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "count", CompactNodeTitle = "", Keywords = "count length"), Category = Leap)
-	int32 Count();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image List")
+	int32 Count;
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Image List")
 	class ULeapImage* getIndex(int32 index);
 
 	ULeapImage* operator[](int index);

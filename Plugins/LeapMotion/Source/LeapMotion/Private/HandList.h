@@ -10,22 +10,22 @@ class UHandList : public UObject
 public:
 	~UHandList();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = Leap)
-	bool isEmpty() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand List")
+	bool IsEmpty;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "count", CompactNodeTitle = "", Keywords = "count lenght"), Category = Leap)
-	int32 Count();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand List")
+	int32 Count;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost front hand"), Category = Leap)
-	class UHand *frontmost();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFrontmost", CompactNodeTitle = "", Keywords = "get frontmost"), Category = "Leap Hand List")
+	class UHand *Frontmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost left hand"), Category = Leap)
-	class UHand *leftmost();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getLeftmost", CompactNodeTitle = "", Keywords = "get leftmost"), Category = "Leap Hand List")
+	class UHand *Leftmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost right hand"), Category = Leap)
-	class UHand *rightmost();
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getRightmost", CompactNodeTitle = "", Keywords = "get rightmost"), Category = "Leap Hand List")
+	class UHand *Rightmost();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
 	class UHand *getIndex(int32 index);
 
 	void setHandList(const Leap::HandList &handlist);

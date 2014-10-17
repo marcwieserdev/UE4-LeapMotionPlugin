@@ -13,11 +13,11 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
 	bool IsValid() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hands", CompactNodeTitle = "", Keywords = "get hands"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = Leap)
 	class UHandList* Hands();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
-	class UFingerList* fingers();
+	class UFingerList* Fingers();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = Leap)
 	class UGestureList* Gestures();
@@ -31,9 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = Leap)
 	class ULeapImageList* Images();
 
-	//Todo: rotationAngle->Matrix, scaleFactor, translation, tools
-
-	//added interaction box, gestures, fingers, pointables
+	//Todo: If appropriate rotationAngle->Matrix, scaleFactor, translation
 
 	void setFrame(Leap::Controller &leap, int history = 0);
 	void setFrame(const Leap::Frame &frame);

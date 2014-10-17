@@ -8,16 +8,6 @@ UGesture::~UGesture()
 {
 }
 
-float UGesture::Duration() const
-{
-	return _gesture.duration();
-}
-
-float UGesture::DurationSeconds() const
-{
-	return _gesture.durationSeconds();
-}
-
 ULeapFrame* UGesture::Frame()
 {
 	ULeapFrame *frame;
@@ -36,16 +26,6 @@ UHandList* UGesture::Hands()
 	return (hands);
 }
 
-int32 UGesture::Id()
-{
-	return _gesture.id();
-}
-
-bool UGesture::IsValid() const
-{
-	return _gesture.isValid();
-}
-
 UPointableList* UGesture::Pointables()
 {
 	UPointableList *pointables;
@@ -55,9 +35,9 @@ UPointableList* UGesture::Pointables()
 	return (pointables);
 }
 
-LeapGestureState UGesture::State()
+LeapGestureState gestureState(Leap::Gesture::State state)
 {
-	switch (_gesture.state())
+	switch (state)
 	{
 	case Leap::Gesture::STATE_START:
 		return (GESTURE_STATE_START);
@@ -70,9 +50,9 @@ LeapGestureState UGesture::State()
 	}
 }
 
-LeapGestureType UGesture::Type()
+LeapGestureType gestureType(Leap::Gesture::Type type)
 {
-	switch (_gesture.type())
+	switch (type)
 	{
 	case Leap::Gesture::TYPE_CIRCLE:
 		return (GESTURE_TYPE_CIRCLE);
@@ -90,4 +70,11 @@ LeapGestureType UGesture::Type()
 void UGesture::setGesture(const Leap::Gesture &Gesture)
 {
 	_gesture = Gesture;
+
+	Duration = _gesture.duration();
+	DurationSeconds = _gesture.durationSeconds();
+	Id = _gesture.id();
+	IsValid = _gesture.isValid();
+	State = gestureState(_gesture.state());
+	Type = gestureType(_gesture.type());
 }

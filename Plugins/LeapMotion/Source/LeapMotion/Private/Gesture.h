@@ -30,32 +30,32 @@ class UGesture : public UObject
 public:
 	~UGesture();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "duration", CompactNodeTitle = "", Keywords = "duration"), Category = Leap)
-	float Duration() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	float Duration;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "durationSeconds", CompactNodeTitle = "", Keywords = "duration seconds"), Category = Leap)
-	float DurationSeconds() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	float DurationSeconds;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "frame"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "frame"), Category = "Leap Gesture")
 	class ULeapFrame* Frame();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hands", CompactNodeTitle = "", Keywords = "hands"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hands", CompactNodeTitle = "", Keywords = "hands"), Category = "Leap Gesture")
 	class UHandList* Hands();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle = "", Keywords = "id"), Category = Leap)
-	int32 Id();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	int32 Id;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "pointables"), Category = Leap)
-	class UPointableList* Pointables() ;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "pointables"), Category = "Leap Gesture")
+	class UPointableList* Pointables();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "state", CompactNodeTitle = "", Keywords = "state"), Category = Leap)
-	LeapGestureState State();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	TEnumAsByte<LeapGestureState> State;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "type", CompactNodeTitle = "", Keywords = "type"), Category = Leap)
-	LeapGestureType Type();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
+	TEnumAsByte<LeapGestureType> Type;
 
 	bool operator!=(const UGesture &rhs) const;
 	bool operator==(const UGesture &rhs) const;

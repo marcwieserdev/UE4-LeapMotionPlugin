@@ -8,17 +8,7 @@ UHandList::~UHandList()
 {
 }
 
-bool UHandList::isEmpty() const
-{
-	return (_hands.isEmpty());
-}
-
-int32 UHandList::Count()
-{
-	return (_hands.count());
-}
-
-UHand *UHandList::frontmost()
+UHand *UHandList::Frontmost()
 {
 	UHand *hand;
 
@@ -27,7 +17,7 @@ UHand *UHandList::frontmost()
 	return (hand);
 }
 
-UHand *UHandList::leftmost()
+UHand *UHandList::Leftmost()
 {
 	UHand *hand;
 
@@ -36,7 +26,7 @@ UHand *UHandList::leftmost()
 	return (hand);
 }
 
-UHand *UHandList::rightmost()
+UHand *UHandList::Rightmost()
 {
 	UHand *hand;
 
@@ -57,4 +47,7 @@ UHand *UHandList::getIndex(int32 index)
 void UHandList::setHandList(const Leap::HandList &handlist)
 {
 	_hands = handlist;
+
+	Count = _hands.count();
+	IsEmpty = _hands.isEmpty();
 }

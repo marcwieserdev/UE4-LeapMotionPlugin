@@ -20,38 +20,40 @@ class UBone : public UObject
 public:
 	~UBone();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "basis", CompactNodeTitle = "", Keywords = "get basis"), Category = Leap)
-	FMatrix basis() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	FMatrix Basis;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "center", CompactNodeTitle = "", Keywords = "get center"), Category = Leap)
-	FVector Center() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	FVector Center;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "direction", CompactNodeTitle = "", Keywords = "get direction"), Category = Leap)
-	FVector Direction() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	FVector Direction;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "length", CompactNodeTitle = "", Keywords = "get length"), Category = Leap)
-	float Length() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	float Length;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "nextJoint", CompactNodeTitle = "", Keywords = "get next joint"), Category = Leap)
-	FVector nextJoint() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	FVector NextJoint;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = Leap)
-	bool equal(const UBone *other) const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	FVector PrevJoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	TEnumAsByte<BoneType> Type;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
+	float Width;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "different", CompactNodeTitle = "!=", Keywords = "different operator"), Category = Leap)
 	bool different(const UBone *other) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "prevJoint", CompactNodeTitle = "", Keywords = "get prev joint"), Category = Leap)
-	FVector prevJoint() const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = Leap)
+	bool equal(const UBone *other) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "type", CompactNodeTitle = "", Keywords = "get type"), Category = Leap)
-	BoneType Type() const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "get width"), Category = Leap)
-	float Width() const;
 
 	void setBone(const Leap::Bone &bone);
 private:

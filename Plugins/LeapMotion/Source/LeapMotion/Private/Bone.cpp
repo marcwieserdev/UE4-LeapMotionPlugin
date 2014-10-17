@@ -9,51 +9,9 @@ UBone::~UBone()
 {
 }
 
-FMatrix UBone::basis() const
+bool UBone::different(const UBone *other) const
 {
-	Leap::Matrix matrix;
-	FVector inX, inY, inZ, inW;
-
-	matrix = _bone.basis();
-	inX.Set(matrix.xBasis.x,matrix.xBasis.y,matrix.xBasis.z);
-	inY.Set(matrix.yBasis.x,matrix.yBasis.y,matrix.yBasis.z);
-	inZ.Set(matrix.zBasis.x,matrix.zBasis.y,matrix.zBasis.z);
-	inW.Set(matrix.origin.x,matrix.origin.y,matrix.origin.z);
-	return (FMatrix(inX, inY, inZ, inW));
-}
-
-FVector UBone::Center() const
-{
-	Leap::Vector vect;
-
-	vect = _bone.center();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-FVector UBone::Direction() const
-{
-	Leap::Vector vect;
-
-	vect = _bone.direction();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-bool UBone::IsValid() const
-{
-	return (_bone.isValid());
-}
-
-float UBone::Length() const
-{
-	return (_bone.length());
-}
-
-FVector UBone::nextJoint() const
-{
-	Leap::Vector vect;
-
-	vect = _bone.nextJoint();
-	return (convertAndScaleLeapToUE(vect));
+	return (_bone != other->_bone);
 }
 
 bool UBone::equal(const UBone *other) const
@@ -61,22 +19,9 @@ bool UBone::equal(const UBone *other) const
 	return (_bone == other->_bone);
 }
 
-bool UBone::different(const UBone *other) const
+BoneType type(Leap::Bone::Type type)
 {
-	return (_bone != other->_bone);
-}
-
-FVector UBone::prevJoint() const
-{
-	Leap::Vector vect;
-
-	vect = _bone.prevJoint();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-BoneType UBone::Type() const
-{
-	switch(_bone.type())
+	switch(type)
 	{
 	case Leap::Bone::TYPE_METACARPAL:
 		return (TYPE_METACARPAL);
@@ -91,12 +36,26 @@ BoneType UBone::Type() const
 	}
 }
 
-float UBone::Width() const
-{
-	return (_bone.width());
-}
-
 void UBone::setBone(const Leap::Bone &bone)
 {
 	_bone = bone;
+
+	Leap::Matrix matrix;
+	FVector inX, inY, inZ, inW;
+
+	matrix = _bone.basis();
+	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
+
+	Basis = (FMatrix(inX, inY, inZ, inW));
+	Center = convertAndScaleLeapToUE(_bone.center());
+	Direction = convertAndScaleLeapToUE(_bone.direction());
+	IsValid = _bone.isValid();
+	Length = _bone.length();
+	NextJoint = convertAndScaleLeapToUE(_bone.nextJoint());
+	PrevJoint = convertAndScaleLeapToUE(_bone.prevJoint());
+	Type = type(_bone.type());
+	Width = _bone.width();
 }

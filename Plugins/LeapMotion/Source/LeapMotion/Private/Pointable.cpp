@@ -9,14 +9,6 @@ UPointable::~UPointable()
 {
 }
 
-FVector UPointable::Direction() const
-{
-	Leap::Vector vect;
-
-	vect = _pointable.direction();
-	return (convertAndScaleLeapToUE(vect));
-}
-
 ULeapFrame *UPointable::Frame()
 {
 	ULeapFrame *rframe;
@@ -35,83 +27,39 @@ UHand *UPointable::Hand()
 	return (rhand);
 }
 
-int32 UPointable::Id() const
-{
-	return (_pointable.id());
-}
-
-bool UPointable::isExtended() const
+bool UPointable::IsExtended()
 {
 	return (_pointable.isExtended());
 }
 
-bool UPointable::isFinger() const
+bool UPointable::IsFinger()
 {
 	return (_pointable.isFinger());
 }
 
-bool UPointable::isTool() const
+bool UPointable::IsTool()
 {
 	return (_pointable.isTool());
 }
 
-bool UPointable::IsValid() const
+bool UPointable::IsValid()
 {
 	return (_pointable.isValid());
 }
 
-float UPointable::Length() const
-{
-	return (_pointable.length());
-}
-
-bool UPointable::equal(const UPointable *other) const
+bool UPointable::equal(const UPointable *other)
 {
 	return (_pointable == other->_pointable);
 }
 
-bool UPointable::different(const UPointable *other) const
+bool UPointable::different(const UPointable *other)
 {
 	return (_pointable != other->_pointable);
 }
 
-FVector UPointable::stabilizedTipPosition()
+LeapZone touchZone(Leap::Pointable::Zone zone)
 {
-	Leap::Vector vect;
-
-	vect = _pointable.stabilizedTipPosition();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float UPointable::timeVisible() const
-{
-	return (_pointable.timeVisible());
-}
-
-FVector UPointable::tipPosition() const
-{
-	Leap::Vector vect;
-
-	vect = _pointable.tipPosition();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-FVector UPointable::tipVelocity() const
-{
-	Leap::Vector vect;
-
-	vect = _pointable.tipVelocity();
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float UPointable::touchDistance() const
-{
-	return (_pointable.touchDistance());
-}
-
-LeapZone UPointable::touchZone() const
-{
-	switch (_pointable.touchZone())
+	switch (zone)
 	{
 	case Leap::Pointable::Zone::ZONE_NONE:
 		return (ZONE_NONE);
@@ -124,14 +72,20 @@ LeapZone UPointable::touchZone() const
 	}
 }
 
-float UPointable::Width() const
-{
-	return (_pointable.width());
-}
-
 void UPointable::setPointable(const Leap::Pointable &pointable)
 {
 	_pointable = pointable;
+
+	Direction = convertAndScaleLeapToUE(_pointable.direction());
+	Id = _pointable.id();
+	Length = _pointable.length();
+	StabilizedTipPosition = convertAndScaleLeapToUE(_pointable.stabilizedTipPosition());
+	TimeVisible = _pointable.timeVisible();
+	TipPosition = convertAndScaleLeapToUE(_pointable.tipPosition());
+	TipVelocity = convertAndScaleLeapToUE(_pointable.tipVelocity());
+	TouchDistance = _pointable.touchDistance();
+	TouchZone = touchZone(_pointable.touchZone());
+	Width = _pointable.width();
 }
 
 const Leap::Pointable &UPointable::getPointable() const
