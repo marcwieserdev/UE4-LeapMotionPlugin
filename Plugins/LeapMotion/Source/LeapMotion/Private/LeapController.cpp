@@ -279,6 +279,9 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		float grabStrength = hand.grabStrength();
 		bool grabbed = handClosed(grabStrength);
 
+		if (grabbed)
+			ILeapEventInterface::Execute_LeapHandGrabbing(_interfaceDelegate, grabStrength, uHand);
+
 		if (grabbed && !pastHandState.grabbed)
 			ILeapEventInterface::Execute_LeapHandGrabbed(_interfaceDelegate, grabStrength, uHand);
 		else if (!grabbed && pastHandState.grabbed)
@@ -292,6 +295,9 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		if (grabbed) pinched = pastHandState.pinched;
 		else
 		{
+			if (pinched)
+				ILeapEventInterface::Execute_LeapHandPinching(_interfaceDelegate, pinchStrength, uHand);
+
 			if (pinched && !pastHandState.pinched)
 				ILeapEventInterface::Execute_LeapHandPinched(_interfaceDelegate, pinchStrength, uHand);
 			else if (!pinched && pastHandState.pinched)

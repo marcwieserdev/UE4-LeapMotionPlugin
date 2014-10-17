@@ -30,11 +30,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandGrabbed", CompactNodeTitle = "", Keywords = "hand grab"), Category = "Leap Interface Event")
 	void LeapHandGrabbed(float strength, UHand* hand);
 
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandGrabbing", CompactNodeTitle = "", Keywords = "hand grab"), Category = "Leap Interface Event")
+	void LeapHandGrabbing(float strength, UHand* hand);
+
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandReleased", CompactNodeTitle = "", Keywords = "hand released ungrab"), Category = "Leap Interface Event")
 	void LeapHandReleased(float strength, UHand* hand);
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandPinched", CompactNodeTitle = "", Keywords = "hand pinch"), Category = "Leap Interface Event")
 	void LeapHandPinched(float strength, UHand* hand);
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandPinching", CompactNodeTitle = "", Keywords = "hand grab"), Category = "Leap Interface Event")
+	void LeapHandPinching(float strength, UHand* hand);
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "HandUnpinched", CompactNodeTitle = "", Keywords = "hand unpinch"), Category = "Leap Interface Event")
 	void LeapHandUnpinched(float strength, UHand* hand);

@@ -18,7 +18,7 @@
 #include "LeapController.h"
 #include "Core.h"
 #include "Engine.h"
-#include "LEAP/Leap.h"
+#include "Leap.h"
 #include "LeapInterfaceUtility.h"
 
 // You should place include statements to your module's private header files here.  You only need to

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LEAP/Leap.h"
+#include "Leap.h"
 #include "Core.h"
 
 //Conversion

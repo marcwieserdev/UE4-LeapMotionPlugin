@@ -11,9 +11,14 @@ namespace UnrealBuildTool.Rules
             get { return Path.GetDirectoryName(RulesCompiler.GetModuleFilename(this.GetType().Name)); }
         }
 
+        private string ThirdPartyPath
+        {
+            get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
+        }
+
         private string LibraryPath
         {
-            get { return Path.GetFullPath(Path.Combine(ModulePath, "Private/libs")); }
+            get { return Path.GetFullPath(Path.Combine(ThirdPartyPath, "LeapSDK","Lib")); }
         }
 
 		public LeapMotion(TargetInfo Target)
@@ -28,7 +33,7 @@ namespace UnrealBuildTool.Rules
 			PrivateIncludePaths.AddRange(
 				new string[] {
 					"LeapMotion/Private",
-                    "LeapMotion/Private/Interface"
+                    Path.Combine(ThirdPartyPath, "LeapSDK", "Include"),
 					// ... add other private include paths required here ...
 				}
 				);
@@ -69,8 +74,10 @@ namespace UnrealBuildTool.Rules
             if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
             {
                 isLibrarySupported = true;
-                
-                PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, "Leap.lib"));
+
+                string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "x64" : "x86";
+
+                PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, PlatformString, "Leap.lib"));
             }
 
             return isLibrarySupported;
