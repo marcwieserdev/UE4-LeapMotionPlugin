@@ -21,6 +21,35 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 ##Leap API Reference##
 
 All the Blueprint nodes and functions keep the same name as specified in the <a href="https://developer.leapmotion.com/documentation/skeletal/cpp/api/Leap.Controller.html">documentation of leapmotion</a>, refer to this documentation for help with the API. Events are custom named, but follow action oriented naming. Type 'Leap Event' in your blueprint event graph to see all possible events after adding the LeapEventInterface to your blueprint interfaces.
+
+###Blueprint API Examples###
+
+Not an exhaustive list, but common use list. See the leap motion documentation for full list.
+
+####Events####
+
+<img src="http://i.imgur.com/XI3WmIM.png">
+
+####Frame Functions####
+
+<img src="http://i.imgur.com/Ioe19p0.png">
+
+####Hand Functions and Properties####
+
+<img src="http://i.imgur.com/o340HWj.png">
+
+####Arm Functions and Properties####
+
+<img src="http://i.imgur.com/ymlIeWt.png">
+
+####Finger Functions and Properties####
+
+<img src="http://i.imgur.com/MLblo0F.png">
+
+####Pointable Functions and Properties####
+
+<img src="http://i.imgur.com/NRpgG7z.png">
+
 <br/>
 <br/>
 
@@ -44,12 +73,14 @@ All the Blueprint nodes and functions keep the same name as specified in the <a 
 Now you can Right click anywhere on Event graph and type 'Leap Event' and you will see all the available events you can receive.
 
 ###Example 'Debug Hand' graph###
-<img src="http://i.imgur.com/FTcC9td.png">
+<img src="http://i.imgur.com/VzgR3xC.png">
+
+with
+
+<img src="http://i.imgur.com/aEEuZSI.png">
 
 ###Result###
-<img src="http://i.imgur.com/OE7Y3Ri.png">
-
-NB: You can get more detail by placing a sphere at each of the bone joints.
+<img src="http://i.imgur.com/URnaAHe.png">
 
 
 ###Gestures###
