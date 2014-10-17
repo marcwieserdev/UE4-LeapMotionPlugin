@@ -43,7 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle="", Keywords = "is valid"), Category = "Leap Pointable")
 	bool IsValid();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	float Length;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle="==", Keywords = "equal"), Category = "Leap Pointable")
