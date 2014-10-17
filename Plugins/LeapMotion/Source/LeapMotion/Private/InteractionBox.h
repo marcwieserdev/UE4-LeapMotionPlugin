@@ -10,26 +10,26 @@ class UInteractionBox : public UObject
 public:
 	~UInteractionBox();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "center", CompactNodeTitle = "", Keywords = "center"), Category = Leap)
-	FVector Center() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
+	FVector Center;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "denormalizePoint", CompactNodeTitle = "", Keywords = "denormalize point"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "DenormalizePoint", CompactNodeTitle = "", Keywords = "normalize point"), Category = Leap)
 	FVector DenormalizePoint(FVector position) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "depth", CompactNodeTitle = "", Keywords = "depth"), Category = Leap)
-	float Depth() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
+	float Depth;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "height", CompactNodeTitle = "", Keywords = "height"), Category = Leap)
-	float Height() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
+	float Height;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
+	bool IsValid;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "normalizePoint", CompactNodeTitle = "", Keywords = "normalize point"), Category = Leap)
 	FVector NormalizePoint(FVector position, bool clamp=true) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "height"), Category = Leap)
-	float Width() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
+	float Width;
 	
 	void setInteractionBox(const Leap::InteractionBox &InteractionBox);
 

@@ -83,6 +83,16 @@ with
 <img src="http://i.imgur.com/URnaAHe.png">
 
 
+###Example Leap Image API###
+Drag out nodes like this to obtain an image
+<img src="http://i.imgur.com/WlN3opI.png">
+
+Which gives the following left image. 
+
+<img src="http://i.imgur.com/EFp3l1j.png">
+
+For demonstration purposes the distortion map is also shown on the right.
+
 ###Gestures###
 Require enabling before receiving events, below is an example of how to get the Circle gesture to emit and how to filter it.
 

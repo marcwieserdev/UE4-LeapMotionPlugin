@@ -25,4 +25,5 @@ public:
 
 private:
 	Leap::GestureList _gestures;
+	UGesture* _gesture;
 };

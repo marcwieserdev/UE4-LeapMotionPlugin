@@ -14,7 +14,7 @@ UToolList *UToolList::append(const UToolList *list)
 {
 	UToolList *newlist;
 
-	newlist = ConstructObject<UToolList>(UToolList::StaticClass());
+	newlist = NewObject<UToolList>(this, UToolList::StaticClass());
 	newlist->setToolList(this->_tools.append(list->_tools));
 	return (newlist);
 }
@@ -29,41 +29,41 @@ bool UToolList::isEmpty() const
 	return (_tools.isEmpty());
 }
 
-UTool *UToolList::leftmost()
+UTool* UToolList::leftmost()
 {
-	UTool *pointable;
-
-	pointable = ConstructObject<UTool>(UTool::StaticClass());
-	pointable->setTool(_tools.leftmost());
-	return (pointable);
+	if (!_leftmost)
+		_leftmost = NewObject<UTool>(this, UTool::StaticClass());
+	_leftmost->setTool(_tools.leftmost());
+	return (_leftmost);
 }
 
-UTool *UToolList::rightmost()
+UTool* UToolList::rightmost()
 {
-	UTool *pointable;
-
-	pointable = ConstructObject<UTool>(UTool::StaticClass());
-	pointable->setTool(_tools.rightmost());
-	return (pointable);
+	if (!_rightmost)
+		_rightmost = NewObject<UTool>(this, UTool::StaticClass());
+	_rightmost = NewObject<UTool>(this, UTool::StaticClass());
+	_rightmost->setTool(_tools.rightmost());
+	return (_rightmost);
 }
 
 
-UTool *UToolList::frontmost()
+UTool* UToolList::frontmost()
 {
-	UTool *pointable;
 
-	pointable = ConstructObject<UTool>(UTool::StaticClass());
-	pointable->setTool(_tools.frontmost());
-	return (pointable);
+	if (!_frontmost)
+		_frontmost = NewObject<UTool>(this, UTool::StaticClass());
+	_frontmost = NewObject<UTool>(this, UTool::StaticClass());
+	_frontmost->setTool(_tools.frontmost());
+	return (_frontmost);
 }
 
-UTool *UToolList::getPointableById(int32 id)
+UPointable* UToolList::getPointableById(int32 id)
 {
-	UTool *pointable;
-
-	pointable = ConstructObject<UTool>(UTool::StaticClass());
-	pointable->setTool(_tools[id]);
-	return (pointable);
+	if (!_pointableById)
+		_pointableById = NewObject<UTool>(this, UTool::StaticClass());
+	_pointableById = NewObject<UTool>(this, UTool::StaticClass());
+	_pointableById->setPointable(_tools[id]);
+	return (_pointableById);
 }
 
 void UToolList::setToolList(const Leap::ToolList &pointables)

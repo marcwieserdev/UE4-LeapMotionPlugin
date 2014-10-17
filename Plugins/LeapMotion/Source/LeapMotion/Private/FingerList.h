@@ -37,4 +37,8 @@ public:
 	void setFingerList(const Leap::FingerList &pointables);
 private:
 	Leap::FingerList _fingers;
+	UFinger* _frontmost;
+	UFinger* _leftmost;
+	UFinger* _rightmost;
+	UFinger* _pointableById;
 };

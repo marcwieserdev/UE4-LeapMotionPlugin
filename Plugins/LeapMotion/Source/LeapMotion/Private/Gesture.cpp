@@ -10,29 +10,26 @@ UGesture::~UGesture()
 
 ULeapFrame* UGesture::Frame()
 {
-	ULeapFrame *frame;
-
-	frame = ConstructObject<ULeapFrame>(ULeapFrame::StaticClass());
-	frame->setFrame(_gesture.frame());
-	return (frame);
+	if (!_frame)
+		_frame = NewObject<ULeapFrame>(this);
+	_frame->setFrame(_gesture.frame());
+	return (_frame);
 }
 
 UHandList* UGesture::Hands()
 {
-	UHandList *hands;
-
-	hands = ConstructObject<UHandList>(UHandList::StaticClass());
-	hands->setHandList(_gesture.hands());
-	return (hands);
+	if (!_hands)
+		_hands = NewObject<UHandList>(this);
+	_hands->setHandList(_gesture.hands());
+	return (_hands);
 }
 
 UPointableList* UGesture::Pointables()
 {
-	UPointableList *pointables;
-
-	pointables = ConstructObject<UPointableList>(UPointableList::StaticClass());
-	pointables->setPointableList(_gesture.pointables());
-	return (pointables);
+	if (!_pointables)
+		_pointables = NewObject<UPointableList>(this);
+	_pointables->setPointableList(_gesture.pointables());
+	return (_pointables);
 }
 
 LeapGestureState gestureState(Leap::Gesture::State state)

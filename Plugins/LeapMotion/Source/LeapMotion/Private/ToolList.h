@@ -26,7 +26,7 @@ public:
 	class UTool *leftmost();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = Leap)
-	class UTool *getPointableById(int32 id);
+	class UPointable *getPointableById(int32 id);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = Leap)
 	class UTool *rightmost();
@@ -34,4 +34,8 @@ public:
 	void setToolList(const Leap::ToolList &tools);
 private:
 	Leap::ToolList _tools;
+	UTool* _leftmost;
+	UTool* _rightmost;
+	UTool* _frontmost;
+	UPointable* _pointableById;
 };

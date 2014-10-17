@@ -11,53 +11,61 @@ class ULeapImage : public UObject
 public:
 	~ULeapImage();
 
-	//Not ready
-	//UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Texture", CompactNodeTitle = "", Keywords = "get texture"), Category = Leap)
-	//class UTexture2D* GetTexture();	//UTexture2D*
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Texture", CompactNodeTitle = "", Keywords = "get texture"), Category = "Leap Image")
+	class UTexture2D* Texture();
+
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "R8Texture", CompactNodeTitle = "", Keywords = "get texture single channel"), Category = "Leap Image")
+	class UTexture2D* R8Texture();
 	
-	//Not really appropriate for bp
-	//UFUNCTION(BlueprintCallable, meta = (FriendlyName = "distortion", CompactNodeTitle = "", Keywords = "distortion"), Category = Leap)
-	const float* Distortion() const;
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Distortion", CompactNodeTitle = "", Keywords = "distortion"), Category = "Leap Image")
+	class UTexture2D* Distortion();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "distortionHeight", CompactNodeTitle = "", Keywords = "distortion height"), Category = Leap)
-	int32 DistortionHeight() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	int32 DistortionHeight;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "distortionWidth", CompactNodeTitle = "", Keywords = "distortion width"), Category = Leap)
-	int32 DistortionWidth() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	int32 DistortionWidth;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "height", CompactNodeTitle = "", Keywords = "get height"), Category = Leap)
-	int32 Height();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	int32 Height;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "id", CompactNodeTitle = "", Keywords = "id"), Category = Leap)
-	int32 Id() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	int32 Id;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rayOffsetX", CompactNodeTitle = "", Keywords = "ray offset x"), Category = Leap)
-	float RayOffsetX() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	float RayOffsetX;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rayOffsetY", CompactNodeTitle = "", Keywords = "ray offset y"), Category = Leap)
-	float RayOffsetY() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	float RayOffsetY;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rayScaleX", CompactNodeTitle = "", Keywords = "ray scale x"), Category = Leap)
-	float RayScaleX() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	float RayScaleX;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rayScaleY", CompactNodeTitle = "", Keywords = "ray scale y"), Category = Leap)
-	float RayScaleY() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	float RayScaleY;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rectify", CompactNodeTitle = "", Keywords = "rectify"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rectify", CompactNodeTitle = "", Keywords = "rectify"), Category = "Leap Image")
 	FVector Rectify(FVector uv) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "warp", CompactNodeTitle = "", Keywords = "warp"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "warp", CompactNodeTitle = "", Keywords = "warp"), Category = "Leap Image")
 	FVector Warp(FVector xy) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "width", CompactNodeTitle = "", Keywords = "get width"), Category = Leap)
-	int32 Width();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	int32 Width;
 
 	void setLeapImage(const Leap::Image &LeapImage);
 
 private:
-	UTexture2D* LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const TArray<int8> &SrcData, const bool UseAlpha);
+	UTexture2D* imagePointer;
+	UTexture2D* distortionPointer;
+
+	bool validImagePointer();
+	UTexture2D* Texture8FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
+	UTexture2D* Texture32FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
+	UTexture2D* Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
+	UTexture2D* TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
 	Leap::Image _leapImage;
 };

@@ -10,37 +10,42 @@ class UPointableList : public UObject
 public:
 	~UPointableList();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = Leap)
-	UPointableList *append(const UPointableList *list);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
+	UPointableList* append(class UPointableList *list);
 
-	/*UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = Leap)
-	UPointableList *appendFingers(const class UFingerList *list);
+	/*UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
+	UPointableList* appendFingers(class UFingerList *list);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = Leap)
-	UPointableList *appendTools(const class UToolsList *list);*/
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
+	UPointableList* appendTools(class UToolList *list);*/
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "count", CompactNodeTitle = "", Keywords = "count"), Category = Leap)
-	int32 Count() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable List")
+	int32 Count;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "extended", CompactNodeTitle = "", Keywords = "extended"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "extended", CompactNodeTitle = "", Keywords = "extended"), Category = "Leap Pointable List")
 	UPointableList *extended();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost"), Category = "Leap Pointable List")
 	class UPointable *frontmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = Leap)
-	bool isEmpty() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable List")
+	bool IsEmpty;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost"), Category = "Leap Pointable List")
 	class UPointable *leftmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = "Leap Pointable List")
 	class UPointable *getPointableById(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Pointable List")
 	class UPointable *rightmost();
 
 	void setPointableList(const Leap::PointableList &pointables);
+
 private:
 	Leap::PointableList _pointables;
+	UPointable* _leftmost;
+	UPointable* _rightmost;
+	UPointable* _frontmost;
+	UPointable* _pointableById;
 };

@@ -122,11 +122,10 @@ const Leap::Controller &ULeapController::getData() const
 
 ULeapFrame *ULeapController::getFrame(int32 history)
 {
-	ULeapFrame *rframe;
-
-	rframe = ConstructObject<ULeapFrame>(ULeapFrame::StaticClass());
-	rframe->setFrame(_leap, history);
-	return (rframe);
+	if (!_frame)
+		_frame = NewObject<ULeapFrame>(this, ULeapFrame::StaticClass());
+	_frame->setFrame(_leap, history);
+	return (_frame);
 }
 
 bool ULeapController::hasFocus() const
@@ -263,29 +262,30 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		LeapHandStateData pastHandState = _pastState.stateForId(hand.id());		//we use a custom class to hold reliable state tracking based on id's
 
 		//Make a UHand
-		UHand *uHand = ConstructObject<UHand>(UHand::StaticClass());
-		uHand->setHand(hand);
+		if (!_eventHand)
+			_eventHand = NewObject<UHand>(this);
+		_eventHand->setHand(hand);
 
 		//Emit hand
-		ILeapEventInterface::Execute_LeapHandMoved(_interfaceDelegate, uHand);
+		ILeapEventInterface::Execute_LeapHandMoved(_interfaceDelegate, _eventHand);
 
 		//Left/Right hand forwarding
 		if (hand.isRight())
-			ILeapEventInterface::Execute_LeapRightHandMoved(_interfaceDelegate, uHand);
+			ILeapEventInterface::Execute_LeapRightHandMoved(_interfaceDelegate, _eventHand);
 		else if (hand.isLeft())
-			ILeapEventInterface::Execute_LeapLeftHandMoved(_interfaceDelegate, uHand);
+			ILeapEventInterface::Execute_LeapLeftHandMoved(_interfaceDelegate, _eventHand);
 
 		//Grabbing
 		float grabStrength = hand.grabStrength();
 		bool grabbed = handClosed(grabStrength);
 
 		if (grabbed)
-			ILeapEventInterface::Execute_LeapHandGrabbing(_interfaceDelegate, grabStrength, uHand);
+			ILeapEventInterface::Execute_LeapHandGrabbing(_interfaceDelegate, grabStrength, _eventHand);
 
 		if (grabbed && !pastHandState.grabbed)
-			ILeapEventInterface::Execute_LeapHandGrabbed(_interfaceDelegate, grabStrength, uHand);
+			ILeapEventInterface::Execute_LeapHandGrabbed(_interfaceDelegate, grabStrength, _eventHand);
 		else if (!grabbed && pastHandState.grabbed)
-			ILeapEventInterface::Execute_LeapHandReleased(_interfaceDelegate, grabStrength, uHand);
+			ILeapEventInterface::Execute_LeapHandReleased(_interfaceDelegate, grabStrength, _eventHand);
 
 		//Pinching
 		float pinchStrength = hand.pinchStrength();
@@ -296,12 +296,12 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		else
 		{
 			if (pinched)
-				ILeapEventInterface::Execute_LeapHandPinching(_interfaceDelegate, pinchStrength, uHand);
+				ILeapEventInterface::Execute_LeapHandPinching(_interfaceDelegate, pinchStrength, _eventHand);
 
 			if (pinched && !pastHandState.pinched)
-				ILeapEventInterface::Execute_LeapHandPinched(_interfaceDelegate, pinchStrength, uHand);
+				ILeapEventInterface::Execute_LeapHandPinched(_interfaceDelegate, pinchStrength, _eventHand);
 			else if (!pinched && pastHandState.pinched)
-				ILeapEventInterface::Execute_LeapHandUnpinched(_interfaceDelegate, pinchStrength, uHand);
+				ILeapEventInterface::Execute_LeapHandUnpinched(_interfaceDelegate, pinchStrength, _eventHand);
 		}
 
 		//-Fingers-
@@ -312,40 +312,42 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		if ((pastHandState.fingerCount != fingerCount))
 			ILeapEventInterface::Execute_FingerCountChanged(_interfaceDelegate, fingerCount);
 
-		UFinger *uFinger = ConstructObject<UFinger>(UFinger::StaticClass());
+		if (!_eventFinger)
+			_eventFinger = NewObject<UFinger>(this);
+
 		Leap::Finger finger;
 
 		//Cycle through each finger
 		for (int j = 0; j < fingerCount; j++)
 		{
 			finger = fingers[j];
-			uFinger->setFinger(finger);
+			_eventFinger->setFinger(finger);
 
 			//Finger Moved
-			ILeapEventInterface::Execute_LeapFingerMoved(_interfaceDelegate, uFinger);
+			ILeapEventInterface::Execute_LeapFingerMoved(_interfaceDelegate, _eventFinger);
 		}
 
 		//Do these last so we can easily override debug shapes
 
 		//Leftmost
 		finger = fingers.leftmost();
-		uFinger->setFinger(finger);
-		ILeapEventInterface::Execute_LeapLeftMostFingerMoved(_interfaceDelegate, uFinger);
+		_eventFinger->setFinger(finger);
+		ILeapEventInterface::Execute_LeapLeftMostFingerMoved(_interfaceDelegate, _eventFinger);
 
 		//Rightmost
 		finger = fingers.rightmost();
-		uFinger->setFinger(finger);
-		ILeapEventInterface::Execute_LeapRightMostFingerMoved(_interfaceDelegate, uFinger);
+		_eventFinger->setFinger(finger);
+		ILeapEventInterface::Execute_LeapRightMostFingerMoved(_interfaceDelegate, _eventFinger);
 
 		//Frontmost
 		finger = fingers.frontmost();
-		uFinger->setFinger(finger);
-		ILeapEventInterface::Execute_LeapFrontMostFingerMoved(_interfaceDelegate, uFinger);
+		_eventFinger->setFinger(finger);
+		ILeapEventInterface::Execute_LeapFrontMostFingerMoved(_interfaceDelegate, _eventFinger);
 
 		//touch only for front-most finger, most common use case
 		float touchDistance = finger.touchDistance();
 		if (touchDistance <= 0.f)
-			ILeapEventInterface::Execute_LeapFrontFingerTouch(_interfaceDelegate, uFinger);
+			ILeapEventInterface::Execute_LeapFrontFingerTouch(_interfaceDelegate, _eventFinger);
 
 		//Set the state data for next cycle
 		pastHandState.grabbed = grabbed;
@@ -365,9 +367,10 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		//emit gesture
 		if (gesture.type() != Leap::Gesture::TYPE_INVALID)
 		{
-			UGesture *uGesture = ConstructObject<UGesture>(UGesture::StaticClass());
-			uGesture->setGesture(gesture);
-			ILeapEventInterface::Execute_GestureDetected(_interfaceDelegate, uGesture);
+			if (!_eventGesture)
+				_eventGesture = NewObject<UGesture>(this);
+			_eventGesture->setGesture(gesture);
+			ILeapEventInterface::Execute_GestureDetected(_interfaceDelegate, _eventGesture);
 		}
 	}
 }

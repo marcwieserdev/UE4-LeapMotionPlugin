@@ -9,41 +9,25 @@ ULeapImage::~ULeapImage()
 }
 
 //Not properly supported at this time
-/*UTexture2D* ULeapImage::LeapDataToTexture(const int32 SrcWidth, const int32 SrcHeight, const TArray<int8> &SrcData, const bool UseAlpha)
+UTexture2D* ULeapImage::Texture8FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer)
 {
-	// Create the texture
-	UTexture2D* LeapTexture = UTexture2D::CreateTransient(SrcWidth, SrcHeight, PF_B8G8R8A8);
+	// Create a 1-Channel texture
+	UTexture2D* LeapTexture = UTexture2D::CreateTransient(SrcWidth, SrcHeight, PF_G8);
 
 	// Lock the texture so it can be modified
-	
-	//Todo: fix error that occurs here
-	/*uint8* MipData = (uint8*)(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
-	//FColor* MipData = static_cast<FColor*>(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
-	//FColor* MipData = static_cast<FColor*>(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+	uint8* MipData = (uint8*)(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
 
 	// Create base mip.
 	uint8* DestPtr = NULL;
-	//FColor* DestPtr = NULL;
-	const int8* SrcPtr = NULL;
-	//const FColor* SrcPtr = NULL;
+	uint8* SrcPtr = NULL;
 
 	for (int32 y = 0; y<SrcHeight; y++)
 	{
-		DestPtr = &MipData[(SrcHeight - 1 - y) * SrcWidth * sizeof(FColor)];
-		SrcPtr = (&SrcData[(SrcHeight - 1 - y) * SrcWidth]);//const_cast<FColor*>
+		DestPtr = &MipData[(SrcHeight - 1 - y) * SrcWidth * sizeof(uint8)];
+		SrcPtr = (&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
 		for (int32 x = 0; x<SrcWidth; x++)
 		{
 			*DestPtr++ = *SrcPtr;
-			*DestPtr++ = *SrcPtr;
-			*DestPtr++ = *SrcPtr;
-			if (UseAlpha)
-			{
-				*DestPtr++ = *SrcPtr;
-			}
-			else
-			{
-				*DestPtr++ = 0xFF;	//(FColor)
-			}
 			SrcPtr++;
 		}
 	}
@@ -51,75 +35,159 @@ ULeapImage::~ULeapImage()
 	// Unlock the texture
 	LeapTexture->PlatformData->Mips[0].BulkData.Unlock();
 	LeapTexture->UpdateResource();
+
+	return LeapTexture;
+}
+
+UTexture2D* ULeapImage::Texture32FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer)
+{
+	// Lock the texture so it can be modified
+	if (!imagePointer || !imagePointer->IsValidLowLevel())
+		return NULL;
+
+	uint8* MipData = static_cast<uint8*>(imagePointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	uint8* DestPtr = NULL;
+	const uint8* SrcPtr = NULL;
+	for (int32 y = 0; y<SrcHeight; y++)
+	{
+		DestPtr = &MipData[(SrcHeight - 1 - y) * SrcWidth * sizeof(FColor)];
+		SrcPtr = const_cast<uint8*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
+		for (int32 x = 0; x<SrcWidth; x++)
+		{
+			//Grayscale, copy to all channels
+			*DestPtr++ = *SrcPtr;
+			*DestPtr++ = *SrcPtr;
+			*DestPtr++ = *SrcPtr;
+			*DestPtr++ = 0xFF;
+			SrcPtr++;
+		}
+	}
+
+	// Unlock the texture
+	imagePointer->PlatformData->Mips[0].BulkData.Unlock();
+	imagePointer->UpdateResource();
+
+	return imagePointer;
+}
+
+/*Lossless distortion map attempts so far no good
+UTexture2D* ULeapImage::TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
+{
+	int32 DestWidth = SrcWidth/2; // Put 2 floats in the R and G channels
+	int32 DestHeight = SrcHeight;
+
+
+	// Create the texture
+	UTexture2D* LeapTexture = UTexture2D::CreateTransient(DestWidth, DestHeight, PF_A32B32G32R32F);
+
+	// Lock the texture so it can be modified
+	float* MipData = static_cast<float*>(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	float* DestPtr = NULL;
+	const float* SrcPtr = NULL;
+	for (int32 y = 0; y<SrcHeight; y++)
+	{
+		DestPtr = &MipData[(DestHeight - 1 - y) * DestWidth * sizeof(float)*2];
+		SrcPtr = const_cast<float*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
+		for (int32 x = 0; x<SrcWidth; x++)
+		{
+			*DestPtr++ = 1.f;						//Full 255 alpha
+			*DestPtr++ = 0.f;						//Black
+			*DestPtr++ = (float)*SrcPtr++;//(uint8)(*SrcPtr++ * 0xFF); //Scale the float (0.0..1.0) to a uint8 (0..255)
+			*DestPtr++ = (float)*SrcPtr++;//(uint8)(*SrcPtr++ * 0xFF);
+		}
+	}
+
+	// Unlock the texture
+	LeapTexture->PlatformData->Mips[0].BulkData.Unlock();
+	LeapTexture->UpdateResource();
+
 	return LeapTexture;
 }*/
 
-/*UTexture2D* ULeapImage::GetTexture()
+UTexture2D* ULeapImage::Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
 {
-	if (!IsValid()) return 0;
+	int32 DestWidth = SrcWidth /2; // Put 2 floats in the R and G channels
+	int32 DestHeight = SrcHeight;
 
-	TArray<int8> imageData;
-	int width = Width();
-	int height = Height();
-	//This is a copy!, terrible performance-wise. See if you can't to a cast
-	for (int32 i = 0; i < width * height; i++)
+	// Lock the texture so it can be modified
+	uint8* MipData = static_cast<uint8*>(distortionPointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	uint8* DestPtr = NULL;
+	const float* SrcPtr = NULL;
+	for (int32 y = 0; y<SrcHeight; y++)
 	{
-		imageData.Add(_leapImage.data()[i]);
+		DestPtr = &MipData[(DestHeight - 1 - y) * DestWidth * sizeof(FColor)];
+		SrcPtr = const_cast<float*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
+		for (int32 x = 0; x<SrcWidth; x++)
+		{
+
+			*DestPtr++ = (uint8)(*SrcPtr++ * 0xFF);	//Scale floats
+			*DestPtr++ = (uint8)(*SrcPtr++ * 0xFF);
+			*DestPtr++ = (uint8)0x00;						//Black
+			*DestPtr++ = (uint8)0xFF;						//Full 255 alpha
+		}
 	}
 
-	return LeapDataToTexture(Width(), Height(), imageData, false);
-}*/
+	// Unlock the texture
+	distortionPointer->PlatformData->Mips[0].BulkData.Unlock();
+	distortionPointer->UpdateResource();
 
-const float* ULeapImage::Distortion() const
-{
-	return (_leapImage.distortion());
+	return distortionPointer;
 }
 
-int ULeapImage::DistortionHeight() const
+bool ULeapImage::validImagePointer()
 {
-	return (_leapImage.distortionHeight());
+	//Make sure we're valid
+	if (!IsValid) return false;
+	if (imagePointer == NULL)
+	{
+		if (Width == 0 && Height == 0)
+		{
+			UE_LOG(LogClass, Error, TEXT("Warning! Leap Image SDK access is denied, please enable image support from the Leap Controller."));
+			return false;
+		}
+		imagePointer = UTexture2D::CreateTransient(Width, Height, PF_B8G8R8A8);
+	}
+	return true;
 }
 
-int ULeapImage::DistortionWidth() const
+UTexture2D* ULeapImage::Texture()
 {
-	return (_leapImage.distortionWidth());
+	if (!validImagePointer())
+		return NULL;
+
+	return Texture32FromLeapImage(Width, Height, (uint8*)_leapImage.data());
 }
 
-int ULeapImage::Height()
+UTexture2D* ULeapImage::R8Texture()
 {
-	return (_leapImage.height());
+	if (!validImagePointer())	//doesn't use the image pointer, but this check is still useful
+		return NULL;
+
+	return Texture8FromLeapImage(Width, Height, (uint8*)_leapImage.data());
 }
 
-int32 ULeapImage::Id() const
+//Note that distortion is still sometimes unstables
+UTexture2D* ULeapImage::Distortion()
 {
-	return (_leapImage.id());
+	if (!IsValid) return NULL;
+	if (distortionPointer == NULL)
+	{
+		if (Width == 0 && Height == 0)
+		{
+			UE_LOG(LogClass, Error, TEXT("Warning! Leap Image SDK access is denied, please enable image support from the Leap Controller."));
+			return NULL;
+		}
+		distortionPointer = UTexture2D::CreateTransient(DistortionWidth / 2, DistortionHeight, PF_B8G8R8A8);
+	}
+	return Texture32FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_leapImage.distortion());
 }
 
-bool ULeapImage::IsValid() const
-{
-	return (_leapImage.isValid());
-}
-
-float ULeapImage::RayOffsetX() const
-{
-	return (_leapImage.rayOffsetX());
-}
-
-
-float ULeapImage::RayOffsetY() const
-{
-	return (_leapImage.rayOffsetY());
-}
-
-float ULeapImage::RayScaleX() const
-{
-	return (_leapImage.rayScaleX());
-}
-
-float ULeapImage::RayScaleY() const
-{
-	return (_leapImage.rayScaleY());
-}
 
 FVector ULeapImage::Rectify(FVector uv) const
 {
@@ -135,12 +203,18 @@ FVector ULeapImage::Warp(FVector xy) const
 	return FVector(vect.x, vect.y, vect.z);
 }
 
-int ULeapImage::Width()
-{
-	return (_leapImage.width());
-}
-
 void ULeapImage::setLeapImage(const Leap::Image &LeapImage)
 {
 	_leapImage = LeapImage;
+
+	DistortionHeight = _leapImage.distortionHeight();
+	DistortionWidth = _leapImage.distortionWidth();
+	Height = _leapImage.height();
+	Id = _leapImage.id();
+	IsValid = _leapImage.isValid();
+	RayOffsetX = _leapImage.rayOffsetX();
+	RayOffsetY = _leapImage.rayOffsetY();
+	RayScaleX = _leapImage.rayScaleX();
+	RayScaleY = _leapImage.rayScaleY();
+	Width = _leapImage.width();
 }

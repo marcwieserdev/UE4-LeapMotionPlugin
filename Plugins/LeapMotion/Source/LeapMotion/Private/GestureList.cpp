@@ -10,11 +10,10 @@ UGestureList::~UGestureList()
 
 UGesture* UGestureList::getIndex(int32 index)
 {
-	UGesture *gesture;
-
-	gesture = ConstructObject<UGesture>(UGesture::StaticClass());
-	gesture->setGesture(_gestures[index]);
-	return (gesture);
+	if (!_gesture)
+		_gesture = NewObject<UGesture>(this, UGesture::StaticClass());
+	_gesture->setGesture(_gestures[index]);
+	return (_gesture);
 }
 
 UGesture* UGestureList::operator[](int index)

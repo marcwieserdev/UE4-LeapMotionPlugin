@@ -14,7 +14,7 @@ UFingerList *UFingerList::append(const UFingerList *list)
 {
 	UFingerList *newlist;
 
-	newlist = ConstructObject<UFingerList>(UFingerList::StaticClass());
+	newlist = NewObject<UFingerList>(this, UFingerList::StaticClass());
 	newlist->setFingerList(this->_fingers.append(list->_fingers));
 	return (newlist);
 }
@@ -23,46 +23,42 @@ UFingerList *UFingerList::extended()
 {
 	UFingerList *newlist;
 
-	newlist = ConstructObject<UFingerList>(UFingerList::StaticClass());
+	newlist = NewObject<UFingerList>(this, UFingerList::StaticClass());
 	newlist->setFingerList(_fingers.extended());
 	return (newlist);
 }
 
 UFinger *UFingerList::leftmost()
 {
-	UFinger *pointable;
-
-	pointable = ConstructObject<UFinger>(UFinger::StaticClass());
-	pointable->setFinger(_fingers.leftmost());
-	return (pointable);
+	if (!_leftmost)
+		_leftmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_leftmost->setFinger(_fingers.leftmost());
+	return (_leftmost);
 }
 
 UFinger *UFingerList::rightmost()
 {
-	UFinger *pointable;
-
-	pointable = ConstructObject<UFinger>(UFinger::StaticClass());
-	pointable->setFinger(_fingers.rightmost());
-	return (pointable);
+	if (!_rightmost)
+		_rightmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_rightmost->setFinger(_fingers.rightmost());
+	return (_rightmost);
 }
 
 
 UFinger *UFingerList::frontmost()
 {
-	UFinger *pointable;
-
-	pointable = ConstructObject<UFinger>(UFinger::StaticClass());
-	pointable->setFinger(_fingers.frontmost());
-	return (pointable);
+	if (!_frontmost)
+		_frontmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_frontmost->setFinger(_fingers.frontmost());
+	return (_frontmost);
 }
 
 UFinger *UFingerList::getPointableById(int32 id)
 {
-	UFinger *pointable;
-
-	pointable = ConstructObject<UFinger>(UFinger::StaticClass());
-	pointable->setFinger(_fingers[id]);
-	return (pointable);
+	if (!_pointableById)
+		_pointableById = NewObject<UFinger>(this, UFinger::StaticClass());
+	_pointableById->setFinger(_fingers[id]);
+	return (_pointableById);
 }
 
 void UFingerList::setFingerList(const Leap::FingerList &fingers)

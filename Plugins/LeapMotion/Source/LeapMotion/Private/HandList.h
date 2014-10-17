@@ -17,18 +17,22 @@ public:
 	int32 Count;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFrontmost", CompactNodeTitle = "", Keywords = "get frontmost"), Category = "Leap Hand List")
-	class UHand *Frontmost();
+	class UHand* Frontmost();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getLeftmost", CompactNodeTitle = "", Keywords = "get leftmost"), Category = "Leap Hand List")
-	class UHand *Leftmost();
+	class UHand* Leftmost();
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getRightmost", CompactNodeTitle = "", Keywords = "get rightmost"), Category = "Leap Hand List")
-	class UHand *Rightmost();
+	class UHand* Rightmost();
 	
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
-	class UHand *getIndex(int32 index);
+	class UHand* getIndex(int32 index);
 
 	void setHandList(const Leap::HandList &handlist);
 private:
 	Leap::HandList _hands;
+	UHand* _frontmost;
+	UHand* _leftmost;
+	UHand* _rightmost;
+	UHand* _indexHand;
 };

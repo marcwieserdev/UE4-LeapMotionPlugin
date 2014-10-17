@@ -10,19 +10,18 @@ UHand::~UHand()
 
 ULeapFrame *UHand::Frame()
 {
-	ULeapFrame *rframe;
-
-	rframe = ConstructObject<ULeapFrame>(ULeapFrame::StaticClass());
-	rframe->setFrame(_hand.frame());
-	return (rframe);
+	if (!_frame)
+		_frame = NewObject<ULeapFrame>(this);
+	_frame->setFrame(_hand.frame());
+	return (_frame);
 }
 
 UFingerList* UHand::Fingers()
 {
-	UFingerList* fingers;
-	fingers = ConstructObject<UFingerList>(UFingerList::StaticClass());
-	fingers->setFingerList(_hand.fingers());
-	return (fingers);
+	if(!_fingers)
+		_fingers = NewObject<UFingerList>(this);
+	_fingers->setFingerList(_hand.fingers());
+	return (_fingers);
 }
 
 float UHand::RotationAngle(ULeapFrame *frame)

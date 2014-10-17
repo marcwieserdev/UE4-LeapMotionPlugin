@@ -3,7 +3,7 @@
 	
 	"FriendlyName" : "Leap Motion Plugin",
 	"Version" : 1,
-	"VersionName" : "0.6.5",
+	"VersionName" : "0.7",
 	"CreatedBy" : "Fork: Getnamo, Original: Marc Wieser",
 	"CreatedByURL" : "https://github.com/getnamo/leap-ue4",
 	"EngineVersion" : 1579795,

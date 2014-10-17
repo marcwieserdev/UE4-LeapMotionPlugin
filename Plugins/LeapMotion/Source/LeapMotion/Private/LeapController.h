@@ -41,8 +41,8 @@ public:
 	bool isConnected() const;
 
 	//Frame
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFrame", CompactNodeTitle = "", Keywords = "get frame"), Category = "Leap Controller")
-	class ULeapFrame *getFrame(int32 history);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Frame", CompactNodeTitle = "", Keywords = "get frame"), Category = "Leap Controller")
+	class ULeapFrame* getFrame(int32 history);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hasFocus", CompactNodeTitle = "", Keywords = "has Focus"), Category = "Leap Controller")
 	bool hasFocus() const;
@@ -67,6 +67,10 @@ public:
 
 private:
 	Leap::Controller	_leap;
+	ULeapFrame* _frame;
+	UHand* _eventHand;
+	UFinger* _eventFinger;
+	UGesture* _eventGesture;
 	UObject* _interfaceDelegate;
 	bool _optimizeForHMD;
 	bool _allowImages;	

@@ -10,8 +10,8 @@ class ULeapImageList : public UObject
 public:
 	~ULeapImageList();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = "Leap Image List")
-	bool isEmpty() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image List")
+	bool IsEmpty;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image List")
 	int32 Count;
@@ -25,4 +25,6 @@ public:
 
 private:
 	Leap::ImageList _leapImages;
+	ULeapImage* _indexImage1;
+	ULeapImage* _indexImage2;
 };

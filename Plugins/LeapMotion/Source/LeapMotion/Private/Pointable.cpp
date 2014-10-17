@@ -11,40 +11,18 @@ UPointable::~UPointable()
 
 ULeapFrame *UPointable::Frame()
 {
-	ULeapFrame *rframe;
-
-	rframe = ConstructObject<ULeapFrame>(ULeapFrame::StaticClass());
-	rframe->setFrame(_pointable.frame());
-	return (rframe);
+	if(!_rframe)
+		_rframe = NewObject<ULeapFrame>(this);
+	_rframe->setFrame(_pointable.frame());
+	return (_rframe);
 }
 
 UHand *UPointable::Hand()
 {
-	UHand *rhand;
-
-	rhand = ConstructObject<UHand>(UHand::StaticClass());
-	rhand->setHand(_pointable.hand());
-	return (rhand);
-}
-
-bool UPointable::IsExtended()
-{
-	return (_pointable.isExtended());
-}
-
-bool UPointable::IsFinger()
-{
-	return (_pointable.isFinger());
-}
-
-bool UPointable::IsTool()
-{
-	return (_pointable.isTool());
-}
-
-bool UPointable::IsValid()
-{
-	return (_pointable.isValid());
+	if (!_rhand)
+		_rhand = NewObject<UHand>(this, UHand::StaticClass());
+	_rhand->setHand(_pointable.hand());
+	return (_rhand);
 }
 
 bool UPointable::equal(const UPointable *other)
@@ -78,6 +56,10 @@ void UPointable::setPointable(const Leap::Pointable &pointable)
 
 	Direction = convertAndScaleLeapToUE(_pointable.direction());
 	Id = _pointable.id();
+	IsExtended = _pointable.isExtended();
+	IsFinger = _pointable.isFinger();
+	IsTool = _pointable.isTool();
+	IsValid = _pointable.isValid();
 	Length = _pointable.length();
 	StabilizedTipPosition = convertAndScaleLeapToUE(_pointable.stabilizedTipPosition());
 	TimeVisible = _pointable.timeVisible();

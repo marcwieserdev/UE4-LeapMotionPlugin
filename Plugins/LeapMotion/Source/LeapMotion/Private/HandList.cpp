@@ -8,40 +8,36 @@ UHandList::~UHandList()
 {
 }
 
-UHand *UHandList::Frontmost()
+UHand* UHandList::Frontmost()
 {
-	UHand *hand;
-
-	hand = ConstructObject<UHand>(UHand::StaticClass());
-	hand->setHand(_hands.frontmost());
-	return (hand);
+	if (!_frontmost)
+		_frontmost = NewObject<UHand>(this);
+	_frontmost->setHand(_hands.frontmost());
+	return (_frontmost);
 }
 
-UHand *UHandList::Leftmost()
+UHand* UHandList::Leftmost()
 {
-	UHand *hand;
-
-	hand = ConstructObject<UHand>(UHand::StaticClass());
-	hand->setHand(_hands.leftmost());
-	return (hand);
+	if (!_leftmost)
+		_leftmost = NewObject<UHand>(this);
+	_leftmost->setHand(_hands.leftmost());
+	return (_leftmost);
 }
 
-UHand *UHandList::Rightmost()
+UHand* UHandList::Rightmost()
 {
-	UHand *hand;
-
-	hand = ConstructObject<UHand>(UHand::StaticClass());
-	hand->setHand(_hands.rightmost());
-	return (hand);
+	if (!_rightmost)
+		_rightmost = NewObject<UHand>(this);
+	_rightmost->setHand(_hands.rightmost());
+	return (_rightmost);
 }
 
-UHand *UHandList::getIndex(int32 index)
+UHand* UHandList::getIndex(int32 index)
 {
-	UHand *hand;
-
-	hand = ConstructObject<UHand>(UHand::StaticClass());
-	hand->setHand(_hands[index]);
-	return (hand);
+	if (!_indexHand)
+		_indexHand = NewObject<UHand>(this);
+	_indexHand->setHand(_hands[index]);
+	return (_indexHand);
 }
 
 void UHandList::setHandList(const Leap::HandList &handlist)

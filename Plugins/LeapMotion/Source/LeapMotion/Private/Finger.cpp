@@ -16,7 +16,7 @@ UBone *UFinger::Bone(BoneType type)
 	Leap::Bone rbone;
 	UBone *bone;
 
-	bone = ConstructObject<UBone>(UBone::StaticClass());
+	bone = NewObject<UBone>(this, UBone::StaticClass());
 	switch(type)
 	{
 	case TYPE_METACARPAL:

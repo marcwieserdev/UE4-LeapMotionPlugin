@@ -11,6 +11,7 @@
 #include "GestureList.h"
 #include "Pointable.h"
 #include "PointableList.h"
+#include "ToolList.h"
 #include "LeapImage.h"
 #include "LeapImageList.h"
 #include "LeapFrame.h"

@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Frame"), Category = "Leap Hand")
 	class ULeapFrame* Frame();
 
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers"), Category = "Leap Hand")
+	class UFingerList* Fingers();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	float GrabStrength;
 
@@ -94,9 +97,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	int32 Id;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers"), Category = "Leap Hand")
-	class UFingerList* Fingers();
-
 	bool operator!=(const UHand &) const;
 
 	bool operator==(const UHand &) const;
@@ -104,4 +104,6 @@ public:
 	void setHand(const Leap::Hand &hand);
 private:
 	Leap::Hand _hand;
+	ULeapFrame* _frame;
+	UFingerList* _fingers;
 };

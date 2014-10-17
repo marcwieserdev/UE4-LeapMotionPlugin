@@ -31,17 +31,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	int32 Id;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isExtended", CompactNodeTitle="", Keywords = "is extended"), Category = "Leap Pointable")
-	bool IsExtended();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
+	bool IsExtended;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isFinger", CompactNodeTitle="", Keywords = "is finger"), Category = "Leap Pointable")
-	bool IsFinger();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
+	bool IsFinger;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isTool", CompactNodeTitle="", Keywords = "is tool"), Category = "Leap Pointable")
-	bool IsTool();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
+	bool IsTool;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle="", Keywords = "is valid"), Category = "Leap Pointable")
-	bool IsValid();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
+	bool IsValid;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	float Length;
@@ -77,4 +77,6 @@ public:
 	const Leap::Pointable &getPointable() const;
 private:
 	Leap::Pointable _pointable;
+	ULeapFrame* _rframe;
+	UHand* _rhand;
 };

@@ -63,4 +63,7 @@ public:
 	void setGesture(const Leap::Gesture &Gesture);
 private:
 	Leap::Gesture _gesture;
+	ULeapFrame* _frame;
+	UHandList* _hands;
+	UPointableList* _pointables;
 };

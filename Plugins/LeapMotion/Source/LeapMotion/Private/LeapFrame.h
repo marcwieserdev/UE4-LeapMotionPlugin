@@ -10,25 +10,25 @@ class ULeapFrame : public UObject
 public:
 	~ULeapFrame();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isValid", CompactNodeTitle = "", Keywords = "is valid"), Category = Leap)
-	bool IsValid() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Frame")
+	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = "Leap Frame")
 	class UHandList* Hands();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = "Leap Frame")
 	class UFingerList* Fingers();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
 	class UGestureList* Gestures();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "interactionBox", CompactNodeTitle = "", Keywords = "get interaction box"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "interactionBox", CompactNodeTitle = "", Keywords = "get interaction box"), Category = "Leap Frame")
 	class UInteractionBox* InteractionBox();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
 	class UPointableList* Pointables();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = "Leap Frame")
 	class ULeapImageList* Images();
 
 	//Todo: If appropriate rotationAngle->Matrix, scaleFactor, translation
@@ -38,4 +38,14 @@ public:
 	const Leap::Frame &getFrame() const;
 private:
 	Leap::Frame _frame;
+	UHandList* _hands;
+	UFingerList* _fingers;
+	UGestureList* _gestures;
+	UInteractionBox* _interactionBox;
+	UPointableList* _pointableList;
+	ULeapImageList* _leapImageList;
+
+	UHand* _eventHand;
+	UFinger* _eventFinger;
+	UGesture* _eventGesture;
 };

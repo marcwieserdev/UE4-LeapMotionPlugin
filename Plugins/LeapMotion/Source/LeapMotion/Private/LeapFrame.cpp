@@ -8,73 +8,64 @@ ULeapFrame::~ULeapFrame()
 {
 }
 
-bool ULeapFrame::IsValid() const
-{
-	return _frame.isValid();
-}
-
 UHandList* ULeapFrame::Hands()
 {
-	UHandList* handlist;
-
-	handlist = ConstructObject<UHandList>(UHandList::StaticClass());
-	handlist->setHandList(_frame.hands());
-	return (handlist);
+	if (!_hands)
+		_hands = NewObject<UHandList>(this);
+	_hands->setHandList(_frame.hands());
+	return (_hands);
 }
 
 UFingerList* ULeapFrame::Fingers()
 {
-	UFingerList* fingerlist;
-
-	fingerlist = ConstructObject<UFingerList>(UFingerList::StaticClass());
-	fingerlist->setFingerList(_frame.fingers());
-	return (fingerlist);
+	if (!_fingers)
+		_fingers = NewObject<UFingerList>(this);
+	_fingers->setFingerList(_frame.fingers());
+	return (_fingers);
 }
 
 UGestureList* ULeapFrame::Gestures()
 {
-	UGestureList* gestures;
-
-	gestures = ConstructObject<UGestureList>(UGestureList::StaticClass());
-	gestures->setGestureList(_frame.gestures());
-	return (gestures);
+	if (!_gestures)
+		_gestures = NewObject<UGestureList>(this);
+	_gestures->setGestureList(_frame.gestures());
+	return (_gestures);
 }
 
 UInteractionBox* ULeapFrame::InteractionBox()
 {
-	UInteractionBox* box;
-
-	box = ConstructObject<UInteractionBox>(UInteractionBox::StaticClass());
-	box->setInteractionBox(_frame.interactionBox());
-	return (box);
+	if (!_interactionBox)
+		_interactionBox = NewObject<UInteractionBox>(this);
+	_interactionBox->setInteractionBox(_frame.interactionBox());
+	return (_interactionBox);
 }
 
 UPointableList* ULeapFrame::Pointables()
 {
-	UPointableList* pointables;
-
-	pointables = ConstructObject<UPointableList>(UPointableList::StaticClass());
-	pointables->setPointableList(_frame.pointables());
-	return (pointables);
+	if (!_pointableList)
+		_pointableList = NewObject<UPointableList>(this);
+	_pointableList->setPointableList(_frame.pointables());
+	return (_pointableList);
 }
 
 ULeapImageList* ULeapFrame::Images()
 {
-	ULeapImageList* images;
-
-	images = ConstructObject<ULeapImageList>(ULeapImageList::StaticClass());
-	images->setLeapImageList(_frame.images());
-	return (images);
+	if (!_leapImageList)
+		_leapImageList = NewObject<ULeapImageList>(this);
+	_leapImageList->setLeapImageList(_frame.images());
+	return (_leapImageList);
 }
 
 void ULeapFrame::setFrame(Leap::Controller &leap, int history)
 {
 	_frame = leap.frame(history);
+	IsValid = _frame.isValid();
 }
 
 void ULeapFrame::setFrame(const Leap::Frame &frame)
 {
 	_frame = frame;
+	IsValid = _frame.isValid();
 }
 
 const Leap::Frame &ULeapFrame::getFrame() const
