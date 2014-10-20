@@ -3,7 +3,7 @@ leap-ue4
 
 An event-driven [Leap Motion](http://www.leapmotion.com) plugin for the Unreal Engine 4.
 
-Main use is by subscribing to events within your blueprint, but it also supports polling the LeapController for past 60 frames. You can extend functionality to any blueprint through adding the LeapInterfaceEvent interface then adding the LeapController component to that blueprint and setting delegate to self. This same architecture is available to C++ if you prefer, which also supports both event-driven and polling style use.
+Main method of use is by subscribing to events within your blueprint, but it also supports polling through functions called on the LeapController for up to the 60 past frames. You can extend functionality to any blueprint through adding the LeapInterfaceEvent interface then adding the LeapController component to that blueprint. This same architecture is available to C++ if you prefer, which also supports both event-driven and polling style use.
 
 See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-Leap-Motion-Event-Driven) for version downloads and development updates.
 
@@ -11,7 +11,7 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 
 
 1. Create new or open a project. 
-2. Browse to your project root (typically found at *Documents/Unreal Project/{Your Project Root}*)
+2. Browse to your project root (typically found at *Documents/Unreal Projects/{Your Project Root}*)
 3. Copy *Plugins* folder into your Project root.
 4. Copy *Binaries* folder into your Project root.
 5. Restart the Editor and open your project again.
@@ -96,7 +96,7 @@ For demonstration purposes the distortion map is also shown on the right.
 ###Gestures###
 Require enabling before receiving events, below is an example of how to get the Circle gesture to emit and how to filter it.
 
-<img src="http://i.imgur.com/czSJ1sg.png">
+<img src="http://i.imgur.com/102W2cT.png">
 
 ##How to use it - Blueprint - Polling##
 
@@ -104,21 +104,23 @@ When you create a class blueprint you can add a component called LeapController,
 <br/>
 Available blueprint classes branching from LeapController:
 <ul>
-<li>Frame</li>
-<li>HandList</li>
-<li>Hand</li>
 <li>Arm</li>
-<li>FingerList</li>
+<li>Bone</li>
 <li>Finger</li>
-<li>PointableList</li>
-<li>Pointable</li>
+<li>FingerList</li>
+<li>Frame</li>
 <li>Gesture</li>
 <li>GestureList</li>
-<li>Image - Preliminary Support</li> 
+<li>Hand</li>
+<li>HandList</li>
+<li>Frame</li>
+<li>Image</li> 
 <li>ImageList</li> 
 <li>InteractionBox</li>
-<li>ToolList</li>
+<li>Pointable</li>
+<li>PointableList</li>
 <li>Tool</li>
+<li>ToolList</li>
 </ul>
 
 ##Shipping/Packaged Builds##
