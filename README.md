@@ -98,6 +98,10 @@ Require enabling before receiving events, below is an example of how to get the 
 
 <img src="http://i.imgur.com/102W2cT.png">
 
+With 0.7.2 the plugin supports the gesture sub-classes directly, here is an example of showing a debug sphere around the circle you are gesturing. Note that you can use the generic gesture detection event and cast the gesture to your sub-gesture or use the sub-gesture specific event. Both are equivalent.
+
+<img src="http://i.imgur.com/hQBIYTH.png">
+
 ##How to use it - Blueprint - Polling##
 
 When you create a class blueprint you can add a component called LeapController, this contains all the functionality that the LeapController has specified in their API. From the controller you can get the frame and do what you want with features currently available.<br/>
