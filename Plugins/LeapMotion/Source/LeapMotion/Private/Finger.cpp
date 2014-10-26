@@ -2,12 +2,21 @@
 #include "Finger.h"
 #include "Bone.h"
 
-UFinger::UFinger(const FPostConstructInitializeProperties &init) : UPointable(init)
+
+class PrivateFinger
+{
+public:
+	Leap::Finger finger;
+};
+
+
+UFinger::UFinger(const FPostConstructInitializeProperties &init) : UPointable(init), _private(new PrivateFinger())
 {
 }
 
 UFinger::~UFinger()
 {
+	delete _private;
 }
 
 UBone *UFinger::Bone(BoneType type)
@@ -35,31 +44,31 @@ UBone *UFinger::Bone(BoneType type)
 		rtype = Leap::Bone::TYPE_METACARPAL;
 		break;
 	}
-	rbone = _finger.bone(rtype);
+	rbone = _private->finger.bone(rtype);
 	bone->setBone(rbone);
 	return (bone);
 }
 
 void UFinger::setFinger(const Leap::Finger &finger)
 {
-	_finger = finger;
+	_private->finger = finger;
 
-	setPointable(_finger);
+	setPointable(_private->finger);
 
 	//Set convenience bones
 	if (!Metacarpal)
 		Metacarpal = NewObject<UBone>(this, UBone::StaticClass());
-	Metacarpal->setBone(_finger.bone(Leap::Bone::TYPE_METACARPAL));
+	Metacarpal->setBone(_private->finger.bone(Leap::Bone::TYPE_METACARPAL));
 
 	if (!Proximal)
 		Proximal = NewObject<UBone>(this, UBone::StaticClass());
-	Proximal->setBone(_finger.bone(Leap::Bone::TYPE_PROXIMAL));
+	Proximal->setBone(_private->finger.bone(Leap::Bone::TYPE_PROXIMAL));
 
 	if (!Intermediate)
 		Intermediate = NewObject<UBone>(this, UBone::StaticClass());
-	Intermediate->setBone(_finger.bone(Leap::Bone::TYPE_INTERMEDIATE));
+	Intermediate->setBone(_private->finger.bone(Leap::Bone::TYPE_INTERMEDIATE));
 
 	if (!Distal)
 		Distal = NewObject<UBone>(this, UBone::StaticClass());
-	Distal->setBone(_finger.bone(Leap::Bone::TYPE_DISTAL));
+	Distal->setBone(_private->finger.bone(Leap::Bone::TYPE_DISTAL));
 }

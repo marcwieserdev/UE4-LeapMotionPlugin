@@ -1,49 +1,60 @@
 #include "LeapMotionPrivatePCH.h"
 
-UHandList::UHandList(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivateHandList
+{
+public:
+	Leap::HandList hands;
+	UHand* frontmost = NULL;
+	UHand* leftmost = NULL;
+	UHand* rightmost = NULL;
+	UHand* indexHand = NULL;
+};
+
+UHandList::UHandList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateHandList())
 {
 }
 
 UHandList::~UHandList()
 {
+	delete _private;
 }
 
 UHand* UHandList::Frontmost()
 {
-	if (!_frontmost)
-		_frontmost = NewObject<UHand>(this);
-	_frontmost->setHand(_hands.frontmost());
-	return (_frontmost);
+	if (_private->frontmost == NULL)
+		_private->frontmost = NewObject<UHand>(this);
+	_private->frontmost->setHand(_private->hands.frontmost());
+	return (_private->frontmost);
 }
 
 UHand* UHandList::Leftmost()
 {
-	if (!_leftmost)
-		_leftmost = NewObject<UHand>(this);
-	_leftmost->setHand(_hands.leftmost());
-	return (_leftmost);
+	if (_private->leftmost == NULL)
+		_private->leftmost = NewObject<UHand>(this);
+	_private->leftmost->setHand(_private->hands.leftmost());
+	return (_private->leftmost);
 }
 
 UHand* UHandList::Rightmost()
 {
-	if (!_rightmost)
-		_rightmost = NewObject<UHand>(this);
-	_rightmost->setHand(_hands.rightmost());
-	return (_rightmost);
+	if (_private->rightmost == NULL)
+		_private->rightmost = NewObject<UHand>(this);
+	_private->rightmost->setHand(_private->hands.rightmost());
+	return (_private->rightmost);
 }
 
 UHand* UHandList::getIndex(int32 index)
 {
-	if (!_indexHand)
-		_indexHand = NewObject<UHand>(this);
-	_indexHand->setHand(_hands[index]);
-	return (_indexHand);
+	if (_private->indexHand == NULL)
+		_private->indexHand = NewObject<UHand>(this);
+	_private->indexHand->setHand(_private->hands[index]);
+	return (_private->indexHand);
 }
 
 void UHandList::setHandList(const Leap::HandList &handlist)
 {
-	_hands = handlist;
+	_private->hands = handlist;
 
-	Count = _hands.count();
-	IsEmpty = _hands.isEmpty();
+	Count = _private->hands.count();
+	IsEmpty = _private->hands.isEmpty();
 }

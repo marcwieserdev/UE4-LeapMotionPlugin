@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "FingerList.generated.h"
 
 UCLASS(BlueprintType)
@@ -34,11 +34,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Finger List")
 	class UFinger *rightmost();
 
-	void setFingerList(const Leap::FingerList &pointables);
+	void setFingerList(const class Leap::FingerList &pointables);
+
 private:
-	Leap::FingerList _fingers;
-	UFinger* _frontmost;
-	UFinger* _leftmost;
-	UFinger* _rightmost;
-	UFinger* _pointableById;
+	class PrivateFingerList* _private;
 };

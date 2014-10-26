@@ -1,17 +1,24 @@
 #include "LeapMotionPrivatePCH.h"
 #include "Tool.h"
 
-UTool::UTool(const FPostConstructInitializeProperties &init) : UPointable(init)
+class PrivateTool
+{
+public:
+	Leap::Tool tool;
+};
+
+UTool::UTool(const FPostConstructInitializeProperties &init) : UPointable(init), _private(new PrivateTool())
 {
 }
 
 UTool::~UTool()
 {
+	delete _private;
 }
 
 void UTool::setTool(const Leap::Tool &tool)
 {
-	_tool = tool;
+	_private->tool = tool;
 
-	setPointable(_tool);
+	setPointable(_private->tool);
 }

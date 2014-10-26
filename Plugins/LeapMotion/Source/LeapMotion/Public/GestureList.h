@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "GestureList.generated.h"
 
 UCLASS(BlueprintType)
@@ -21,9 +21,8 @@ public:
 
 	UGesture* operator[](int index);
 
-	void setGestureList(const Leap::GestureList &gesturelist);
+	void setGestureList(const class Leap::GestureList &gesturelist);
 
 private:
-	Leap::GestureList _gestures;
-	UGesture* _gesture;
+	class PrivateGestureList* _private;
 };

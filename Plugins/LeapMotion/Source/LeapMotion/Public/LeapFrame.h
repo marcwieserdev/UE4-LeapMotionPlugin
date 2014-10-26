@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "LeapFrame.generated.h"
 
 UCLASS(BlueprintType)
@@ -34,18 +34,9 @@ public:
 	//Todo: If appropriate rotationAngle->Matrix, scaleFactor, translation
 
 	void setFrame(Leap::Controller &leap, int history = 0);
-	void setFrame(const Leap::Frame &frame);
+	void setFrame(const class Leap::Frame &frame);
 	const Leap::Frame &getFrame() const;
-private:
-	Leap::Frame _frame;
-	UHandList* _hands;
-	UFingerList* _fingers;
-	UGestureList* _gestures;
-	UInteractionBox* _interactionBox;
-	UPointableList* _pointableList;
-	ULeapImageList* _leapImageList;
 
-	UHand* _eventHand;
-	UFinger* _eventFinger;
-	UGesture* _eventGesture;
+private:
+	class PrivateLeapFrame* _private;
 };

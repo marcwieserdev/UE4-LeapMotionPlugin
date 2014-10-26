@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Hand.generated.h"
 
 UCLASS(BlueprintType)
@@ -101,9 +101,8 @@ public:
 
 	bool operator==(const UHand &) const;
 
-	void setHand(const Leap::Hand &hand);
+	void setHand(const class Leap::Hand &hand);
+
 private:
-	Leap::Hand _hand;
-	ULeapFrame* _frame;
-	UFingerList* _fingers;
+	class PrivateHand* _private;
 };

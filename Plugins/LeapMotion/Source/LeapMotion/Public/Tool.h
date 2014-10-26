@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Pointable.h"
 #include "Tool.generated.h"
 
@@ -11,7 +11,8 @@ class UTool : public UPointable
 public:
 	~UTool();
 
-	void setTool(const Leap::Tool &tool);
+	void setTool(const class Leap::Tool &tool);
+
 private:
-	Leap::Tool _tool;
+	class PrivateTool* _private;
 };

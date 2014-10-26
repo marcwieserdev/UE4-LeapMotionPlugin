@@ -71,6 +71,18 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "GestureDetected", CompactNodeTitle = "", Keywords = "gesture detect"), Category = "Leap Interface Event")
 	void GestureDetected(UGesture* gesture);
 
+	UFUNCTION(BlueprintImplementableEvent, meta = (Keywords = "gesture circle detect"), Category = "Leap Interface Event")
+	void CircleGestureDetected(UCircleGesture* gesture);
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (Keywords = "gesture key tap detect"), Category = "Leap Interface Event")
+	void KeyTapGestureDetected(UKeyTapGesture* gesture);
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (Keywords = "gesture screen tap detect"), Category = "Leap Interface Event")
+	void ScreenTapGestureDetected(UScreenTapGesture* gesture);
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (Keywords = "gesture swipe detect"), Category = "Leap Interface Event")
+	void SwipeGestureDetected(USwipeGesture* gesture);
+
 	//Help identifying
 	virtual FString ToString();
 };

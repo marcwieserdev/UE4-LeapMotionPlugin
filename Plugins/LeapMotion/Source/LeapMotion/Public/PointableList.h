@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "PointableList.generated.h"
 
 UCLASS(BlueprintType)
@@ -40,12 +40,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Pointable List")
 	class UPointable *rightmost();
 
-	void setPointableList(const Leap::PointableList &pointables);
+	void setPointableList(const class Leap::PointableList &pointables);
 
 private:
-	Leap::PointableList _pointables;
-	UPointable* _leftmost;
-	UPointable* _rightmost;
-	UPointable* _frontmost;
-	UPointable* _pointableById;
+	class PrivatePointableList* _private;
 };

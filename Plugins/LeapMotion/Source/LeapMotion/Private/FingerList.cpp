@@ -2,12 +2,22 @@
 #include "FingerList.h"
 #include "Finger.h"
 
-UFingerList::UFingerList(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivateFingerList{
+public:
+	Leap::FingerList fingers;
+	UFinger* frontmost = NULL;
+	UFinger* leftmost = NULL;
+	UFinger* rightmost = NULL;
+	UFinger* pointableById = NULL;
+};
+
+UFingerList::UFingerList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateFingerList())
 {
 }
 
 UFingerList::~UFingerList()
 {
+	delete _private;
 }
 
 UFingerList *UFingerList::append(const UFingerList *list)
@@ -15,7 +25,7 @@ UFingerList *UFingerList::append(const UFingerList *list)
 	UFingerList *newlist;
 
 	newlist = NewObject<UFingerList>(this, UFingerList::StaticClass());
-	newlist->setFingerList(this->_fingers.append(list->_fingers));
+	newlist->setFingerList(_private->fingers.append(list->_private->fingers));
 	return (newlist);
 }
 
@@ -24,47 +34,47 @@ UFingerList *UFingerList::extended()
 	UFingerList *newlist;
 
 	newlist = NewObject<UFingerList>(this, UFingerList::StaticClass());
-	newlist->setFingerList(_fingers.extended());
+	newlist->setFingerList(_private->fingers.extended());
 	return (newlist);
 }
 
 UFinger *UFingerList::leftmost()
 {
-	if (!_leftmost)
-		_leftmost = NewObject<UFinger>(this, UFinger::StaticClass());
-	_leftmost->setFinger(_fingers.leftmost());
-	return (_leftmost);
+	if (_private->leftmost == NULL)
+		_private->leftmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_private->leftmost->setFinger(_private->fingers.leftmost());
+	return (_private->leftmost);
 }
 
 UFinger *UFingerList::rightmost()
 {
-	if (!_rightmost)
-		_rightmost = NewObject<UFinger>(this, UFinger::StaticClass());
-	_rightmost->setFinger(_fingers.rightmost());
-	return (_rightmost);
+	if (_private->rightmost == NULL)
+		_private->rightmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_private->rightmost->setFinger(_private->fingers.rightmost());
+	return (_private->rightmost);
 }
 
 
 UFinger *UFingerList::frontmost()
 {
-	if (!_frontmost)
-		_frontmost = NewObject<UFinger>(this, UFinger::StaticClass());
-	_frontmost->setFinger(_fingers.frontmost());
-	return (_frontmost);
+	if (_private->frontmost == NULL)
+		_private->frontmost = NewObject<UFinger>(this, UFinger::StaticClass());
+	_private->frontmost->setFinger(_private->fingers.frontmost());
+	return (_private->frontmost);
 }
 
 UFinger *UFingerList::getPointableById(int32 id)
 {
-	if (!_pointableById)
-		_pointableById = NewObject<UFinger>(this, UFinger::StaticClass());
-	_pointableById->setFinger(_fingers[id]);
-	return (_pointableById);
+	if (_private->pointableById == NULL)
+		_private->pointableById = NewObject<UFinger>(this, UFinger::StaticClass());
+	_private->pointableById->setFinger(_private->fingers[id]);
+	return (_private->pointableById);
 }
 
 void UFingerList::setFingerList(const Leap::FingerList &fingers)
 {
-	_fingers = fingers;
+	_private->fingers = fingers;
 
-	Count = _fingers.count();
-	IsEmpty = _fingers.isEmpty();
+	Count = _private->fingers.count();
+	IsEmpty = _private->fingers.isEmpty();
 }

@@ -1,19 +1,27 @@
 #include "LeapMotionPrivatePCH.h"
 
-UGestureList::UGestureList(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivateGestureList
+{
+public:
+	Leap::GestureList gestures;
+	UGesture* gesture = NULL;
+};
+
+UGestureList::UGestureList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateGestureList())
 {
 }
 
 UGestureList::~UGestureList()
 {
+	delete _private;
 }
 
 UGesture* UGestureList::getIndex(int32 index)
 {
-	if (!_gesture)
-		_gesture = NewObject<UGesture>(this, UGesture::StaticClass());
-	_gesture->setGesture(_gestures[index]);
-	return (_gesture);
+	if (_private->gesture == NULL)
+		_private->gesture = NewObject<UGesture>(this, UGesture::StaticClass());
+	_private->gesture->setGesture(_private->gestures[index]);
+	return (_private->gesture);
 }
 
 UGesture* UGestureList::operator[](int index)
@@ -23,8 +31,8 @@ UGesture* UGestureList::operator[](int index)
 
 void UGestureList::setGestureList(const Leap::GestureList &GestureList)
 {
-	_gestures = GestureList;
+	_private->gestures = GestureList;
 
-	Count = _gestures.count();
-	IsEmpty = _gestures.isEmpty();
+	Count = _private->gestures.count();
+	IsEmpty = _private->gestures.isEmpty();
 }

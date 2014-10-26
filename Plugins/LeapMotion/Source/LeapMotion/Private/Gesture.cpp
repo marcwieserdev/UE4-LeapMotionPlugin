@@ -1,35 +1,45 @@
 #include "LeapMotionPrivatePCH.h"
 
-UGesture::UGesture(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivateGesture
+{
+public:
+	Leap::Gesture gesture;
+	ULeapFrame* frame = NULL;
+	UHandList* hands = NULL;
+	UPointableList* pointables = NULL;
+};
+
+UGesture::UGesture(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateGesture())
 {
 }
 
 UGesture::~UGesture()
 {
+	delete _private;
 }
 
 ULeapFrame* UGesture::Frame()
 {
-	if (!_frame)
-		_frame = NewObject<ULeapFrame>(this);
-	_frame->setFrame(_gesture.frame());
-	return (_frame);
+	if (_private->frame == NULL)
+		_private->frame = NewObject<ULeapFrame>(this);
+	_private->frame->setFrame(_private->gesture.frame());
+	return (_private->frame);
 }
 
 UHandList* UGesture::Hands()
 {
-	if (!_hands)
-		_hands = NewObject<UHandList>(this);
-	_hands->setHandList(_gesture.hands());
-	return (_hands);
+	if (_private->hands == NULL)
+		_private->hands = NewObject<UHandList>(this);
+	_private->hands->setHandList(_private->gesture.hands());
+	return (_private->hands);
 }
 
 UPointableList* UGesture::Pointables()
 {
-	if (!_pointables)
-		_pointables = NewObject<UPointableList>(this);
-	_pointables->setPointableList(_gesture.pointables());
-	return (_pointables);
+	if (_private->pointables == NULL)
+		_private->pointables = NewObject<UPointableList>(this);
+	_private->pointables->setPointableList(_private->gesture.pointables());
+	return (_private->pointables);
 }
 
 LeapGestureState gestureState(Leap::Gesture::State state)
@@ -66,12 +76,12 @@ LeapGestureType gestureType(Leap::Gesture::Type type)
 
 void UGesture::setGesture(const Leap::Gesture &Gesture)
 {
-	_gesture = Gesture;
+	_private->gesture = Gesture;
 
-	Duration = _gesture.duration();
-	DurationSeconds = _gesture.durationSeconds();
-	Id = _gesture.id();
-	IsValid = _gesture.isValid();
-	State = gestureState(_gesture.state());
-	Type = gestureType(_gesture.type());
+	Duration = _private->gesture.duration();
+	DurationSeconds = _private->gesture.durationSeconds();
+	Id = _private->gesture.id();
+	IsValid = _private->gesture.isValid();
+	State = gestureState(_private->gesture.state());
+	Type = gestureType(_private->gesture.type());
 }

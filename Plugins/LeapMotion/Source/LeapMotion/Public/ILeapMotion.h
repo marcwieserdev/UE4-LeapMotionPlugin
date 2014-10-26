@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 
 
 /**
@@ -34,5 +34,7 @@ public:
 	{
 		return FModuleManager::Get().IsModuleLoaded( "LeapMotion" );
 	}
+
+	virtual class Leap::Controller* Controller(){ return NULL; };
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Bone.generated.h"
 
 UENUM(BlueprintType)
@@ -53,9 +53,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = Leap)
 	bool equal(const UBone *other) const;
 
+	void setBone(const class Leap::Bone &bone);
 
-
-	void setBone(const Leap::Bone &bone);
 private:
-	Leap::Bone _bone;
+	class PrivateBone* _private;
 };

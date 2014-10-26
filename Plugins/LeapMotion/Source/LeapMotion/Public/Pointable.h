@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Pointable.generated.h"
 
 UENUM(BlueprintType)
@@ -73,10 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	float Width;
 
-	void setPointable(const Leap::Pointable &pointable);
+	void setPointable(const class Leap::Pointable &pointable);
 	const Leap::Pointable &getPointable() const;
+
 private:
-	Leap::Pointable _pointable;
-	ULeapFrame* _rframe;
-	UHand* _rhand;
+	class PrivatePointable* _private;
 };

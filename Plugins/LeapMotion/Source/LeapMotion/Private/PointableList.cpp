@@ -2,12 +2,23 @@
 #include "PointableList.h"
 #include "Pointable.h"
 
-UPointableList::UPointableList(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivatePointableList
+{
+public:
+	Leap::PointableList pointables;
+	UPointable* leftmost = NULL;
+	UPointable* rightmost = NULL;
+	UPointable* frontmost = NULL;
+	UPointable* pointableById = NULL;
+};
+
+UPointableList::UPointableList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivatePointableList())
 {
 }
 
 UPointableList::~UPointableList()
 {
+	delete _private;
 }
 
 UPointableList *UPointableList::append(UPointableList *list)
@@ -15,7 +26,7 @@ UPointableList *UPointableList::append(UPointableList *list)
 	UPointableList *newlist;
 
 	newlist = NewObject<UPointableList>(this, UPointableList::StaticClass());
-	newlist->setPointableList(this->_pointables.append(list->_pointables));
+	newlist->setPointableList(_private->pointables.append(list->_private->pointables));
 	return (newlist);
 }
 
@@ -24,7 +35,7 @@ UPointableList *UPointableList::append(UPointableList *list)
 	UPointableList *newlist;
 
 	newlist = NewObject<UPointableList>(this, UPointableList::StaticClass());
-	newlist->setPointableList(this->_pointables.append(list->_tools));
+	newlist->setPointableList(this->_private->pointables.append(list->_tools));
 	return (newlist);
 }
 
@@ -33,7 +44,7 @@ UPointableList *UPointableList::appendFingers(UFingerList *list)
 	UPointableList *newlist;
 
 	newlist = NewObject<UPointableList>(this, UPointableList::StaticClass());
-	newlist->setPointableList(this->_pointables.append(list->getTools()));
+	newlist->setPointableList(this->_private->pointables.append(list->getTools()));
 	return (newlist);
 }*/
 
@@ -42,46 +53,46 @@ UPointableList *UPointableList::extended()
 	UPointableList *newlist;
 
 	newlist = NewObject<UPointableList>(this);
-	newlist->setPointableList(_pointables.extended());
+	newlist->setPointableList(_private->pointables.extended());
 	return (newlist);
 }
 
 UPointable *UPointableList::leftmost()
 {
-	if (!_leftmost)
-		_leftmost = NewObject<UPointable>(this);
-	_leftmost->setPointable(_pointables.leftmost());
-	return (_leftmost);
+	if (_private->leftmost == NULL)
+		_private->leftmost = NewObject<UPointable>(this);
+	_private->leftmost->setPointable(_private->pointables.leftmost());
+	return (_private->leftmost);
 }
 
 UPointable *UPointableList::rightmost()
 {
-	if (!_rightmost)
-		_rightmost = NewObject<UPointable>(this);
-	_rightmost->setPointable(_pointables.rightmost());
-	return (_rightmost);
+	if (_private->rightmost == NULL)
+		_private->rightmost = NewObject<UPointable>(this);
+	_private->rightmost->setPointable(_private->pointables.rightmost());
+	return (_private->rightmost);
 }
 
 
 UPointable *UPointableList::frontmost()
 {
-	if (!_frontmost)
-		_frontmost = NewObject<UPointable>(this);
-	_frontmost->setPointable(_pointables.frontmost());
-	return (_frontmost);
+	if (_private->frontmost == NULL)
+		_private->frontmost = NewObject<UPointable>(this);
+	_private->frontmost->setPointable(_private->pointables.frontmost());
+	return (_private->frontmost);
 }
 
 UPointable *UPointableList::getPointableById(int32 id)
 {
-	if (!_pointableById)
-		_pointableById = NewObject<UPointable>(this);
-	_pointableById->setPointable(_pointables[id]);
-	return (_pointableById);
+	if (_private->pointableById == NULL)
+		_private->pointableById = NewObject<UPointable>(this);
+	_private->pointableById->setPointable(_private->pointables[id]);
+	return (_private->pointableById);
 }
 
 void UPointableList::setPointableList(const Leap::PointableList &pointables)
 {
-	_pointables = pointables;
-	Count = _pointables.count();
-	IsEmpty = _pointables.isEmpty();
+	_private->pointables = pointables;
+	Count = _private->pointables.count();
+	IsEmpty = _private->pointables.isEmpty();
 }

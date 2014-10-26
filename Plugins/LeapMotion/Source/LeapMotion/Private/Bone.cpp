@@ -1,22 +1,29 @@
 #include "LeapMotionPrivatePCH.h"
 #include "Bone.h"
 
-UBone::UBone(const FPostConstructInitializeProperties &init) : UObject(init)
+class PrivateBone
+{
+public:
+	Leap::Bone bone;
+};
+
+UBone::UBone(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateBone())
 {
 }
 
 UBone::~UBone()
 {
+	delete _private;
 }
 
 bool UBone::different(const UBone *other) const
 {
-	return (_bone != other->_bone);
+	return (_private->bone != other->_private->bone);
 }
 
 bool UBone::equal(const UBone *other) const
 {
-	return (_bone == other->_bone);
+	return (_private->bone == other->_private->bone);
 }
 
 BoneType type(Leap::Bone::Type type)
@@ -38,24 +45,24 @@ BoneType type(Leap::Bone::Type type)
 
 void UBone::setBone(const Leap::Bone &bone)
 {
-	_bone = bone;
+	_private->bone = bone;
 
 	Leap::Matrix matrix;
 	FVector inX, inY, inZ, inW;
 
-	matrix = _bone.basis();
+	matrix = _private->bone.basis();
 	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
 	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
 	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
 	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
 
 	Basis = (FMatrix(inX, inY, inZ, inW));
-	Center = convertAndScaleLeapToUE(_bone.center());
-	Direction = convertAndScaleLeapToUE(_bone.direction());
-	IsValid = _bone.isValid();
-	Length = _bone.length();
-	NextJoint = convertAndScaleLeapToUE(_bone.nextJoint());
-	PrevJoint = convertAndScaleLeapToUE(_bone.prevJoint());
-	Type = type(_bone.type());
-	Width = _bone.width();
+	Center = convertAndScaleLeapToUE(_private->bone.center());
+	Direction = convertAndScaleLeapToUE(_private->bone.direction());
+	IsValid = _private->bone.isValid();
+	Length = _private->bone.length();
+	NextJoint = convertAndScaleLeapToUE(_private->bone.nextJoint());
+	PrevJoint = convertAndScaleLeapToUE(_private->bone.prevJoint());
+	Type = type(_private->bone.type());
+	Width = _private->bone.width();
 }

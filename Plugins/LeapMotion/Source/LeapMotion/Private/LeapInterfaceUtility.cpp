@@ -3,6 +3,8 @@
 #include "LeapMotionPrivatePCH.h"
 #include "IHeadMountedDisplay.h"
 
+DEFINE_LOG_CATEGORY(LeapPluginLog);
+
 //NB: localized variable for transforms
 bool LeapShouldAdjustForFacing = false;
 bool LeapShouldAdjustRotationForHMD = false;

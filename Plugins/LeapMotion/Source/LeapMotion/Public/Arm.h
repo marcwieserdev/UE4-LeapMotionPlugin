@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Arm.generated.h"
 
 UCLASS(BlueprintType)
@@ -33,9 +33,10 @@ public:
 
 	bool operator!=(const UArm &) const;
 
-	bool operator==(const UArm &) const;
+	bool operator==(const UArm &) const; 
 
-	void setArm(const Leap::Arm &arm);
+	void setArm(const class Leap::Arm &arm);
+
 private:
-	Leap::Arm _arm;
+	class PrivateArm* _private;
 };

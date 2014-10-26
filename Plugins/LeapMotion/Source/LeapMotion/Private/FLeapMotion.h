@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "LeapMotionPrivatePCH.h"
 #include "../Public/ILeapMotion.h"
 
 /**
@@ -10,8 +11,10 @@
  */
 class FLeapMotion : public ILeapMotion
 {
+	Leap::Controller LeapController;
 public:
-
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+
+	Leap::Controller* Controller();
 };

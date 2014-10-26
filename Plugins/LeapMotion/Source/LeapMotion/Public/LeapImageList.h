@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "LeapImageList.generated.h"
 
 UCLASS(BlueprintType)
@@ -21,10 +21,8 @@ public:
 
 	ULeapImage* operator[](int index);
 
-	void setLeapImageList(const Leap::ImageList &LeapImageList);
+	void setLeapImageList(const class Leap::ImageList &LeapImageList);
 
 private:
-	Leap::ImageList _leapImages;
-	ULeapImage* _indexImage1;
-	ULeapImage* _indexImage2;
+	class PrivateLeapImageList* _private;
 };

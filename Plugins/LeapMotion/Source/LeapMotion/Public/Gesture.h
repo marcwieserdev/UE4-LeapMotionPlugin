@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Gesture.generated.h"
 
 
@@ -60,10 +60,8 @@ public:
 	bool operator!=(const UGesture &rhs) const;
 	bool operator==(const UGesture &rhs) const;
 
-	void setGesture(const Leap::Gesture &Gesture);
+	void setGesture(const class Leap::Gesture &Gesture);
+
 private:
-	Leap::Gesture _gesture;
-	ULeapFrame* _frame;
-	UHandList* _hands;
-	UPointableList* _pointables;
+	class PrivateGesture* _private;
 };

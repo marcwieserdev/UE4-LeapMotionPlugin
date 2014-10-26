@@ -1,30 +1,34 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "LeapEventInterface.h"
-#include <vector>
 #include "LeapController.generated.h"
 
-//Todo: 
-//-change functions into read-only properties to reduce exec clutter. Can easily remove all const to stop call target bp errors.
-
-//Used for Reliable State Tracking
-struct LeapHandStateData{
-	bool grabbed;
-	bool pinched;
-	int32 fingerCount;
-	int32 id;
-};
-
-class LeapStateData{
-public:
-	bool hasStateForId(int32 hId, LeapHandStateData& state);
-	LeapHandStateData stateForId(int32 hId);
-	void setStateForId(LeapHandStateData handState, int32 hId);
-
-	std::vector<LeapHandStateData> handStates;
-	int32 handCount;
-};
+//Forward declare namespace so public is not exposed to Leap header
+namespace Leap
+{
+	class Arm;
+	class Bone;
+	class CircleGesture;
+	class Controller;
+	class Finger;
+	class FingerList;
+	class Gesture;
+	class GestureList;
+	class Hand;
+	class HandList;
+	class InteractionBox;
+	class KeyTapGesture;
+	class Frame;
+	class Image;
+	class ImageList;
+	class Pointable;
+	class PointableList;
+	class ScreenTapGesture;
+	class SwipeGesture;
+	class Tool;
+	class ToolList;
+}
 
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
@@ -40,9 +44,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = "Leap Controller")
 	bool isConnected() const;
 
-	//Frame
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Frame", CompactNodeTitle = "", Keywords = "get frame"), Category = "Leap Controller")
-	class ULeapFrame* getFrame(int32 history);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Get Frame", CompactNodeTitle = "Frame", Keywords = "get frame"), Category = "Leap Controller")
+	class ULeapFrame* Frame(int32 history);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hasFocus", CompactNodeTitle = "", Keywords = "has Focus"), Category = "Leap Controller")
 	bool hasFocus() const;
@@ -54,28 +57,16 @@ public:
 	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableImageSupport", Keywords = "use allow images set policy"), Category = "Leap Controller")
-	void enableImageSupport(bool allowImages);
+	void enableImageSupport(bool allowImages = true);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", CompactNodeTitle = "", Keywords = "optimize hmd facing top"), Category = "Leap Controller")
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", Keywords = "optimize hmd facing top"), Category = "Leap Controller")
 	void enableGesture(enum LeapGestureType type, bool enable = true);
-
-	const Leap::Controller &getData() const;
 
 	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")
 	void SetInterfaceDelegate(UObject* newDelegate);
 
 private:
-	Leap::Controller	_leap;
-	ULeapFrame* _frame;
-	UHand* _eventHand;
-	UFinger* _eventFinger;
-	UGesture* _eventGesture;
-	UObject* _interfaceDelegate;
-	bool _optimizeForHMD;
-	bool _allowImages;	
-	LeapStateData _pastState;
-
-	Leap::Controller::PolicyFlag buildPolicyFromBools();
+	class LeapControllerPrivate* _private;
 	void InterfaceEventTick(float deltaTime);
 };

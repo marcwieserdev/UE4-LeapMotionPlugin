@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "HandList.generated.h"
 
 UCLASS(BlueprintType)
@@ -28,11 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
 	class UHand* getIndex(int32 index);
 
-	void setHandList(const Leap::HandList &handlist);
+	void setHandList(const class Leap::HandList &handlist);
+
 private:
-	Leap::HandList _hands;
-	UHand* _frontmost;
-	UHand* _leftmost;
-	UHand* _rightmost;
-	UHand* _indexHand;
+	class PrivateHandList* _private;
 };

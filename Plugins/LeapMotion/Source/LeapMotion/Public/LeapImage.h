@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "LeapImage.generated.h"
 
 
@@ -56,16 +56,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
 	int32 Width;
 
-	void setLeapImage(const Leap::Image &LeapImage);
+	void setLeapImage(const class Leap::Image &LeapImage);
 
 private:
-	UTexture2D* imagePointer;
-	UTexture2D* distortionPointer;
-
-	bool validImagePointer();
-	UTexture2D* Texture8FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
-	UTexture2D* Texture32FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
-	UTexture2D* Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
-	UTexture2D* TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
-	Leap::Image _leapImage;
+	class PrivateLeapImage* _private;
 };

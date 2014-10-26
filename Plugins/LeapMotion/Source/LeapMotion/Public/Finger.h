@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LeapMotionPrivatePCH.h"
+#include "LeapMotionPublicPCH.h"
 #include "Pointable.h"
 #include "Finger.generated.h"
 
@@ -27,9 +27,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger")
 	class UBone *Distal;
 
-
-	void setFinger(const Leap::Finger &pointable);
+	void setFinger(const class Leap::Finger &pointable);
 
 private:
-	Leap::Finger _finger;
+	class PrivateFinger* _private;
 };
