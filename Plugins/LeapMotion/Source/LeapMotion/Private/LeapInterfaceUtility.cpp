@@ -4,6 +4,8 @@
 #include "IHeadMountedDisplay.h"
 
 DEFINE_LOG_CATEGORY(LeapPluginLog);
+#define LEAP_TO_UE_SCALE 0.1f
+#define UE_TO_LEAP_SCALE 10.f
 
 //NB: localized variable for transforms
 bool LeapShouldAdjustForFacing = false;
@@ -42,7 +44,7 @@ FVector convertLeapToUE(Leap::Vector leapVector)
 FVector convertAndScaleLeapToUE(Leap::Vector leapVector)
 {
 	//Scale from mm to cm (ue default)
-	FVector vect = FVector(-leapVector.z / 10.f, leapVector.x / 10.f, leapVector.y / 10.f);
+	FVector vect = FVector(-leapVector.z * LEAP_TO_UE_SCALE, leapVector.x * LEAP_TO_UE_SCALE, leapVector.y * LEAP_TO_UE_SCALE);
 
 	//Front facing leap adjustments
 	if (LeapShouldAdjustForFacing)
@@ -61,7 +63,17 @@ Leap::Vector convertUEToLeap(FVector ueVector)
 
 Leap::Vector convertAndScaleUEToLeap(FVector ueVector)
 {
-	return Leap::Vector(ueVector.Y * 10.f, ueVector.Z * 10.f, -ueVector.X * 10.f);
+	return Leap::Vector(ueVector.Y * UE_TO_LEAP_SCALE, ueVector.Z * UE_TO_LEAP_SCALE, -ueVector.X * UE_TO_LEAP_SCALE);
+}
+
+float scaleLeapToUE(float leapFloat)
+{
+	return leapFloat * LEAP_TO_UE_SCALE;	//mm->cm
+}
+
+float scaleUEToLeap(float ueFloat)
+{
+	return ueFloat * UE_TO_LEAP_SCALE;	//mm->cm
 }
 
 void LeapSetShouldAdjustForFacing(bool shouldRotate)

@@ -37,5 +37,5 @@ void UCircleGesture::setGesture(const Leap::CircleGesture &Gesture)
 	Center = convertAndScaleLeapToUE(_private->gesture.center());
 	Normal = convertLeapToUE(_private->gesture.normal());
 	Progress = _private->gesture.progress();
-	Radius = _private->gesture.radius();
+	Radius = scaleLeapToUE(_private->gesture.radius());	//scale
 }

@@ -35,6 +35,6 @@ void USwipeGesture::setGesture(const Leap::SwipeGesture &Gesture)
 
 	Direction = convertLeapToUE(_private->gesture.direction());
 	Position = convertAndScaleLeapToUE(_private->gesture.position());
-	Speed = _private->gesture.speed();
+	Speed = scaleLeapToUE(_private->gesture.speed());
 	StartPosition = convertAndScaleLeapToUE(_private->gesture.startPosition());
 }
