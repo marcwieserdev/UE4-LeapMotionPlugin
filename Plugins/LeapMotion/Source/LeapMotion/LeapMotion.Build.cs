@@ -26,7 +26,6 @@ namespace UnrealBuildTool.Rules
 			PublicIncludePaths.AddRange(
 				new string[] {
 					"LeapMotion/Public",
-                    Path.Combine(ThirdPartyPath, "LeapSDK", "Include"),
 					// ... add public include paths required here ...
 				}
 				);
