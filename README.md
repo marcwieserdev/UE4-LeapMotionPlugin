@@ -62,7 +62,14 @@ Not an exhaustive list, but common use list. See the leap motion documentation f
 <img src="http://i.imgur.com/s790gBs.png">
 
 <li>Add the interface called LeapEventInterface</li>
-<li>Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.</li>
+<li>Add Leap Controller Component through option A or B</li>
+
+<b>Option A:</b> 
+Add directly through components tab
+<img src="http://i.imgur.com/640f5gS.png">
+
+<br/>
+<b>Option B:</b> Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.</li>
 <img src="http://i.imgur.com/y5caGWf.png">
 <li>(Optional, recommended) Drag from the return value, save this as a blueprint variable e.g. Leap.
 <li>(Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use. Keep auto rotate and auto shift if you want the plugin to automatically shift the leap positions to account for HMD movement.
