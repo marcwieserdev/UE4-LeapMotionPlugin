@@ -141,7 +141,7 @@ void UHand::setHand(const Leap::Hand &hand)
 		Arm = NewObject<UArm>(this, UArm::StaticClass());
 	Arm->setArm(_private->hand.arm());
 
-	PalmNormal = convertAndScaleLeapToUE(_private->hand.palmNormal());
+	PalmNormal = convertLeapToUE(_private->hand.palmNormal());
 	PalmPosition = convertAndScaleLeapToUE(_private->hand.palmPosition());
 	PalmVelocity = convertAndScaleLeapToUE(_private->hand.palmVelocity());
 
