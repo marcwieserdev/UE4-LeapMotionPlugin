@@ -38,7 +38,12 @@ FVector adjustForHMD(FVector in)
 //Conversion - use find and replace to change behavior
 FVector convertLeapToUE(Leap::Vector leapVector)
 {
-	return (FVector(-leapVector.z, leapVector.x, leapVector.y));
+	FVector vect = FVector(-leapVector.z, leapVector.x, leapVector.y);
+	if (LeapShouldAdjustForFacing)
+	{
+		vect = adjustForLeapFacing(vect);
+	}
+	return vect;
 }
 
 FVector convertAndScaleLeapToUE(Leap::Vector leapVector)
