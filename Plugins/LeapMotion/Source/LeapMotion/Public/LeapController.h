@@ -38,8 +38,8 @@ class ULeapController : public UActorComponent
 public:
 	~ULeapController();
 	virtual void OnRegister() override;
+	virtual void OnUnregister() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
-	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = "Leap Controller")
 	bool isConnected() const;

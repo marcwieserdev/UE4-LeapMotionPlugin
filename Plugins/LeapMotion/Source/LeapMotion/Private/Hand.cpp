@@ -137,7 +137,7 @@ void UHand::setHand(const Leap::Hand &hand)
 	_private->hand = hand;
 
 	//Set Properties
-	if (!Arm)
+	if (Arm == NULL || !Arm->IsValidLowLevel())
 		Arm = NewObject<UArm>(this, UArm::StaticClass());
 	Arm->setArm(_private->hand.arm());
 

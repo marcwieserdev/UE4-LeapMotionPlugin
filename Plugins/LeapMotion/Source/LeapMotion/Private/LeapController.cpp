@@ -9,6 +9,9 @@
 
 #define LOCTEXT_NAMESPACE "LeapPlugin"
 
+//Global controller count, temporary debug variable since the plugin does not support more than one component. We track it and warn the users.
+int controllerCount = 0;
+
 //Utility function used to debug address allocation - helped find the cdcdcdcd error
 void debugAddress(void* pointer)
 {
@@ -158,6 +161,7 @@ ULeapController::ULeapController(const FPostConstructInitializeProperties &init)
 	//Attach Input Mapping - left for another day
 	//e.g. EKeys::AddKey(FKeyDetails(EKeysLeap::LeapLeftGrab, LOCTEXT("LeapLeftGrab", "Leap Left Grab"), FKeyDetails::GamepadKey));
 	//_private->leap = new Leap::Controller();
+
 }
 
 ULeapController::~ULeapController()
@@ -174,13 +178,19 @@ void ULeapController::OnRegister()
 {
 	Super::OnRegister();
 
-	/*if (ILeapMotion::IsAvailable())
-	{
-		_private->leap = ILeapMotion::Get().Controller();
-	}*/
-
 	//Attach the delegate pointer automatically
 	SetInterfaceDelegate(GetOwner());
+
+	//Track and warn users about multiple components.
+	controllerCount++;
+	if (controllerCount>1)
+		UE_LOG(LogClass, Error, TEXT("Warning! More than one (%d) Leap Controller Component detected! The current plugin version may crash (usually after 40-60sec) with more than one leap component, see main forum thread for details."), controllerCount);
+}
+
+void ULeapController::OnUnregister()
+{
+	Super::OnUnregister();
+	controllerCount--;
 }
 
 void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -190,11 +200,6 @@ void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 	//Forward the component tick
 	InterfaceEventTick(DeltaTime);
-}
-
-void ULeapController::BeginDestroy()
-{
-	Super::BeginDestroy();
 }
 
 ULeapFrame* ULeapController::Frame(int32 history)
@@ -333,10 +338,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		/*UE_LOG(LogTemp, Warning, TEXT("Debug1"));
 
-		debugAddress(this);
-		debugAddress(this->_private);
-		debugAddress(this->_private->eventHand);
-		debugAddress(NULL);*/
+		debugAddress(this);*/
 
 		//Make a UHand
 		if (_private->eventHand == NULL)
