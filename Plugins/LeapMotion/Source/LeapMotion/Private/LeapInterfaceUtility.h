@@ -17,3 +17,6 @@ float scaleUEToLeap(float ueFloat);
 //HMD automation
 void LeapSetShouldAdjustForFacing(bool shouldRotate);
 void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset);
+
+//Pointer debugging
+void UtilityDebugAddress(void* pointer);

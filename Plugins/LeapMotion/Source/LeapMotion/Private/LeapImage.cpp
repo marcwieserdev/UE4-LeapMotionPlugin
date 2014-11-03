@@ -3,6 +3,17 @@
 class PrivateLeapImage
 {
 public:
+	~PrivateLeapImage()
+	{
+		//Ensures our rooted objects are unrooted so they can be GC'd
+		if (imagePointer)
+			imagePointer->RemoveFromRoot();
+		if (imageR8Pointer)
+			imageR8Pointer->RemoveFromRoot();
+		if (distortionPointer)
+			distortionPointer->RemoveFromRoot();
+	}
+
 	Leap::Image leapImage;
 
 	UTexture2D* imagePointer = NULL;
@@ -37,7 +48,7 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidt
 	//Make sure we're valid
 	if (!self->IsValid) 
 	{
-		UE_LOG(LogClass, Error, TEXT("Warning! Invalid Image."));
+		UE_LOG(LeapPluginLog, Error, TEXT("Warning! Invalid Image."));
 		return NULL;
 	}
 	//Instantiate the texture if needed
@@ -49,7 +60,7 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidt
 			//unable to filter the messages out without this (or a pointer to Leap Controller, but this uses less resources).
 			if (ignoreTwoInvalidSizesDone)
 			{
-				UE_LOG(LogClass, Error, TEXT("Warning! Leap Image SDK access is denied, please enable image support from the Leap Controller before events emit (e.g. at BeginPlay)."));
+				UE_LOG(LeapPluginLog, Error, TEXT("Warning! Leap Image SDK access is denied, please enable image support from the Leap Controller before events emit (e.g. at BeginPlay)."));
 			}
 			else
 			{
@@ -65,6 +76,7 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidt
 		}
 		UE_LOG(LeapPluginLog, Log, TEXT("Created Leap Image Texture Sized: %d, %d."), pWidth, pHeight);
 		pointer = UTexture2D::CreateTransient(pWidth, pHeight, format); //PF_B8G8R8A8
+		pointer->SetFlags(RF_RootSet);	//to support more than one leap component, the pointer shouldn't be reclaimed by GC
 	}
 	//If the size changed, recreate the image
 	if (pointer->PlatformData->SizeX != pWidth ||

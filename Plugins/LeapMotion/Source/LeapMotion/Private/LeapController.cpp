@@ -12,18 +12,6 @@
 //Global controller count, temporary debug variable since the plugin does not support more than one component. We track it and warn the users.
 int controllerCount = 0;
 
-//Utility function used to debug address allocation - helped find the cdcdcdcd error
-void debugAddress(void* pointer)
-{
-	const void * address = static_cast<const void*>(pointer);
-	std::stringstream ss;
-	ss << address;
-	std::string name = ss.str();
-	FString string(name.c_str());
-
-	UE_LOG(LogTemp, Warning, TEXT("Address: %s"), *string);
-}
-
 //Input Mapping Keys
 //todo: input mapping left for another day
 /*struct EKeysLeap
@@ -113,10 +101,40 @@ void LeapStateData::setStateForId(LeapHandStateData handState, int32 hId)
 class LeapControllerPrivate
 {
 public:
+	~LeapControllerPrivate()
+	{
+		CleanupEventData();
+	}
+
+	//Ensures our rooted objects are unrooted so they can be GC'd
+	void CleanupEventData()
+	{
+		if (eventHand)
+			eventHand->RemoveFromRoot();
+		if (eventFinger)
+			eventFinger->RemoveFromRoot();
+		if (eventGesture)
+			eventGesture->RemoveFromRoot();
+		if (eventCircleGesture)
+			eventCircleGesture->RemoveFromRoot();
+		if (eventKeyTapGesture)
+			eventKeyTapGesture->RemoveFromRoot();
+		if (eventScreenTapGesture)
+			eventScreenTapGesture->RemoveFromRoot();
+		if (eventSwipeGesture)
+			eventSwipeGesture->RemoveFromRoot();
+		if (eventImage1)
+			eventImage1->RemoveFromRoot();
+		if (eventImage2)
+			eventImage2->RemoveFromRoot();
+	}
+
 	//Properties and Pointers
 	LeapStateData pastState;
 	Leap::Controller leap;
 	ULeapFrame* frame = NULL;
+
+	//Event UObjects, we have to manage memory for these to stop leaks
 	UHand* eventHand = NULL;
 	UFinger* eventFinger = NULL;
 	UGesture* eventGesture = NULL;
@@ -124,15 +142,17 @@ public:
 	UKeyTapGesture* eventKeyTapGesture = NULL;
 	UScreenTapGesture* eventScreenTapGesture = NULL;
 	USwipeGesture* eventSwipeGesture = NULL;
+	ULeapImage* eventImage1 = NULL;
+	ULeapImage* eventImage2 = NULL;
 	
 	UObject* interfaceDelegate = NULL;	//NB they have to be set to null manually or MSFT will set them to CDCDCDCD...
 	bool optimizeForHMD;
 	bool allowImages;
+	bool imageEventsEnabled;
 
 	//Functions
 	Leap::Controller::PolicyFlag buildPolicyFromBools();
 	void SetPolicyFlagsFromBools();
-
 };
 
 //LeapControllerPrivate
@@ -160,8 +180,6 @@ ULeapController::ULeapController(const FPostConstructInitializeProperties &init)
 
 	//Attach Input Mapping - left for another day
 	//e.g. EKeys::AddKey(FKeyDetails(EKeysLeap::LeapLeftGrab, LOCTEXT("LeapLeftGrab", "Leap Left Grab"), FKeyDetails::GamepadKey));
-	//_private->leap = new Leap::Controller();
-
 }
 
 ULeapController::~ULeapController()
@@ -184,13 +202,19 @@ void ULeapController::OnRegister()
 	//Track and warn users about multiple components.
 	controllerCount++;
 	if (controllerCount>1)
-		UE_LOG(LogClass, Error, TEXT("Warning! More than one (%d) Leap Controller Component detected! The current plugin version may crash (usually after 40-60sec) with more than one leap component, see main forum thread for details."), controllerCount);
+		UE_LOG(LeapPluginLog, Warning, TEXT("Warning! More than one (%d) Leap Controller Component detected! Duplication of work and output may result (inefficiency warning)."), controllerCount);
+
+	//UE_LOG(LeapPluginLog, Log, TEXT("Registered Leap Component(%d)."), controllerCount);
 }
 
 void ULeapController::OnUnregister()
 {
-	Super::OnUnregister();
+	//Allow GC of private UObject data
+	_private->CleanupEventData();	//UObjects attached to root need to be unrooted before we unregister so we do not crash between pie sessions (or without attaching to this object, leak them)
 	controllerCount--;
+
+	Super::OnUnregister();
+	//UE_LOG(LeapPluginLog, Log, TEXT("Unregistered Leap Component(%d)."), controllerCount);
 }
 
 void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -236,10 +260,11 @@ void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool auto
 	LeapSetShouldAdjustForHMD(autoRotate, autoShift);
 }
 
-void ULeapController::enableImageSupport(bool allowImages)
+void ULeapController::enableImageSupport(bool allowImages, bool emitImageEvents)
 {
 	_private->allowImages = allowImages;
 	_private->SetPolicyFlagsFromBools();
+	_private->imageEventsEnabled = emitImageEvents;
 }
 
 void ULeapController::enableGesture(LeapGestureType type, bool enable)
@@ -272,7 +297,7 @@ void ULeapController::enableGesture(LeapGestureType type, bool enable)
 void ULeapController::SetInterfaceDelegate(UObject* newDelegate)
 {
 
-	UE_LOG(LogClass, Log, TEXT("InterfaceObject: %s"), *newDelegate->GetName());
+	UE_LOG(LeapPluginLog, Log, TEXT("InterfaceObject: %s"), *newDelegate->GetName());
 
 	//Use this format to support both blueprint and C++ form
 	if (newDelegate->GetClass()->ImplementsInterface(ULeapEventInterface::StaticClass()))
@@ -336,14 +361,16 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		Leap::Hand hand = frame.hands()[i];
 		LeapHandStateData pastHandState = _private->pastState.stateForId(hand.id());		//we use a custom class to hold reliable state tracking based on id's
 
-		/*UE_LOG(LogTemp, Warning, TEXT("Debug1"));
+		/*UE_LOG(LeapPluginLog, Warning, TEXT("Debug1"));
 
 		debugAddress(this);*/
 
 		//Make a UHand
 		if (_private->eventHand == NULL)
+		{
 			_private->eventHand = NewObject<UHand>(this);
-
+			_private->eventHand->SetFlags(RF_RootSet);
+		}
 		_private->eventHand->setHand(hand);
 
 		//Emit hand
@@ -393,7 +420,10 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			ILeapEventInterface::Execute_FingerCountChanged(_private->interfaceDelegate, fingerCount);
 
 		if (_private->eventFinger == NULL)
+		{
 			_private->eventFinger = NewObject<UFinger>(this);
+			_private->eventFinger->SetFlags(RF_RootSet);
+		}
 
 		Leap::Finger finger;
 
@@ -449,29 +479,40 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		switch (type)
 		{
 		case Leap::Gesture::TYPE_CIRCLE:
-			if (_private->eventCircleGesture == NULL)
+			if (_private->eventCircleGesture == NULL){
 				_private->eventCircleGesture = NewObject<UCircleGesture>(this);
+				_private->eventCircleGesture->SetFlags(RF_RootSet);
+			}
 			_private->eventCircleGesture->setGesture(Leap::CircleGesture(gesture));
 			ILeapEventInterface::Execute_CircleGestureDetected(_private->interfaceDelegate, _private->eventCircleGesture);
 			_private->eventGesture = _private->eventCircleGesture;
 			break;
 		case Leap::Gesture::TYPE_KEY_TAP:
 			if (_private->eventKeyTapGesture == NULL)
+			{
 				_private->eventKeyTapGesture = NewObject<UKeyTapGesture>(this);
+				_private->eventKeyTapGesture->SetFlags(RF_RootSet);
+			}
 			_private->eventKeyTapGesture->setGesture(Leap::KeyTapGesture(gesture));
 			ILeapEventInterface::Execute_KeyTapGestureDetected(_private->interfaceDelegate, _private->eventKeyTapGesture);
 			_private->eventGesture = _private->eventKeyTapGesture;
 			break;
 		case Leap::Gesture::TYPE_SCREEN_TAP:
 			if (_private->eventScreenTapGesture == NULL)
+			{
 				_private->eventScreenTapGesture = NewObject<UScreenTapGesture>(this);
+				_private->eventScreenTapGesture->SetFlags(RF_RootSet);
+			}
 			_private->eventScreenTapGesture->setGesture(Leap::ScreenTapGesture(gesture));
 			ILeapEventInterface::Execute_ScreenTapGestureDetected(_private->interfaceDelegate, _private->eventScreenTapGesture);
 			_private->eventGesture = _private->eventScreenTapGesture;
 			break;
 		case Leap::Gesture::TYPE_SWIPE:
 			if (_private->eventSwipeGesture == NULL)
+			{
 				_private->eventSwipeGesture = NewObject<USwipeGesture>(this);
+				_private->eventSwipeGesture->SetFlags(RF_RootSet);
+			}
 			_private->eventSwipeGesture->setGesture(Leap::SwipeGesture(gesture));
 			ILeapEventInterface::Execute_SwipeGestureDetected(_private->interfaceDelegate, _private->eventSwipeGesture);
 			_private->eventGesture = _private->eventSwipeGesture;
@@ -484,6 +525,41 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		if (type != Leap::Gesture::TYPE_INVALID)
 		{
 			ILeapEventInterface::Execute_GestureDetected(_private->interfaceDelegate, _private->eventGesture);
+		}
+	}
+
+	//Image
+	if (_private->allowImages && _private->imageEventsEnabled)
+	{
+		int imageCount = frame.images().count();
+		for (int i = 0; i < imageCount; i++)
+		{
+			Leap::Image image = frame.images()[i];
+
+			//Loop modification - Only emit 0 and 1, use two different pointers so we can get different images
+			if (i == 0)
+			{
+				if (_private->eventImage1 == NULL)
+				{
+					//UE_LOG(LeapPluginLog, Log, TEXT("Created Image 1"));
+					_private->eventImage1 = NewObject<ULeapImage>(this);
+					_private->eventImage1->SetFlags(RF_RootSet);
+				}
+				_private->eventImage1->setLeapImage(image);
+
+				ILeapEventInterface::Execute_RawImageReceived(_private->interfaceDelegate, _private->eventImage1->Texture(), _private->eventImage1);
+			}
+			else if (i == 1)
+			{
+				if (_private->eventImage2 == NULL){
+					//UE_LOG(LeapPluginLog, Log, TEXT("Created Image 2"));
+					_private->eventImage2 = NewObject<ULeapImage>(this);
+					_private->eventImage2->SetFlags(RF_RootSet);
+				}
+				_private->eventImage2->setLeapImage(image);
+
+				ILeapEventInterface::Execute_RawImageReceived(_private->interfaceDelegate, _private->eventImage2->Texture(), _private->eventImage2);
+			}
 		}
 	}
 }

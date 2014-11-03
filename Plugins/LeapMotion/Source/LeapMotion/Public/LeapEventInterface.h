@@ -67,7 +67,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "FingerCountChanged", CompactNodeTitle = "", Keywords = "finger count"), Category = "Leap Interface Event")
 	void FingerCountChanged(int32 count);
 
-	//Gestures
+	//Gestures - Only emits if enabled
 	UFUNCTION(BlueprintImplementableEvent, meta = (FriendlyName = "GestureDetected", CompactNodeTitle = "", Keywords = "gesture detect"), Category = "Leap Interface Event")
 	void GestureDetected(UGesture* gesture);
 
@@ -82,6 +82,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (Keywords = "gesture swipe detect"), Category = "Leap Interface Event")
 	void SwipeGestureDetected(USwipeGesture* gesture);
+
+	//Images - Only emits if enabled
+	UFUNCTION(BlueprintImplementableEvent, Category = "Leap Interface Event")
+	void RawImageReceived(UTexture2D* texture, ULeapImage* image);
 
 	//Help identifying
 	virtual FString ToString();

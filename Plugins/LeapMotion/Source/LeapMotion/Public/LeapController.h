@@ -57,7 +57,7 @@ public:
 	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableImageSupport", Keywords = "use allow images set policy"), Category = "Leap Controller")
-	void enableImageSupport(bool allowImages = true);
+	void enableImageSupport(bool allowImages = true, bool emitImageEvents = true);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", Keywords = "optimize hmd facing top"), Category = "Leap Controller")
 	void enableGesture(enum LeapGestureType type, bool enable = true);

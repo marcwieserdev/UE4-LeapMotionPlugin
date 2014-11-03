@@ -91,3 +91,15 @@ void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset)
 	LeapShouldAdjustRotationForHMD = shouldRotate;
 	LeapShouldAdjustPositionForHMD = shouldOffset;
 }
+
+//Utility function used to debug address allocation - helped find the cdcdcdcd allocation error
+void UtilityDebugAddress(void* pointer)
+{
+	const void * address = static_cast<const void*>(pointer);
+	std::stringstream ss;
+	ss << address;
+	std::string name = ss.str();
+	FString string(name.c_str());
+
+	UE_LOG(LeapPluginLog, Warning, TEXT("Address: %s"), *string);
+}
