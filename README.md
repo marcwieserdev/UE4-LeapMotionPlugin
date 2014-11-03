@@ -91,14 +91,32 @@ with
 
 
 ###Example Leap Image API###
-Drag out nodes like this to obtain an image
-<img src="http://i.imgur.com/WlN3opI.png">
+Supports memory efficient event driven api and leap api style polling
 
-Which gives the following left image. 
+For both cases you need to inform the plugin that you want to receive images.
 
-<img src="http://i.imgur.com/EFp3l1j.png">
+<img src="http://i.imgur.com/mbQuuGG.png">
 
-For demonstration purposes the distortion map is also shown on the right.
+Note that you can control whether events are being emitted by toggling Emit Image events. It is recommended to disable both when not in use for performance and bandwidth reasons.
+
+Example of a toggle
+<img src="http://i.imgur.com/AE8OBHA.png">
+
+####Event Driven Example####
+<img src="http://i.imgur.com/20G6pfa.png">
+
+Which gives the following billboard results (note the finger and palm debug visualization is a result of a separate graph)
+
+<img src="http://i.imgur.com/qRhPHDC.png">
+
+Distortion texture maps and other image parameters can be obtained by branching the LeapImage node (branched in the example graph to obtain the image id).
+
+####Leap API Style Polling####
+The same above result can be achieve by using Leap API style polling like this
+
+<img src="http://i.imgur.com/GxTyG1i.png">
+
+Note that a difference between the two forms occurs when image event toggle is off. The plugin reclaims memory and uses no extra performance in the case of events, whereas polling based example will continue attempting to get a texture even if the allow images is off and will cause the plugin to warn the user to enable images every tick. To get the same functionality as the event driven format a separate boolean would need to be used to branch the execution to stop the log warning spam.
 
 ###Gestures###
 Require enabling before receiving events, below is an example of how to get the Circle gesture to emit and how to filter it.
@@ -117,6 +135,7 @@ Available blueprint classes branching from LeapController:
 <ul>
 <li>Arm</li>
 <li>Bone</li>
+<li>CircleGesture</li>
 <li>Finger</li>
 <li>FingerList</li>
 <li>Frame</li>
@@ -124,12 +143,14 @@ Available blueprint classes branching from LeapController:
 <li>GestureList</li>
 <li>Hand</li>
 <li>HandList</li>
-<li>Frame</li>
-<li>Image</li> 
-<li>ImageList</li> 
 <li>InteractionBox</li>
+<li>KeyTapGesture</li>
+<li>LeapImage</li> 
+<li>LeapImageList</li> 
 <li>Pointable</li>
 <li>PointableList</li>
+<li>ScreenTapGesture</li>
+<li>SwipeGesture</li>
 <li>Tool</li>
 <li>ToolList</li>
 </ul>
