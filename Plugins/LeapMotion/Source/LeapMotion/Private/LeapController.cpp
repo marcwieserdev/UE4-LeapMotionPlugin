@@ -258,6 +258,7 @@ void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool auto
 		LeapSetShouldAdjustForFacing(false);
 
 	LeapSetShouldAdjustForHMD(autoRotate, autoShift);
+	//LeapSetShouldAdjustForMountOffset(true);	//this function defaults to true at the moment
 }
 
 void ULeapController::enableImageSupport(bool allowImages, bool emitImageEvents)

@@ -17,6 +17,10 @@ float scaleUEToLeap(float ueFloat);
 //HMD automation
 void LeapSetShouldAdjustForFacing(bool shouldRotate);
 void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset);
+void LeapSetShouldAdjustForMountOffset(bool shouldAddOffset);
+
+//Convenience gesture determination
+enum LeapPluginDirection cardinalDirection(FVector direction);
 
 //Pointer debugging
 void UtilityDebugAddress(void* pointer);

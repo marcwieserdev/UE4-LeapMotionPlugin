@@ -11,6 +11,9 @@ class UKeyTapGesture : public UGesture
 public:
 	~UKeyTapGesture();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Key Tap  Gesture")
+	TEnumAsByte<LeapPluginDirection> CardinalDirection;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Key Tap Gesture")
 	FVector Direction;
 

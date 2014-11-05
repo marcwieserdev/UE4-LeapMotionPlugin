@@ -12,6 +12,9 @@ class UScreenTapGesture : public UGesture
 public:
 	~UScreenTapGesture();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Screen Tap  Gesture")
+	TEnumAsByte<LeapPluginDirection> CardinalDirection;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Screen Tap Gesture")
 	FVector Direction;
 

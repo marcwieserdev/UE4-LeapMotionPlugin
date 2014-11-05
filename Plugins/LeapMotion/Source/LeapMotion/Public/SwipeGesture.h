@@ -12,6 +12,9 @@ public:
 	~USwipeGesture();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Swipe Gesture")
+	TEnumAsByte<LeapPluginDirection> CardinalDirection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Swipe Gesture")
 	FVector Direction;
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Swipe Gesture")

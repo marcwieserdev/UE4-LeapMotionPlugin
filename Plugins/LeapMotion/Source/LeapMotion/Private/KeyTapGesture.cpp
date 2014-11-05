@@ -35,4 +35,7 @@ void UKeyTapGesture::setGesture(const Leap::KeyTapGesture &Gesture)
 	Direction = convertLeapToUE(_private->gesture.direction());
 	Position = convertAndScaleLeapToUE(_private->gesture.position());
 	Progress = _private->gesture.progress();
+
+	//Convenience
+	CardinalDirection = cardinalDirection(Direction);
 }

@@ -3,6 +3,14 @@
 #include "LeapMotionPublicPCH.h"
 #include "Hand.generated.h"
 
+UENUM(BlueprintType)
+enum LeapPluginHandType
+{
+	HAND_UNKNOWN,
+	HAND_LEFT,
+	HAND_RIGHT
+};
+
 UCLASS(BlueprintType)
 class UHand : public UObject
 {
@@ -21,6 +29,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	bool IsValid;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	TEnumAsByte<LeapPluginHandType> HandType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	FVector PalmNormal;

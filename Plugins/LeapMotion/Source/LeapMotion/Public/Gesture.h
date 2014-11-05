@@ -23,6 +23,19 @@ enum LeapGestureState
 	GESTURE_STATE_STOP,
 };
 
+//Used for cardinal directions
+UENUM(BlueprintType)
+enum LeapPluginDirection
+{
+	DIRECTION_NONE,
+	DIRECTION_LEFT,
+	DIRECTION_RIGHT,
+	DIRECTION_UP,
+	DIRECTION_DOWN,
+	DIRECTION_AWAY,
+	DIRECTION_TOWARD,
+};
+
 UCLASS(BlueprintType)
 class UGesture : public UObject
 {

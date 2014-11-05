@@ -166,5 +166,16 @@ void UHand::setHand(const Leap::Hand &hand)
 	StabilizedPalmPosition = convertAndScaleLeapToUE(_private->hand.stabilizedPalmPosition());
 	TimeVisible = _private->hand.timeVisible();
 
+	//Convenience Setting, allows for easy branching in blueprint
+	if (IsLeft){
+		HandType = LeapPluginHandType::HAND_LEFT;
+	}
+	else if (IsRight){
+		HandType = LeapPluginHandType::HAND_RIGHT;
+	}
+	else{
+		HandType = LeapPluginHandType::HAND_UNKNOWN;
+	}
+
 	Id = _private->hand.id();
 }

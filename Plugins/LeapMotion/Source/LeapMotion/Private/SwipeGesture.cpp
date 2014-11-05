@@ -37,4 +37,7 @@ void USwipeGesture::setGesture(const Leap::SwipeGesture &Gesture)
 	Position = convertAndScaleLeapToUE(_private->gesture.position());
 	Speed = scaleLeapToUE(_private->gesture.speed());
 	StartPosition = convertAndScaleLeapToUE(_private->gesture.startPosition());
+
+	//Convenience
+	CardinalDirection = cardinalDirection(Direction);
 }
