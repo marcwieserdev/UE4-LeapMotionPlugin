@@ -2917,6 +2917,7 @@ namespace Leap {
      *
      * \include Image_data_1.txt
      *
+     * @return The array of char containing the sensor brightness values.
      * @since 2.1.0
      */
     LEAP_EXPORT const unsigned char* data() const;
@@ -2948,6 +2949,8 @@ namespace Leap {
      *
      * Note, in a future release, there will be two distortion maps per image;
      * one containing the horizontal values and the other containing the vertical values.
+     *
+     * @returns The float array containing the camera lens distortion map.
      * @since 2.1.0
      */
     LEAP_EXPORT const float* distortion() const;
@@ -3301,7 +3304,7 @@ namespace Leap {
      * @returns The list of tools and extended fingers from the current list.
      * @since 2.0
      */
-    LEAP_EXPORT PointableList& extended();
+    LEAP_EXPORT PointableList extended() const;
 
     /**
      * A C++ iterator type for PointableList objects.
@@ -3432,7 +3435,7 @@ namespace Leap {
      * @returns The list of extended fingers from the current list.
      * @since 2.0
      */
-    LEAP_EXPORT FingerList& extended();
+    LEAP_EXPORT FingerList extended() const;
 
     /**
      * Returns a list containing fingers from the current list of a given finger type by
@@ -3443,7 +3446,7 @@ namespace Leap {
     * @returns The list of matching fingers from the current list.
      * @since 2.0
      */
-    LEAP_EXPORT FingerList& fingerType(Finger::Type type);
+    LEAP_EXPORT FingerList fingerType(Finger::Type type) const;
 
     /**
      * A C++ iterator type for FingerList objects.
@@ -4383,6 +4386,7 @@ namespace Leap {
      *  The list of images from the Leap Motion cameras.
      *  
      *  @return An ImageList object containing the camera images analyzed to create this Frame.
+     *  @since 2.1
      */
     LEAP_EXPORT ImageList images() const;
 
@@ -4688,8 +4692,9 @@ namespace Leap {
      * Decodes a byte string to replace the properties of this Frame.
      *
      * A Controller object must be instantiated for this function to succeed, but 
-     * it does not need to be connected. 
-     * 
+     * it does not need to be connected. To extract gestures from the deserialized
+     * frame, you must enable the appropriate gestures first.
+     *
      * Any existing data in the frame is
      * destroyed. If you have references to 
      * child objects (hands, fingers, etc.), these are preserved as long as the 
@@ -4705,6 +4710,8 @@ namespace Leap {
      * frames. Motion functions, like ``scaleFactor(startFrame)``, are more
      * likely to return reasonable results, but could return anomalous values
      * in some cases.
+     *
+     * @param str A std:string object containing the serialized bytes of a frame.
      *
      * @since 2.1.0
      */
@@ -5172,27 +5179,27 @@ namespace Leap {
     };
 
     /**
-     * Gets the active policy settings.
-     *
-     * Use this function to determine the current policy state.
-     * Keep in mind that setting a policy flag is asynchronous, so changes are
-     * not effective immediately after calling setPolicyFlag(). In addition, a
-     * policy request can be declined by the user. You should always set the
-     * policy flags required by your application at startup and check that the
-     * policy change request was successful after an appropriate interval.
-     *
-     * If the controller object is not connected to the Leap Motion software, then the default
-     * policy state is returned.
+     * This function has been deprecated. Use isPolicySet() instead.
      *
      * \include Controller_policyFlags.txt
      *
      * @returns The current policy flags.
-     * @since 1.0
+     * @deprecated 2.1.6
      */
     LEAP_EXPORT PolicyFlag policyFlags() const;
 
     /**
-     * Requests a change in policy.
+     * This function has been deprecated. Use setPolicy() and clearPolicy() instead.
+     *
+     * \include Controller_setPolicyFlags.txt
+     *
+     * @param flags A PolicyFlag value indicating the policies to request.
+     * @deprecated 2.1.6
+     */
+    LEAP_EXPORT void setPolicyFlags(PolicyFlag flags) const;
+
+    /**
+     * Requests setting a policy.
      *
      * A request to change a policy is subject to user approval and a policy
      * can be changed by the user at any time (using the Leap Motion settings dialog).
@@ -5200,15 +5207,50 @@ namespace Leap {
      *
      * Policy changes are completed asynchronously and, because they are subject
      * to user approval or system compatibility checks, may not complete successfully. Call
-     * Controller::policyFlags() after a suitable interval to test whether
+     * Controller::isPolicySet() after a suitable interval to test whether
      * the change was accepted.
      *
-     * \include Controller_setPolicyFlags.txt
+     * \include Controller_setPolicy.txt
      *
-     * @param flags A PolicyFlag value indicating the policies to request.
-     * @since 1.0
+     * @param flags A PolicyFlag value indicating the policy to request.
+     * @since 2.1.6
      */
-    LEAP_EXPORT void setPolicyFlags(PolicyFlag flags) const;
+    LEAP_EXPORT void setPolicy(PolicyFlag policy) const;
+
+    /**
+     * Requests clearing a policy.
+     *
+     * Policy changes are completed asynchronously and, because they are subject
+     * to user approval or system compatibility checks, may not complete successfully. Call
+     * Controller::isPolicySet() after a suitable interval to test whether
+     * the change was accepted.
+     *
+     * \include Controller_clearPolicy.txt
+     *
+     * @param flags A PolicyFlag value indicating the policy to request.
+     * @since 2.1.6
+     */
+    LEAP_EXPORT void clearPolicy(PolicyFlag policy) const;
+
+    /**
+     * Gets the active setting for a specific policy.
+     *
+     * Keep in mind that setting a policy flag is asynchronous, so changes are
+     * not effective immediately after calling setPolicyFlag(). In addition, a
+     * policy request can be declined by the user. You should always set the
+     * policy flags required by your application at startup and check that the
+     * policy change request was successful after an appropriate interval.
+     *
+     * If the controller object is not connected to the Leap Motion software, then the default
+     * state for the selected policy is returned.
+     *
+     * \include Controller_isPolicySet.txt
+     *
+     * @param flags A PolicyFlag value indicating the policy to query.
+     * @returns A boolean indicating whether the specified policy has been set.
+     * @since 2.1.6
+     */
+    LEAP_EXPORT bool isPolicySet(PolicyFlag policy) const;
 
     /**
      * Adds a listener to this Controller.

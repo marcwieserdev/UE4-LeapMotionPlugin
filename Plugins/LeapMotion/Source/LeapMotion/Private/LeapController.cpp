@@ -151,24 +151,23 @@ public:
 	bool imageEventsEnabled;
 
 	//Functions
-	Leap::Controller::PolicyFlag buildPolicyFromBools();
+	void SetPolicyStatus(Leap::Controller::PolicyFlag flag, bool status);
 	void SetPolicyFlagsFromBools();
 };
 
 //LeapControllerPrivate
-Leap::Controller::PolicyFlag LeapControllerPrivate::buildPolicyFromBools(){
-	Leap::Controller::PolicyFlag policies = Leap::Controller::PolicyFlag::POLICY_DEFAULT;
-
-	if (optimizeForHMD)
-		policies = static_cast<Leap::Controller::PolicyFlag>(policies | Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD);
-	if (allowImages)
-		policies = static_cast<Leap::Controller::PolicyFlag>(policies | Leap::Controller::PolicyFlag::POLICY_IMAGES);
-	return policies;
+void LeapControllerPrivate::SetPolicyStatus(Leap::Controller::PolicyFlag flag, bool status)
+{
+	if (status)
+		leap.setPolicy(flag);
+	else
+		leap.clearPolicy(flag);
 }
 
 void LeapControllerPrivate::SetPolicyFlagsFromBools()
 {
-	leap.setPolicyFlags(buildPolicyFromBools());
+	SetPolicyStatus(Leap::Controller::PolicyFlag::POLICY_OPTIMIZE_HMD, optimizeForHMD);
+	SetPolicyStatus(Leap::Controller::PolicyFlag::POLICY_IMAGES, allowImages);
 }
 
 //ULeapController

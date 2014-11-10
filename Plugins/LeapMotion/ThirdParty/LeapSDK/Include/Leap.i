@@ -375,6 +375,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   *
   * Note, in a future release, there will be two distortion maps per image;
   * one containing the horizontal values and the other containing the vertical values.
+  *
   * @since 2.1.0
   */
   public float[] Distortion {
@@ -387,6 +388,13 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 %}
 
 %typemap(cscode) Leap::Frame %{
+  /**
+  * Encodes this Frame object as a byte string.
+  *
+  * \include Frame_serialize.txt
+  *
+  * @since 2.1.0
+  */
   public byte[] Serialize {
     get {
       byte[] ptr = new byte[SerializeLength];
@@ -395,6 +403,32 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
     }
   }
 
+ /**
+  * Decodes a byte string to replace the properties of this Frame.
+  *
+  * A Controller object must be instantiated for this function to succeed, but
+  * it does not need to be connected. To extract gestures from the deserialized
+  * frame, you must enable the appropriate gestures first.
+  *
+  * Any existing data in the frame is
+  * destroyed. If you have references to
+  * child objects (hands, fingers, etc.), these are preserved as long as the
+  * references remain in scope.
+  *
+  * \include Frame_deserialize.txt
+  *
+  * **Note:** The behavior when calling functions which take
+  * another Frame object as a parameter is undefined when either frame has
+  * been deserialized. For example, calling ``Gestures(sinceFrame)`` on a
+  * deserialized frame or with a deserialized frame as parameter (or both)
+  * does not necessarily return all gestures that occured between the two
+  * frames. Motion functions, like ``ScaleFactor(startFrame)``, are more
+  * likely to return reasonable results, but could return anomalous values
+  * in some cases.
+  *
+  * @param arg A byte array containing the bytes of a serialized frame.
+  * @since 2.1.0
+  */
   public void Deserialize(byte[] arg) {
     DeserializeWithLength(arg, arg.Length);
   }
@@ -485,8 +519,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   * process run for each device at the factory (and which can be rerun by the
   * user).
   *
-  * Note, in a future release, there will be two distortion maps per image;
-  * one containing the horizontal values and the other containing the vertical values.
+  * @returns The float array containing the camera lens calibration map.
   * @since 2.1.0
   */
   public float[] distortion() {
@@ -497,11 +530,45 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 %}
 
 %typemap(javacode) Leap::Frame %{
+ /**
+  * Encodes this Frame object as a byte string.
+  *
+  * \include Frame_serialize.txt
+  *
+  * @returns The byte array encoding the data for this frame.
+  * @since 2.1.0
+  */
   public byte[] serialize() {
     byte[] ptr = new byte[serializeLength()];
     LeapJNI.Frame_serialize(swigCPtr, this, ptr);
     return ptr;
   }
+ /**
+  * Decodes a byte string to replace the properties of this Frame.
+  *
+  * A Controller object must be instantiated for this function to succeed, but
+  * it does not need to be connected. To extract gestures from the deserialized
+  * frame, you must enable the appropriate gestures first.
+  *
+  * Any existing data in the frame is
+  * destroyed. If you have references to
+  * child objects (hands, fingers, etc.), these are preserved as long as the
+  * references remain in scope.
+  *
+  * \include Frame_deserialize.txt
+  *
+  * **Note:** The behavior when calling functions which take
+  * another Frame object as a parameter is undefined when either frame has
+  * been deserialized. For example, calling ``gestures(sinceFrame)`` on a
+  * deserialized frame or with a deserialized frame as parameter (or both)
+  * does not necessarily return all gestures that occured between the two
+  * frames. Motion functions, like ``scaleFactor(startFrame)``, are more
+  * likely to return reasonable results, but could return anomalous values
+  * in some cases.
+  *
+  * @param str A byte array containing the bytes of a serialized frame.
+  * @since 2.1.0
+  */
   public void deserialize(byte[] str) {
     LeapJNI.Frame_deserialize(swigCPtr, this, str, str.length);
   }
