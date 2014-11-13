@@ -9,7 +9,6 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 
 ##How to install it##
 
-
 1. Create new or open a project. 
 2. Browse to your project root (typically found at *Documents/Unreal Projects/{Your Project Root}*)
 3. Copy *Plugins* folder into your Project root.
@@ -53,6 +52,19 @@ Not an exhaustive list, but common use list. See the leap motion documentation f
 <br/>
 <br/>
 
+##How to use it - Convenience Debug Character##
+Since 0.7.10 the plugin includes convenience content for easy reference of say a rigged setup. Simply drag the optional Content folder
+
+<img src="http://i.imgur.com/RaHnkWt.png">
+
+To try out the debug character, simply change your default pawn
+<img src="http://i.imgur.com/Bu5GmBq.png">
+
+The character has two LeapDebugHand objects and swaps dynamically between them to display the debug hands in both default mode (leap on table facing up) and HMD mode
+<img src="http://i.imgur.com/JbaKYMb.png">
+
+<img src="http://i.imgur.com/MYxyqzD.png">
+
 ##How to use it - Blueprint Quick Setup##
 <ol>
 <li>Open desired blueprint where you want to receive the leap events.</li>
@@ -75,6 +87,7 @@ Add directly through components tab
 <li>You're ready to go.
 
 </ol>
+
 
 ##How to use it - Input Mapping for Joystick-like Input##
 The easiest way to use the Leap Motion is to use the input mapping system for simple, joystick-like maneuvers.
@@ -179,7 +192,7 @@ find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. 
 
 ##Todo##
 
-- Convenience content (e.g. fully rigged hand, or a debug display function)
+- Convenience content (e.g. fully rigged hand)
 - Wiki
 - C++ how to
 
