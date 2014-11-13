@@ -44,6 +44,7 @@ namespace UnrealBuildTool.Rules
 					"Engine",
 					"Core",
                     "CoreUObject",
+                    "InputCore",
                     "Slate",
                     "HeadMountedDisplay"
 					// ... add other public dependencies that you statically link with here ...

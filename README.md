@@ -53,8 +53,7 @@ Not an exhaustive list, but common use list. See the leap motion documentation f
 <br/>
 <br/>
 
-##How to use it - Blueprint - Event Driven##
-
+##How to use it - Blueprint Quick Setup##
 <ol>
 <li>Open desired blueprint where you want to receive the leap events.</li>
 <li>Click on Blueprint Props and Scroll down in the details panel to Interfaces. </li>
@@ -62,7 +61,7 @@ Not an exhaustive list, but common use list. See the leap motion documentation f
 <img src="http://i.imgur.com/s790gBs.png">
 
 <li>Add the interface called LeapEventInterface</li>
-<li>Add Leap Controller Component through option A or B</li>
+<li>Add Leap Controller Component through option A <b>or</b> B</li>
 
 <b>Option A:</b> 
 Add directly through components tab
@@ -71,13 +70,22 @@ Add directly through components tab
 <br/>
 <b>Option B:</b> Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.</li>
 <img src="http://i.imgur.com/y5caGWf.png">
-<li>(Optional, recommended) Drag from the return value, save this as a blueprint variable e.g. Leap.
-<li>(Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use. Keep auto rotate and auto shift if you want the plugin to automatically shift the leap positions to account for HMD movement.
+<li>Option B, (Optional, recommended) Drag from the return value, save this as a blueprint variable e.g. Leap.
+<li>Both, (Optional) Drag from the return value or your Leap blueprint variable (get), type 'Opt' select the only node which is OptimizeForHMD. Select true for the boolean input (red input), this will optimize the leap for top-down use. Keep auto rotate and auto shift if you want the plugin to automatically shift the leap positions to account for HMD movement.
 <li>You're ready to go.
 
 </ol>
 
-Now you can Right click anywhere on Event graph and type 'Leap Event' and you will see all the available events you can receive.
+##How to use it - Input Mapping for Joystick-like Input##
+The easiest way to use the Leap Motion is to use the input mapping system for simple, joystick-like maneuvers.
+
+E.g. by adding the one input mapping key and 2 axis to the Rolling Template, you can roll the ball by the pitch and roll of your hand and jump by closing your fist or pinching.
+
+<img src="http://i.imgur.com/MBOQmbO.png">
+
+##How to use it - Blueprint - Event Driven##
+
+You can Right click anywhere on Event graph and type 'Leap Event' and you will see all the available events you can receive.
 
 ###Example 'Debug Hand' graph###
 <img src="http://i.imgur.com/VzgR3xC.png">
@@ -171,7 +179,7 @@ find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. 
 
 ##Todo##
 
-- Convenience Classes and Input mapping for casual support
+- Convenience content (e.g. fully rigged hand, or a debug display function)
 - Wiki
 - C++ how to
 

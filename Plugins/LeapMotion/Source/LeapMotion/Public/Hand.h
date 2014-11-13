@@ -35,6 +35,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	FVector PalmNormal;
+
+	//Custom API, Origin is a flat palm facing down.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
+	FRotator PalmOrientation;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	FVector PalmPosition;
@@ -107,6 +111,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	int32 Id;
+
 
 	bool operator!=(const UHand &) const;
 

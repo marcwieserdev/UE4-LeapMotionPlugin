@@ -5,46 +5,27 @@
 #include <sstream> //for std::stringstream 
 #include <string>  //for std::string
 
-#include "ILeapMotion.h"
+//#include "ILeapMotion.h"
 
-#define LOCTEXT_NAMESPACE "LeapPlugin"
+#define LEAP_IM_SCALE 0.01111111111 //this is 1/90. We consider 90 degrees to be 1.0 for Input mapping
 
 //Global controller count, temporary debug variable since the plugin does not support more than one component. We track it and warn the users.
 int controllerCount = 0;
 
-//Input Mapping Keys
-//todo: input mapping left for another day
-/*struct EKeysLeap
-{
-	//Left Hand Actions
-	static const FKey LeapLeftPinch;
-	static const FKey LeapLeftGrab;
-	static const FKey LeapLeftFingerTouch;
-
-	//Left Hand Rotations
-	static const FKey LeapLeftPalmRotation;
-
-	//Right Hand Actions
-	static const FKey LeapRightPinch;
-	static const FKey LeapRightGrab;
-	static const FKey LeapRightFingerTouch;
-
-	//Right Hand Rotations
-	static const FKey LeapRightPalmRotation;
-};
-
-//FKey declarations
+//Input mapping - FKey declarations
 //Define each FKey const in a .cpp so we can compile
 const FKey EKeysLeap::LeapLeftPinch("LeapLeftPinch");
 const FKey EKeysLeap::LeapLeftGrab("LeapLeftGrab");
-const FKey EKeysLeap::LeapLeftFingerTouch("LeapLeftFingerTouch");
-const FKey EKeysLeap::LeapLeftPalmRotation("LeapLeftPalmRotation");
+const FKey EKeysLeap::LeapLeftPalmPitch("LeapLeftPalmPitch");
+const FKey EKeysLeap::LeapLeftPalmYaw("LeapLeftPalmYaw");
+const FKey EKeysLeap::LeapLeftPalmRoll("LeapLeftPalmRoll");
+
 const FKey EKeysLeap::LeapRightPinch("LeapRightPinch");
 const FKey EKeysLeap::LeapRightGrab("LeapRightGrab");
-const FKey EKeysLeap::LeapRightFingerTouch("LeapRightFingerTouch");
 const FKey EKeysLeap::LeapRightPalmPitch("LeapRightPalmPitch");
 const FKey EKeysLeap::LeapRightPalmYaw("LeapRightPalmYaw");
-const FKey EKeysLeap::LeapRightPalmRotation("LeapRightPalmRotation");*/
+const FKey EKeysLeap::LeapRightPalmRoll("LeapRightPalmRoll");
+
 
 //Used for Reliable State Tracking
 struct LeapHandStateData{
@@ -176,9 +157,6 @@ ULeapController::ULeapController(const FPostConstructInitializeProperties &init)
 	bWantsInitializeComponent = true;
 	bAutoActivate = true;
 	PrimaryComponentTick.bCanEverTick = true;	//the component automatically ticks so we don't have to
-
-	//Attach Input Mapping - left for another day
-	//e.g. EKeys::AddKey(FKeyDetails(EKeysLeap::LeapLeftGrab, LOCTEXT("LeapLeftGrab", "Leap Left Grab"), FKeyDetails::GamepadKey));
 }
 
 ULeapController::~ULeapController()
@@ -353,7 +331,20 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 	int handCount = frame.hands().count();
 
 	if (_private->pastState.handCount != handCount)
+	{
 		ILeapEventInterface::Execute_HandCountChanged(_private->interfaceDelegate, handCount);
+		
+		//Zero our input mapping orientations (akin to letting go of a joystick)
+		if (handCount == 0)
+		{
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmPitch, 0, 0);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmYaw, 0, 0);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmRoll, 0, 0);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmPitch, 0, 0);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmYaw, 0, 0);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmRoll, 0, 0);
+		}
+	}
 
 	//Cycle through each hand
 	for (int i = 0; i < handCount; i++)
@@ -378,9 +369,22 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		//Left/Right hand forwarding
 		if (hand.isRight())
+		{
 			ILeapEventInterface::Execute_LeapRightHandMoved(_private->interfaceDelegate, _private->eventHand);
-		else if (hand.isLeft())
+			//Input Mapping
+			FRotator palmOrientation = _private->eventHand->PalmOrientation;
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmPitch, 0, palmOrientation.Pitch * LEAP_IM_SCALE);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmYaw, 0, palmOrientation.Yaw * LEAP_IM_SCALE);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapRightPalmRoll, 0, palmOrientation.Roll * LEAP_IM_SCALE);
+		} else if (hand.isLeft())
+		{
 			ILeapEventInterface::Execute_LeapLeftHandMoved(_private->interfaceDelegate, _private->eventHand);
+			//Input Mapping
+			FRotator palmOrientation = _private->eventHand->PalmOrientation;
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmPitch, 0, palmOrientation.Pitch * LEAP_IM_SCALE);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmYaw, 0, palmOrientation.Yaw * LEAP_IM_SCALE);
+			FSlateApplication::Get().OnControllerAnalog(EKeysLeap::LeapLeftPalmRoll, 0, palmOrientation.Roll * LEAP_IM_SCALE);
+		}
 
 		//Grabbing
 		float grabStrength = hand.grabStrength();
@@ -390,9 +394,24 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			ILeapEventInterface::Execute_LeapHandGrabbing(_private->interfaceDelegate, grabStrength, _private->eventHand);
 
 		if (grabbed && !pastHandState.grabbed)
+		{
 			ILeapEventInterface::Execute_LeapHandGrabbed(_private->interfaceDelegate, grabStrength, _private->eventHand);
-		else if (!grabbed && pastHandState.grabbed)
+			
+			//input mapping
+			if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+				FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapLeftGrab, 0, 0);
+			else
+				FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapRightGrab, 0, 0);
+		}else if (!grabbed && pastHandState.grabbed)
+		{
 			ILeapEventInterface::Execute_LeapHandReleased(_private->interfaceDelegate, grabStrength, _private->eventHand);
+
+			//input mapping
+			if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+				FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapLeftGrab, 0, 0);
+			else
+				FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapRightGrab, 0, 0);
+		}
 
 		//Pinching
 		float pinchStrength = hand.pinchStrength();
@@ -406,9 +425,23 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 				ILeapEventInterface::Execute_LeapHandPinching(_private->interfaceDelegate, pinchStrength, _private->eventHand);
 
 			if (pinched && !pastHandState.pinched)
+			{
 				ILeapEventInterface::Execute_LeapHandPinched(_private->interfaceDelegate, pinchStrength, _private->eventHand);
+				//input mapping
+				if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+					FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapLeftPinch, 0, 0);
+				else
+					FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapRightPinch, 0, 0);
+			}
 			else if (!pinched && pastHandState.pinched)
+			{
 				ILeapEventInterface::Execute_LeapHandUnpinched(_private->interfaceDelegate, pinchStrength, _private->eventHand);
+				//input mapping
+				if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+					FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapLeftPinch, 0, 0);
+				else
+					FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapRightPinch, 0, 0);
+			}
 		}
 
 		//-Fingers-
@@ -563,5 +596,3 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		}
 	}
 }
-
-#undef LOCTEXT_NAMESPACE

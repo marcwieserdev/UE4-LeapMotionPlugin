@@ -30,6 +30,28 @@ namespace Leap
 	class ToolList;
 }
 
+//Input mapping
+struct EKeysLeap
+{
+	//Left Hand Actions
+	static const FKey LeapLeftPinch;
+	static const FKey LeapLeftGrab;
+
+	//Left Hand Rotations
+	static const FKey LeapLeftPalmPitch;
+	static const FKey LeapLeftPalmYaw;
+	static const FKey LeapLeftPalmRoll;
+
+	//Right Hand Actions
+	static const FKey LeapRightPinch;
+	static const FKey LeapRightGrab;
+
+	//Right Hand Rotations
+	static const FKey LeapRightPalmPitch;
+	static const FKey LeapRightPalmYaw;
+	static const FKey LeapRightPalmRoll;
+};
+
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
 {

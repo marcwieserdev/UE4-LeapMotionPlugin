@@ -145,6 +145,8 @@ void UHand::setHand(const Leap::Hand &hand)
 	PalmPosition = convertAndScaleLeapToUE(_private->hand.palmPosition());
 	PalmVelocity = convertAndScaleLeapToUE(_private->hand.palmVelocity());
 
+	PalmOrientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
+
 	Leap::Matrix matrix;
 	FVector inX, inY, inZ, inW;
 

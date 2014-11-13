@@ -7,7 +7,6 @@
 #include "Arm.h"
 #include "Hand.h"
 #include "HandList.h"
-//#include "Gesture.h"
 #include "GestureList.h"
 #include "CircleGesture.h"
 #include "KeyTapGesture.h"
