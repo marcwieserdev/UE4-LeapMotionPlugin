@@ -4,6 +4,19 @@
 #include "Pointable.h"
 #include "Finger.generated.h"
 
+UENUM(BlueprintType)
+namespace LeapPlugin
+{
+	enum FingerType
+	{
+		TYPE_THUMB,
+		TYPE_INDEX,
+		TYPE_MIDDLE,
+		TYPE_RING,
+		TYPE_PINKY
+	};
+}
+
 UCLASS(BlueprintType)
 class UFinger : public UPointable
 {
@@ -26,6 +39,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger")
 	class UBone *Distal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger")
+	TEnumAsByte<LeapPlugin::FingerType> Type;
+
 
 	void setFinger(const class Leap::Finger &pointable);
 
