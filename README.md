@@ -178,7 +178,7 @@ Available blueprint classes branching from LeapController:
 
 ##Shipping/Packaged Builds##
 <ol>
-<li> Projects require code, if you are using blueprint only add an empty class and compile your project module.</li>
+<li> Projects require code, if you are using a blueprint only project, add an empty class and compile your project module. You simply do File->Add Code to Project and it can be anything so I usually just pick None->Create Class and then it will ask you to open visual studio where you just hit compile (Build solution). If you haven't added code before follow the unreal engine <a href="https://docs.unrealengine.com/latest/INT/Programming/QuickStart/1/index.html">programming Quick Start</a> guide. Essentially it boils down to downloading the free Visual Studio Community and changing a few small configs.</li>
 <li> Add the following line to your DefaultEngine.ini </li>
 
 <i>EnabledPlugins=LeapMotion</i>
