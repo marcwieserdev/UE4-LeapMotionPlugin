@@ -190,6 +190,10 @@ under <i>[Plugins]</i>, create this category if missing.
 find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. Add the binaries folder there.</li>
 </ol>
 
+###Shipping Troubleshooting###
+- If you get errors complaining 'Leap Motion' plugin cannot be found, you do not have code in your project.
+- If you get errors complaining the 'Leap.dll' is missing, you did not drag binaries to the correct location.
+
 ##Todo##
 
 - Convenience content (e.g. fully rigged hand)
