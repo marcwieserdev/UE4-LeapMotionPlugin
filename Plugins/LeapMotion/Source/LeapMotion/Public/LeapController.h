@@ -1,56 +1,7 @@
 #pragma once
-
 #include "LeapMotionPublicPCH.h"
-#include "LeapEventInterface.h"
+#include "LeapGesture.h"
 #include "LeapController.generated.h"
-
-//Forward declare namespace so public is not exposed to Leap header
-namespace Leap
-{
-	class Arm;
-	class Bone;
-	class CircleGesture;
-	class Controller;
-	class Finger;
-	class FingerList;
-	class Gesture;
-	class GestureList;
-	class Hand;
-	class HandList;
-	class InteractionBox;
-	class KeyTapGesture;
-	class Frame;
-	class Image;
-	class ImageList;
-	class Pointable;
-	class PointableList;
-	class ScreenTapGesture;
-	class SwipeGesture;
-	class Tool;
-	class ToolList;
-}
-
-//Input mapping
-struct EKeysLeap
-{
-	//Left Hand Actions
-	static const FKey LeapLeftPinch;
-	static const FKey LeapLeftGrab;
-
-	//Left Hand Rotations
-	static const FKey LeapLeftPalmPitch;
-	static const FKey LeapLeftPalmYaw;
-	static const FKey LeapLeftPalmRoll;
-
-	//Right Hand Actions
-	static const FKey LeapRightPinch;
-	static const FKey LeapRightGrab;
-
-	//Right Hand Rotations
-	static const FKey LeapRightPalmPitch;
-	static const FKey LeapRightPalmYaw;
-	static const FKey LeapRightPalmRoll;
-};
 
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
@@ -64,25 +15,25 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = "Leap Controller")
-	bool isConnected() const;
+	bool IsConnected() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Get Frame", CompactNodeTitle = "Frame", Keywords = "get frame"), Category = "Leap Controller")
 	class ULeapFrame* Frame(int32 history);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hasFocus", CompactNodeTitle = "", Keywords = "has Focus"), Category = "Leap Controller")
-	bool hasFocus() const;
+	bool HasFocus() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "isServiceConnected", CompactNodeTitle = "", Keywords = "is service connected"), Category = "Leap Controller")
-	bool isServiceConnected() const;
+	bool IsServiceConnected() const;
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "optimizeForHMD", Keywords = "optimize hmd facing top set policy"), Category = "Leap Controller")
-	void optimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
+	void OptimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
 
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableImageSupport", Keywords = "use allow images set policy"), Category = "Leap Controller")
-	void enableImageSupport(bool allowImages = true, bool emitImageEvents = true);
+	void EnableImageSupport(bool allowImages = true, bool emitImageEvents = true);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", Keywords = "optimize hmd facing top"), Category = "Leap Controller")
-	void enableGesture(enum LeapGestureType type, bool enable = true);
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "enableGesture", Keywords = "enable gesture"), Category = "Leap Controller")
+	void EnableGesture(enum LeapGestureType type, bool enable = true);
 
 	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")

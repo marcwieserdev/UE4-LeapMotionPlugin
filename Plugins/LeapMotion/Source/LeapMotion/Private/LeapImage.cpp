@@ -5,6 +5,11 @@ class PrivateLeapImage
 public:
 	~PrivateLeapImage()
 	{
+		if (!cleanupCalled)
+		Cleanup();
+	}
+	void Cleanup()
+	{
 		//Ensures our rooted objects are unrooted so they can be GC'd
 		if (imagePointer)
 			imagePointer->RemoveFromRoot();
@@ -12,8 +17,9 @@ public:
 			imageR8Pointer->RemoveFromRoot();
 		if (distortionPointer)
 			distortionPointer->RemoveFromRoot();
+		cleanupCalled = true;
 	}
-
+	bool cleanupCalled = false;
 	Leap::Image leapImage;
 
 	UTexture2D* imagePointer = NULL;
@@ -40,6 +46,12 @@ ULeapImage::ULeapImage(const FPostConstructInitializeProperties &init) : UObject
 ULeapImage::~ULeapImage()
 {
 	delete _private;
+}
+
+void ULeapImage::CleanupRootReferences()
+{
+	_private->Cleanup();
+	this->RemoveFromRoot();
 }
 
 

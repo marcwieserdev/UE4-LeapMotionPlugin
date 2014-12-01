@@ -183,6 +183,8 @@
 %constattrib( Leap::Image, int32_t, id );
 %constattrib( Leap::Image, int, width );
 %constattrib( Leap::Image, int, height );
+%constattrib( Leap::Image, int, bytesPerPixel );
+%constattrib( Leap::Image, Leap::Image::FormatType, format );
 %constattrib( Leap::Image, int, distortionWidth );
 %constattrib( Leap::Image, int, distortionHeight );
 %constattrib( Leap::Image, float, rayOffsetX );
@@ -335,7 +337,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   * The image data.
   *
   * The image data is a set of 8-bit intensity values. The buffer is
-  * ``image.Width * image.Height`` bytes long.
+  * ``image.Width * image.Height * image.BytesPerPixel`` bytes long.
   *
   * \include Image_data_1.txt
   *
@@ -343,7 +345,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   */
   public byte[] Data {
     get {
-      byte[] ret = new byte[Width * Height];
+      byte[] ret = new byte[Width * Height * BytesPerPixel];
       DataWithArg(ret);
       return ret;
     }
@@ -443,7 +445,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 %extend Leap::Image {
 %pythoncode {
   def data(self):
-      ptr = byte_array(self.width * self.height)
+      ptr = byte_array(self.width * self.height * self.bytes_per_pixel)
       LeapPython.Image_data(self, ptr)
       return ptr
   def distortion(self):
@@ -483,14 +485,14 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   * The image data.
   *
   * The image data is a set of 8-bit intensity values. The buffer is
-  * ``image.width() * image.height()`` bytes long.
+  * ``image.width() * image.height() * image.bytesPerPixel()`` bytes long.
   *
   * \include Image_data_1.txt
   *
   * @since 2.1.0
   */
   public byte[] data() {
-    byte[] ptr = new byte[width() * height()];
+    byte[] ptr = new byte[width() * height() * bytesPerPixel()];
     LeapJNI.Image_data(swigCPtr, this, ptr);
     return ptr;
   }

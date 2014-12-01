@@ -1157,7 +1157,7 @@ namespace Leap {
      *
      * \include Hand_Get_Pointable_ByID.txt
      *
-     * Note that the ID values assigned to fingers are based on the hand ID. 
+     * Note that the ID values assigned to fingers are based on the hand ID.
      * Hand IDs persist across frames, but only until
      * tracking of that hand is lost. If tracking of the hand is lost and subsequently
      * regained, the new Hand object and its child Finger objects will have a
@@ -2080,7 +2080,7 @@ namespace Leap {
    *
    * \image html images/Leap_Gesture_Swipe.png
    *
-   * SwipeGesture objects are generated for each visible finger or tool. 
+   * SwipeGesture objects are generated for each visible finger or tool.
    * Swipe gestures are continuous; a gesture object with the same
    * ID value will appear in each frame while the gesture continues.
    *
@@ -2773,7 +2773,7 @@ namespace Leap {
      * that the z-axis is positive toward the user and the x-axis is more positive
      * from left to right. The user can also manually flip the axes in the Leap
      * Motion control panel.
-     *  
+     *
      * Images from the camera are not flipped, however.
      *
      * @return True, if the axes are flipped, that is, if the positive z-axis
@@ -2869,15 +2869,15 @@ namespace Leap {
   };
 
   /**
-   * The Image class represents a single greyscale image from one of the the Leap Motion cameras.
+   * The Image class represents a single image from one of the Leap Motion cameras.
    *
    * In addition to image data, the Image object provides a distortion map for correcting
-   * lens distortion. 
+   * lens distortion.
    *
    * \include Image_raw.txt
    *
    * Note that Image objects can be invalid, which means that they do not contain
-   * valid image data. Get valid Image objects from Frame::frames(). Test for 
+   * valid image data. Get valid Image objects from Frame::frames(). Test for
    * validity with the Image::isValid() function.
    * @since 2.1.0
    */
@@ -2902,34 +2902,36 @@ namespace Leap {
     /**
      * The image ID.
      *
-     * Images with ID of 0 are from the left camera; those with an ID of 1 are from the 
+     * Images with ID of 0 are from the left camera; those with an ID of 1 are from the
      * right camera (with the device in its standard operating position with the
      * green LED facing the operator).
      *
      * @since 2.1.0
      */
     LEAP_EXPORT int32_t id() const;
+
     /**
      * The image data.
-     * 
-     * The image data is a set of 8-bit intensity values. The buffer is 
+     *
+     * The image data is a set of 8-bit intensity values. The buffer is
      * ``Image::width() * Image::height()`` bytes long.
      *
      * \include Image_data_1.txt
      *
-     * @return The array of char containing the sensor brightness values.
+     * @return The array of unsigned char containing the sensor brightness values.
      * @since 2.1.0
      */
     LEAP_EXPORT const unsigned char* data() const;
+
     /**
      * The distortion calibration map for this image.
      *
      * The calibration map is a 64x64 grid of points. Each point is defined by
      * a pair of 32-bit floating point values. Each point in the map
      * represents a ray projected into the camera. The value of
-     * a grid point defines the pixel in the image data containing the brightness 
-     * value produced by the light entering along the corresponding ray. By 
-     * interpolating between grid data points, you can find the brightness value 
+     * a grid point defines the pixel in the image data containing the brightness
+     * value produced by the light entering along the corresponding ray. By
+     * interpolating between grid data points, you can find the brightness value
      * for any projected ray. Grid values that fall outside the range [0..1] do
      * not correspond to a value in the image data and those points should be ignored.
      *
@@ -2938,22 +2940,27 @@ namespace Leap {
      * The calibration map can be used to render an undistorted image as well as to
      * find the true angle from the camera to a feature in the raw image. The
      * distortion map itself is designed to be used with GLSL shader programs.
-     * In other contexts, it may be more convenient to use the Image::rectify()
+     * In non-realtime contexts, it may be more convenient to use the Image::rectify()
      * and Image::warp() functions.
+     *
+     * If using shaders is not possible, you can use the distortion map directly.
+     * This can be faster than using the ``warp()`` function, if carefully optimized:
+     *
+     * \include Image_distortion_using.txt
      *
      * Distortion is caused by the lens geometry as well as imperfections in the
      * lens and sensor window. The calibration map is created by the calibration
      * process run for each device at the factory (and which can be rerun by the
      * user).
-     * 
      *
-     * Note, in a future release, there will be two distortion maps per image;
+     * Note, in a future release, there may be two distortion maps per image;
      * one containing the horizontal values and the other containing the vertical values.
      *
      * @returns The float array containing the camera lens distortion map.
      * @since 2.1.0
      */
     LEAP_EXPORT const float* distortion() const;
+
     /*
      * Do not call this version of data(). It is intended only as a helper for C#,
      * Java, and other languages. Use the primary version of data() which returns a
@@ -2963,8 +2970,9 @@ namespace Leap {
      */
     void data(unsigned char* dst) const {
       const unsigned char* src = data();
-      memcpy(dst, src, width() * height() * sizeof(unsigned char));
+      memcpy(dst, src, width() * height() * bytesPerPixel() * sizeof(unsigned char));
     }
+
     /*
      * Do not call this version of distortion(). It is intended only as a helper for C#,
      * Java, and other languages. Use the primary version of distortion() which returns
@@ -2976,6 +2984,7 @@ namespace Leap {
       const float* src = distortion();
       memcpy(dst, src, distortionWidth() * distortionHeight() * sizeof(float));
     }
+
     /**
      * The image width.
      *
@@ -2984,6 +2993,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT int width() const;
+
     /**
      * The image height.
      *
@@ -2992,6 +3002,35 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT int height() const;
+
+    /**
+     * The number of bytes per pixel.
+     *
+     * \include Image_image_bytes_per_pixel_1.txt
+     *
+     * @since 2.2.0
+     */
+    LEAP_EXPORT int bytesPerPixel() const;
+
+    /**
+     * Enumerates the possible image formats.
+     *
+     * The Image::format() function returns an item from the FormatType enumeration.
+     * @since 2.2.0
+     */
+    enum FormatType {
+      INFRARED = 0
+    };
+
+    /**
+     * The image format.
+     *
+     * \include Image_image_format_1.txt
+     *
+     * @since 2.2.0
+     */
+    LEAP_EXPORT FormatType format() const;
+
     /**
      * The stride of the distortion map.
      *
@@ -3004,6 +3043,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT int distortionWidth() const;
+
     /**
      * The distortion map height.
      *
@@ -3014,6 +3054,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT int distortionHeight() const;
+
     /**
      * The horizontal ray offset.
      *
@@ -3025,6 +3066,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT float rayOffsetX() const;
+
     /**
      * The vertical ray offset.
      *
@@ -3036,6 +3078,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT float rayOffsetY() const;
+
     /**
      * The horizontal ray scale factor.
      *
@@ -3047,6 +3090,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT float rayScaleX() const;
+
     /**
      * The vertical ray scale factor.
      *
@@ -3058,6 +3102,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT float rayScaleY() const;
+
     /**
      * Provides the corrected camera ray intercepting the specified point on the image.
      *
@@ -3066,7 +3111,7 @@ namespace Leap {
      * within the Leap Motion field of view.
      *
      * This direction vector has an x and y component [x, y, 0], with the third element
-     * always zero. Note that this vector uses the 2D camera coordinate system 
+     * always zero. Note that this vector uses the 2D camera coordinate system
      * where the x-axis parallels the longer (typically horizontal) dimension and
      * the y-axis parallels the shorter (vertical) dimension. The camera coordinate
      * system does not correlate to the 3D Leap Motion coordinate system.
@@ -3078,6 +3123,7 @@ namespace Leap {
      * @since 2.1.0
      */
     LEAP_EXPORT Vector rectify(const Vector& uv) const; // returns a vector (x, y, 0). The z-component is ignored
+
     /**
      * Provides the point in the image corresponding to a ray projecting
      * from the camera.
@@ -3086,11 +3132,17 @@ namespace Leap {
      * corrects for camera distortion and returns the corresponding pixel
      * coordinates in the image.
      *
-     * The ray direction is specified in relationship to the camera. The first 
+     * The ray direction is specified in relationship to the camera. The first
      * vector element corresponds to the "horizontal" view angle; the second
-     * corresponds to the "vertical" view angle. 
+     * corresponds to the "vertical" view angle.
      *
      * \include Image_warp_1.txt
+     *
+     * The ``warp()`` function returns pixel coordinates outside of the image bounds
+     * if you project a ray toward a point for which there is no recorded data.
+     *
+     * ``warp()`` is typically not fast enough for realtime distortion correction.
+     * For better performance, use a shader program exectued on a GPU.
      *
      * @param xy A Vector containing the ray direction.
      * @returns A Vector containing the pixel coordinates [x, y, 0] (with z always zero).
@@ -4384,7 +4436,7 @@ namespace Leap {
 
     /**
      *  The list of images from the Leap Motion cameras.
-     *  
+     *
      *  @return An ImageList object containing the camera images analyzed to create this Frame.
      *  @since 2.1
      */
@@ -4691,13 +4743,13 @@ namespace Leap {
     /**
      * Decodes a byte string to replace the properties of this Frame.
      *
-     * A Controller object must be instantiated for this function to succeed, but 
+     * A Controller object must be instantiated for this function to succeed, but
      * it does not need to be connected. To extract gestures from the deserialized
      * frame, you must enable the appropriate gestures first.
      *
      * Any existing data in the frame is
-     * destroyed. If you have references to 
-     * child objects (hands, fingers, etc.), these are preserved as long as the 
+     * destroyed. If you have references to
+     * child objects (hands, fingers, etc.), these are preserved as long as the
      * references remain in scope.
      *
      * \include Frame_deserialize.txt
@@ -5136,10 +5188,10 @@ namespace Leap {
      *
      * **POLICY_OPTIMIZE_HMD** -- request that the tracking be optimized for head-mounted
      *   tracking.
-     *   
+     *
      *   The optimize HMD policy improves tracking in situations where the Leap
      *   Motion hardware is attached to a head-mounted display. This policy is
-     *   not granted for devices that cannot be mounted to an HMD, such as 
+     *   not granted for devices that cannot be mounted to an HMD, such as
      *   Leap Motion controllers embedded in a laptop or keyboard.
      *
      * Some policies can be denied if the user has disabled the feature on
@@ -5262,6 +5314,10 @@ namespace Leap {
      * Controller::removeListener() function.
      *
      * \include Controller_addListener.txt
+     *
+     * The Controller does not keep a strong reference to the Listener instance.
+     * Ensure that you maintain a reference until the listener is removed from 
+     * the controller.
      *
      * @param listener A subclass of Leap::Listener implementing the callback
      * functions for the Leap Motion events you want to handle in your application.

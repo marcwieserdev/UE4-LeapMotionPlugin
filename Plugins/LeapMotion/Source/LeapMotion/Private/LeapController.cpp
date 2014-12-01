@@ -1,4 +1,5 @@
 #include "LeapMotionPrivatePCH.h"
+#include "LeapEventInterface.h"
 #include "Slate.h"
 #include <vector>
 
@@ -84,31 +85,37 @@ class LeapControllerPrivate
 public:
 	~LeapControllerPrivate()
 	{
-		CleanupEventData();
+		if(!cleanupCalled)
+			CleanupEventData();
 	}
 
 	//Ensures our rooted objects are unrooted so they can be GC'd
 	void CleanupEventData()
 	{
 		if (eventHand)
-			eventHand->RemoveFromRoot();
+			eventHand->CleanupRootReferences();
 		if (eventFinger)
-			eventFinger->RemoveFromRoot();
+			eventFinger->CleanupRootReferences();
 		if (eventGesture)
-			eventGesture->RemoveFromRoot();
+			eventGesture->CleanupRootReferences();
 		if (eventCircleGesture)
-			eventCircleGesture->RemoveFromRoot();
+			eventCircleGesture->CleanupRootReferences();
 		if (eventKeyTapGesture)
-			eventKeyTapGesture->RemoveFromRoot();
+			eventKeyTapGesture->CleanupRootReferences();
 		if (eventScreenTapGesture)
-			eventScreenTapGesture->RemoveFromRoot();
+			eventScreenTapGesture->CleanupRootReferences();
 		if (eventSwipeGesture)
-			eventSwipeGesture->RemoveFromRoot();
+			eventSwipeGesture->CleanupRootReferences();
 		if (eventImage1)
-			eventImage1->RemoveFromRoot();
+			eventImage1->CleanupRootReferences();
 		if (eventImage2)
-			eventImage2->RemoveFromRoot();
+			eventImage2->CleanupRootReferences();
+		if (frame)
+			frame->CleanupRootReferences();
+		cleanupCalled = true;
+		UE_LOG(LeapPluginLog, Log, TEXT("LeapController::CleanupEventData Delete Called"));
 	}
+	bool cleanupCalled = false;
 
 	//Properties and Pointers
 	LeapStateData pastState;
@@ -116,13 +123,13 @@ public:
 	ULeapFrame* frame = NULL;
 
 	//Event UObjects, we have to manage memory for these to stop leaks
-	UHand* eventHand = NULL;
-	UFinger* eventFinger = NULL;
-	UGesture* eventGesture = NULL;
-	UCircleGesture* eventCircleGesture = NULL;
-	UKeyTapGesture* eventKeyTapGesture = NULL;
-	UScreenTapGesture* eventScreenTapGesture = NULL;
-	USwipeGesture* eventSwipeGesture = NULL;
+	ULeapHand* eventHand = NULL;
+	ULeapFinger* eventFinger = NULL;
+	ULeapGesture* eventGesture = NULL;
+	ULeapCircleGesture* eventCircleGesture = NULL;
+	ULeapKeyTapGesture* eventKeyTapGesture = NULL;
+	ULeapScreenTapGesture* eventScreenTapGesture = NULL;
+	ULeapSwipeGesture* eventSwipeGesture = NULL;
 	ULeapImage* eventImage1 = NULL;
 	ULeapImage* eventImage2 = NULL;
 	
@@ -164,7 +171,7 @@ ULeapController::~ULeapController()
 	delete _private;
 }
 
-bool ULeapController::isConnected() const
+bool ULeapController::IsConnected() const
 {
 	return _private->leap.isConnected();
 }
@@ -206,23 +213,26 @@ void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
 ULeapFrame* ULeapController::Frame(int32 history)
 {
 	if (_private->frame == NULL)
+	{
 		_private->frame = NewObject<ULeapFrame>(this, ULeapFrame::StaticClass());
+		_private->frame->SetFlags(RF_RootSet);
+	}
 	_private->frame->setFrame(_private->leap, history);
 	return (_private->frame);
 }
 
-bool ULeapController::hasFocus() const
+bool ULeapController::HasFocus() const
 {
 	return (_private->leap.hasFocus());
 }
 
-bool ULeapController::isServiceConnected() const
+bool ULeapController::IsServiceConnected() const
 {
 	return (_private->leap.isServiceConnected());
 }
 
 
-void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool autoShift)
+void ULeapController::OptimizeForHMD(bool useTopdown, bool autoRotate, bool autoShift)
 {
 	//Set Policy Optimization
 	_private->optimizeForHMD = useTopdown;
@@ -238,14 +248,14 @@ void ULeapController::optimizeForHMD(bool useTopdown, bool autoRotate, bool auto
 	//LeapSetShouldAdjustForMountOffset(true);	//this function defaults to true at the moment
 }
 
-void ULeapController::enableImageSupport(bool allowImages, bool emitImageEvents)
+void ULeapController::EnableImageSupport(bool allowImages, bool emitImageEvents)
 {
 	_private->allowImages = allowImages;
 	_private->SetPolicyFlagsFromBools();
 	_private->imageEventsEnabled = emitImageEvents;
 }
 
-void ULeapController::enableGesture(LeapGestureType type, bool enable)
+void ULeapController::EnableGesture(LeapGestureType type, bool enable)
 {
 	Leap::Gesture::Type rawType;
 
@@ -274,7 +284,6 @@ void ULeapController::enableGesture(LeapGestureType type, bool enable)
 //Leap Event Interface - Event Driven System
 void ULeapController::SetInterfaceDelegate(UObject* newDelegate)
 {
-
 	UE_LOG(LeapPluginLog, Log, TEXT("InterfaceObject: %s"), *newDelegate->GetName());
 
 	//Use this format to support both blueprint and C++ form
@@ -356,10 +365,10 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		debugAddress(this);*/
 
-		//Make a UHand
+		//Make a ULeapHand
 		if (_private->eventHand == NULL)
 		{
-			_private->eventHand = NewObject<UHand>(this);
+			_private->eventHand = NewObject<ULeapHand>(this);
 			_private->eventHand->SetFlags(RF_RootSet);
 		}
 		_private->eventHand->setHand(hand);
@@ -398,7 +407,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			ILeapEventInterface::Execute_LeapHandGrabbed(_private->interfaceDelegate, grabStrength, _private->eventHand);
 			
 			//input mapping
-			if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+			if (_private->eventHand->HandType == LeapHandType::HAND_LEFT)
 				FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapLeftGrab, 0, 0);
 			else
 				FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapRightGrab, 0, 0);
@@ -407,7 +416,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			ILeapEventInterface::Execute_LeapHandReleased(_private->interfaceDelegate, grabStrength, _private->eventHand);
 
 			//input mapping
-			if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+			if (_private->eventHand->HandType == LeapHandType::HAND_LEFT)
 				FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapLeftGrab, 0, 0);
 			else
 				FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapRightGrab, 0, 0);
@@ -428,7 +437,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			{
 				ILeapEventInterface::Execute_LeapHandPinched(_private->interfaceDelegate, pinchStrength, _private->eventHand);
 				//input mapping
-				if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+				if (_private->eventHand->HandType == LeapHandType::HAND_LEFT)
 					FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapLeftPinch, 0, 0);
 				else
 					FSlateApplication::Get().OnControllerButtonPressed(EKeysLeap::LeapRightPinch, 0, 0);
@@ -437,7 +446,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			{
 				ILeapEventInterface::Execute_LeapHandUnpinched(_private->interfaceDelegate, pinchStrength, _private->eventHand);
 				//input mapping
-				if (_private->eventHand->HandType == LeapPluginHandType::HAND_LEFT)
+				if (_private->eventHand->HandType == LeapHandType::HAND_LEFT)
 					FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapLeftPinch, 0, 0);
 				else
 					FSlateApplication::Get().OnControllerButtonReleased(EKeysLeap::LeapRightPinch, 0, 0);
@@ -454,7 +463,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		if (_private->eventFinger == NULL)
 		{
-			_private->eventFinger = NewObject<UFinger>(this);
+			_private->eventFinger = NewObject<ULeapFinger>(this);
 			_private->eventFinger->SetFlags(RF_RootSet);
 		}
 
@@ -513,7 +522,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		{
 		case Leap::Gesture::TYPE_CIRCLE:
 			if (_private->eventCircleGesture == NULL){
-				_private->eventCircleGesture = NewObject<UCircleGesture>(this);
+				_private->eventCircleGesture = NewObject<ULeapCircleGesture>(this);
 				_private->eventCircleGesture->SetFlags(RF_RootSet);
 			}
 			_private->eventCircleGesture->setGesture(Leap::CircleGesture(gesture));
@@ -523,7 +532,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		case Leap::Gesture::TYPE_KEY_TAP:
 			if (_private->eventKeyTapGesture == NULL)
 			{
-				_private->eventKeyTapGesture = NewObject<UKeyTapGesture>(this);
+				_private->eventKeyTapGesture = NewObject<ULeapKeyTapGesture>(this);
 				_private->eventKeyTapGesture->SetFlags(RF_RootSet);
 			}
 			_private->eventKeyTapGesture->setGesture(Leap::KeyTapGesture(gesture));
@@ -533,7 +542,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		case Leap::Gesture::TYPE_SCREEN_TAP:
 			if (_private->eventScreenTapGesture == NULL)
 			{
-				_private->eventScreenTapGesture = NewObject<UScreenTapGesture>(this);
+				_private->eventScreenTapGesture = NewObject<ULeapScreenTapGesture>(this);
 				_private->eventScreenTapGesture->SetFlags(RF_RootSet);
 			}
 			_private->eventScreenTapGesture->setGesture(Leap::ScreenTapGesture(gesture));
@@ -543,7 +552,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		case Leap::Gesture::TYPE_SWIPE:
 			if (_private->eventSwipeGesture == NULL)
 			{
-				_private->eventSwipeGesture = NewObject<USwipeGesture>(this);
+				_private->eventSwipeGesture = NewObject<ULeapSwipeGesture>(this);
 				_private->eventSwipeGesture->SetFlags(RF_RootSet);
 			}
 			_private->eventSwipeGesture->setGesture(Leap::SwipeGesture(gesture));

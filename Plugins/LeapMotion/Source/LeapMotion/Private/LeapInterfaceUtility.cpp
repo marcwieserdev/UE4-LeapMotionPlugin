@@ -2,7 +2,7 @@
 
 #include "LeapMotionPrivatePCH.h"
 #include "IHeadMountedDisplay.h"
-#include "Gesture.h"
+#include "LeapGesture.h"
 
 DEFINE_LOG_CATEGORY(LeapPluginLog);
 #define LEAP_TO_UE_SCALE 0.1f
@@ -14,6 +14,14 @@ bool LeapShouldAdjustForFacing = false;
 bool LeapShouldAdjustRotationForHMD = false;
 bool LeapShouldAdjustPositionForHMD = false;
 bool LeapShouldAdjustForMountOffset = true;
+
+FRotator CombineRotators(FRotator A, FRotator B)
+{
+	FQuat AQuat = FQuat(A);
+	FQuat BQuat = FQuat(B);
+
+	return FRotator(BQuat*AQuat);
+}
 
 FVector adjustForLeapFacing(FVector in)
 {
@@ -42,14 +50,30 @@ FVector adjustForHMD(FVector in)
 
 }
 
-//Conversion - use find and replace to change behavior
+//Conversion - use find and replace to change behavior, no scaling version is typically used for orientations
 FVector convertLeapToUE(Leap::Vector leapVector)
 {
+	//Convert Axis
 	FVector vect = FVector(-leapVector.z, leapVector.x, leapVector.y);
+
+	//Hmd orientation adjustment
 	if (LeapShouldAdjustForFacing)
 	{
-		vect = adjustForLeapFacing(vect);
+		FRotator rotation = FRotator(90.f, 0.f, 180.f);
+		vect = FQuat(rotation).RotateVector(vect);
+		
+		if (LeapShouldAdjustRotationForHMD)
+		{
+			if (GEngine->HMDDevice.IsValid())
+			{
+				FQuat orientationQuat;
+				FVector position;
+				GEngine->HMDDevice->GetCurrentOrientationAndPosition(orientationQuat, position);
+				vect = orientationQuat.RotateVector(vect);
+			}
+		}
 	}
+
 	return vect;
 }
 
@@ -104,39 +128,39 @@ void LeapSetShouldAdjustForMountOffset(bool shouldAddOffset)
 	LeapShouldAdjustForMountOffset = shouldAddOffset;
 }
 
-LeapPluginDirection cardinalDirection(FVector direction)
+LeapBasicDirection basicDirection(FVector direction)
 {
 	float x = FMath::Abs(direction.X);
 	float y = FMath::Abs(direction.Y);
 	float z = FMath::Abs(direction.Z);
 
-	//is cardinal in x?
+	//is basic in x?
 	if (x >= y && x >= z)
 	{
 		if (direction.X < -0.5)
-			return LeapPluginDirection::DIRECTION_TOWARD;
+			return LeapBasicDirection::DIRECTION_TOWARD;
 		else if (direction.X > 0.5)
-			return LeapPluginDirection::DIRECTION_AWAY;
+			return LeapBasicDirection::DIRECTION_AWAY;
 	}
-	//is cardinal in y?
+	//is basic in y?
 	else if (y >= x && y >= z)
 	{
 		if (direction.Y < -0.5)
-			return LeapPluginDirection::DIRECTION_LEFT;
+			return LeapBasicDirection::DIRECTION_LEFT;
 		else if (direction.Y > 0.5)
-			return LeapPluginDirection::DIRECTION_RIGHT;
+			return LeapBasicDirection::DIRECTION_RIGHT;
 	}
-	//is cardinal in z?
+	//is basic in z?
 	else if (z >= x && z >= y)
 	{
 		if (direction.Z < -0.5)
-			return LeapPluginDirection::DIRECTION_DOWN;
+			return LeapBasicDirection::DIRECTION_DOWN;
 		else if (direction.Z > 0.5)
-			return LeapPluginDirection::DIRECTION_UP;
+			return LeapBasicDirection::DIRECTION_UP;
 	}
 	
 	//If we haven't returned by now, the direction is none
-	return LeapPluginDirection::DIRECTION_NONE;
+	return LeapBasicDirection::DIRECTION_NONE;
 }
 
 //Utility function used to debug address allocation - helped find the cdcdcdcd allocation error

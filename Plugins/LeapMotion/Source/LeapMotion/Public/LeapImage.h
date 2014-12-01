@@ -58,6 +58,8 @@ public:
 
 	void setLeapImage(const class Leap::Image &LeapImage);
 
+	virtual void CleanupRootReferences();
+
 private:
 	class PrivateLeapImage* _private;
 };

@@ -5,6 +5,10 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LeapPluginLog, Log, All);
 
+//Rotation
+FRotator CombineRotators(FRotator A, FRotator B);
+
+
 //Conversion
 FVector convertLeapToUE(Leap::Vector leapVector);
 FVector convertAndScaleLeapToUE(Leap::Vector leapVector);
@@ -20,7 +24,7 @@ void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset);
 void LeapSetShouldAdjustForMountOffset(bool shouldAddOffset);
 
 //Convenience gesture determination
-enum LeapPluginDirection cardinalDirection(FVector direction);
+enum LeapBasicDirection basicDirection(FVector direction);
 
 //Pointer debugging
 void UtilityDebugAddress(void* pointer);

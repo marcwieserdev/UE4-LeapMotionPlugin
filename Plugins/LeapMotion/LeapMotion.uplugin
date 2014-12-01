@@ -3,10 +3,10 @@
 	
 	"FriendlyName" : "Leap Motion Plugin",
 	"Version" : 1,
-	"VersionName" : "0.7.11",
+	"VersionName" : "0.8.0",
 	"CreatedBy" : "Getnamo",
 	"CreatedByURL" : "https://github.com/getnamo/leap-ue4",
-	"EngineVersion" : "4.5.0",
+	"EngineVersion" : "4.5",
 	"Description" : "Plugin binding the Leap Motion in an event driven architecture, exposed to blueprint. Forked from Mark Wieser's original UE4-LeapMotionPlugin.",
 	"Category" : "Input.Controller",
 	

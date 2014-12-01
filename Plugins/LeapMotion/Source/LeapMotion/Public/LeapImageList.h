@@ -23,6 +23,8 @@ public:
 
 	void setLeapImageList(const class Leap::ImageList &LeapImageList);
 
+	virtual void CleanupRootReferences();
+
 private:
 	class PrivateLeapImageList* _private;
 };
