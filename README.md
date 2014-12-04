@@ -13,57 +13,40 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 2. Browse to your project root (typically found at *Documents/Unreal Projects/{Your Project Root}*)
 3. Copy *Plugins* folder into your Project root.
 4. Copy *Binaries* folder into your Project root.
+5. (Optional) Copy *Content* folder into your Project root.
 5. Restart the Editor and open your project again.
 6. Select Window->Plugins. Click on Installed and you should see a category called Input and a plugin called Leap Motion now available. It should be automatically enabled, if not, Select Enabled. The Editor will warn you to restart, click restart.
 7. The plugin should be enabled and ready to use.
 
-##Leap API Reference##
+<img src="http://i.imgur.com/2In3q5n.png">
 
-All the Blueprint nodes and functions keep the same name as specified in the <a href="https://developer.leapmotion.com/documentation/skeletal/cpp/api/Leap.Controller.html">documentation of leapmotion</a>, refer to this documentation for help with the API. Events are custom named, but follow action oriented naming. Type 'Leap Event' in your blueprint event graph to see all possible events after adding the LeapEventInterface to your blueprint interfaces.
 
-###Blueprint API Examples###
-
-Not an exhaustive list, but common use list. See the leap motion documentation for full list.
-
-####Events####
-
-<img src="http://i.imgur.com/XI3WmIM.png">
-
-####Frame Functions####
-
-<img src="http://i.imgur.com/Ioe19p0.png">
-
-####Hand Functions and Properties####
-
-<img src="http://i.imgur.com/o340HWj.png">
-
-####Arm Functions and Properties####
-
-<img src="http://i.imgur.com/ymlIeWt.png">
-
-####Finger Functions and Properties####
-
-<img src="http://i.imgur.com/MLblo0F.png">
-
-####Pointable Functions and Properties####
-
-<img src="http://i.imgur.com/NRpgG7z.png">
-
-<br/>
-<br/>
-
-##How to use it - Convenience Debug Character##
+##How to use it - Convenience Rigged/Debug Character##
 Since 0.7.10 the plugin includes convenience content for easy reference of say a rigged setup. Simply drag the optional Content folder
 
 <img src="http://i.imgur.com/RaHnkWt.png">
 
-To try out the debug character, simply change your default pawn
+####Rigged Character####
+
+To try the rigged character, change your default pawn to LeapRiggedCharacter and change your PlayerController to VRPlayerController (if using hmd)
+
+<img src ="http://i.imgur.com/5fJtEWY.gif">
+
+That's it! hit play to try it out!
+
+<img src ="http://i.imgur.com/HWVaeid.gif">
+<br>
+####Debug Sphere Character####
+
+To try out the debug character, simply change your default pawn to LeapDebugCharacter
 <img src="http://i.imgur.com/Bu5GmBq.png">
 
-The character has two LeapDebugHand objects and swaps dynamically between them to display the debug hands in both default mode (leap on table facing up) and HMD mode
-<img src="http://i.imgur.com/JbaKYMb.png">
-
 <img src="http://i.imgur.com/MYxyqzD.png">
+<br>
+####Note on HMD mode####
+
+Both characters have two LeapDebugHand objects and swaps dynamically between them to display the hands in both default mode (leap on table facing up) and HMD mode
+<img src="http://i.imgur.com/JbaKYMb.png">
 
 ##How to use it - Blueprint Quick Setup##
 <ol>
@@ -131,6 +114,42 @@ Which gives the following billboard results (note the finger and palm debug visu
 <img src="http://i.imgur.com/qRhPHDC.png">
 
 Distortion texture maps and other image parameters can be obtained by branching the LeapImage node (branched in the example graph to obtain the image id).
+
+##Leap API Reference##
+
+All the Blueprint nodes and functions keep the same name as specified in the <a href="https://developer.leapmotion.com/documentation/skeletal/cpp/api/Leap.Controller.html">documentation of leapmotion</a>, refer to this documentation for help with the API. Events are custom named, but follow action oriented naming. Type 'Leap Event' in your blueprint event graph to see all possible events after adding the LeapEventInterface to your blueprint interfaces.
+
+###Blueprint API Examples###
+
+Not an exhaustive list, but common use list. See the leap motion documentation for full list.
+
+####Events####
+
+<img src="http://i.imgur.com/XI3WmIM.png">
+
+####Frame Functions####
+
+<img src="http://i.imgur.com/Ioe19p0.png">
+
+####Hand Functions and Properties####
+
+<img src="http://i.imgur.com/o340HWj.png">
+
+####Arm Functions and Properties####
+
+<img src="http://i.imgur.com/ymlIeWt.png">
+
+####Finger Functions and Properties####
+
+<img src="http://i.imgur.com/MLblo0F.png">
+
+####Pointable Functions and Properties####
+
+<img src="http://i.imgur.com/NRpgG7z.png">
+
+<br/>
+<br/>
+
 
 ####Leap API Style Polling####
 The same above result can be achieve by using Leap API style polling like this
