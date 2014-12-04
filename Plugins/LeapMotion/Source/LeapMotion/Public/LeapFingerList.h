@@ -35,6 +35,7 @@ public:
 	class ULeapFinger *rightmost();
 
 	void setFingerList(const class Leap::FingerList &pointables);
+	Leap::FingerList* fingerList();
 
 	virtual void CleanupRootReferences();
 

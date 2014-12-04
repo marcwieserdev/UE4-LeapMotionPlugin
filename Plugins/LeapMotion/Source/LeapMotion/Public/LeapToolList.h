@@ -32,6 +32,7 @@ public:
 	class ULeapTool *rightmost();
 
 	void setToolList(const class Leap::ToolList &tools);
+	const Leap::ToolList* toolList();
 
 	virtual void CleanupRootReferences();
 

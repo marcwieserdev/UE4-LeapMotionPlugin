@@ -13,11 +13,11 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
 	ULeapPointableList* append(class ULeapPointableList *list);
 
-	/*UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "appendFingers", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
 	ULeapPointableList* appendFingers(class ULeapFingerList *list);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
-	ULeapPointableList* appendTools(class ULeapToolList *list);*/
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "appendTools", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
+	ULeapPointableList* appendTools(class ULeapToolList *list);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable List")
 	int32 Count;

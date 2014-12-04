@@ -12,8 +12,12 @@ public:
 			leftmost->CleanupRootReferences();
 		if (rightmost)
 			rightmost->CleanupRootReferences();
-		if (pointableById && pointableById->HasAnyFlags(RF_RootSet))
+		if (pointableById)
 			pointableById->CleanupRootReferences();
+		if (appendedList)
+			appendedList->CleanupRootReferences();
+		if (extendedList)
+			extendedList->CleanupRootReferences();
 		cleanupCalled = true;
 	}
 	~PrivateFingerList()
@@ -28,6 +32,8 @@ public:
 	ULeapFinger* leftmost = NULL;
 	ULeapFinger* rightmost = NULL;
 	ULeapFinger* pointableById = NULL;
+	ULeapFingerList* appendedList = NULL;
+	ULeapFingerList* extendedList = NULL;
 };
 
 ULeapFingerList::ULeapFingerList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateFingerList())
@@ -48,20 +54,24 @@ void ULeapFingerList::CleanupRootReferences()
 
 ULeapFingerList *ULeapFingerList::append(const ULeapFingerList *list)
 {
-	ULeapFingerList *newlist;
-
-	newlist = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
-	newlist->setFingerList(_private->fingers.append(list->_private->fingers));
-	return (newlist);
+	if (_private->appendedList == NULL)
+	{
+		_private->appendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
+		_private->appendedList->SetFlags(RF_RootSet);
+	}
+	_private->appendedList->setFingerList(_private->fingers.append(list->_private->fingers));
+	return (_private->appendedList);
 }
 
 ULeapFingerList *ULeapFingerList::extended()
 {
-	ULeapFingerList *newlist;
-
-	newlist = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
-	newlist->setFingerList(_private->fingers.extended());
-	return (newlist);
+	if (_private->extendedList == NULL)
+	{
+		_private->extendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
+		_private->extendedList->SetFlags(RF_RootSet);
+	}
+	_private->extendedList->setFingerList(_private->fingers.extended());
+	return (_private->extendedList);
 }
 
 ULeapFinger *ULeapFingerList::leftmost()
@@ -117,4 +127,9 @@ void ULeapFingerList::setFingerList(const Leap::FingerList &fingers)
 
 	Count = _private->fingers.count();
 	IsEmpty = _private->fingers.isEmpty();
+}
+
+Leap::FingerList* ULeapFingerList::fingerList()
+{
+	return &(_private->fingers);
 }

@@ -20,6 +20,8 @@ public:
 			rightmost->CleanupRootReferences();
 		if (pointableById)
 			pointableById->CleanupRootReferences();
+		if (appendedList)
+			appendedList->CleanupRootReferences();
 		cleanupCalled = true;
 	}
 	bool cleanupCalled = false;
@@ -27,7 +29,8 @@ public:
 	ULeapTool* leftmost = NULL;
 	ULeapTool* rightmost = NULL;
 	ULeapTool* frontmost = NULL;
-	ULeapPointable* pointableById = NULL;
+	ULeapTool* pointableById = NULL;
+	ULeapToolList* appendedList = NULL;
 };
 
 
@@ -47,11 +50,13 @@ void ULeapToolList::CleanupRootReferences()
 
 ULeapToolList *ULeapToolList::append(const ULeapToolList *list)
 {
-	ULeapToolList *newlist;
-
-	newlist = NewObject<ULeapToolList>(this, ULeapToolList::StaticClass());
-	newlist->setToolList(this->_private->tools.append(list->_private->tools));
-	return (newlist);
+	if (_private->appendedList == NULL)
+	{
+		_private->appendedList = NewObject<ULeapToolList>(this, ULeapToolList::StaticClass());
+		_private->appendedList->SetFlags(RF_RootSet);
+	}
+	_private->appendedList->setToolList(this->_private->tools.append(list->_private->tools));
+	return (_private->appendedList);
 }
 
 int32 ULeapToolList::Count() const
@@ -113,4 +118,9 @@ ULeapPointable* ULeapToolList::getPointableById(int32 id)
 void ULeapToolList::setToolList(const Leap::ToolList &pointables)
 {
 	_private->tools = pointables;
+}
+
+const Leap::ToolList* ULeapToolList::toolList()
+{
+	return &(_private->tools);
 }

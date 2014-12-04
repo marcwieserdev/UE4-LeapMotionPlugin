@@ -1,6 +1,7 @@
 #include "LeapMotionPrivatePCH.h"
 
 #define LOCTEXT_NAMESPACE "LeapPlugin"
+#define PLUGIN_VERSION "0.8.1"
 
 void FLeapMotion::StartupModule()
 {
@@ -18,6 +19,8 @@ void FLeapMotion::StartupModule()
 	EKeys::AddKey(FKeyDetails(EKeysLeap::LeapRightPalmPitch, LOCTEXT("LeapRightPalmPitch", "Leap Right Palm Pitch"), FKeyDetails::FloatAxis));
 	EKeys::AddKey(FKeyDetails(EKeysLeap::LeapRightPalmYaw, LOCTEXT("LeapRightPalmYaw", "Leap Right Palm Yaw"), FKeyDetails::FloatAxis));
 	EKeys::AddKey(FKeyDetails(EKeysLeap::LeapRightPalmRoll, LOCTEXT("LeapRightPalmRoll", "Leap Right Palm Roll"), FKeyDetails::FloatAxis));
+
+	UE_LOG(LeapPluginLog, Log, TEXT("Using LeapPlugin version %s"), TEXT(PLUGIN_VERSION));
 }
 
 void FLeapMotion::ShutdownModule()
