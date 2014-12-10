@@ -20,7 +20,7 @@ public:
 	ULeapPointable* pointable = NULL;
 };
 
-ULeapSwipeGesture::ULeapSwipeGesture(const FPostConstructInitializeProperties &init) : ULeapGesture(init), _private(new PrivateSwipeGesture())
+ULeapSwipeGesture::ULeapSwipeGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateSwipeGesture())
 {
 }
 

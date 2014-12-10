@@ -33,7 +33,7 @@ public:
 	Leap::Finger finger;
 };
 
-ULeapFinger::ULeapFinger(const FPostConstructInitializeProperties &init) : ULeapPointable(init), _private(new PrivateFinger())
+ULeapFinger::ULeapFinger(const FObjectInitializer &init) : ULeapPointable(init), _private(new PrivateFinger())
 {
 }
 

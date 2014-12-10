@@ -23,7 +23,7 @@ public:
 	ULeapHand* hand = NULL;
 };
 
-ULeapPointable::ULeapPointable(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivatePointable())
+ULeapPointable::ULeapPointable(const FObjectInitializer &init) : UObject(init), _private(new PrivatePointable())
 {
 }
 

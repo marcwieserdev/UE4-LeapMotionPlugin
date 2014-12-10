@@ -38,7 +38,7 @@ public:
 	ULeapImage* self;
 };
 
-ULeapImage::ULeapImage(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateLeapImage())
+ULeapImage::ULeapImage(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapImage())
 {
 	_private->self = this;
 }

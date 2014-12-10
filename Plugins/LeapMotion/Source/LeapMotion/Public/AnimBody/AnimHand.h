@@ -14,26 +14,26 @@ class UAnimHand : public UObject
 
 	//Fingers
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimFinger> Thumb;
+	UAnimFinger* Thumb;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimFinger> Index;
+	UAnimFinger* Index;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimFinger> Middle;
+	UAnimFinger* Middle;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimFinger> Ring;
+	UAnimFinger* Ring;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimFinger> Pinky;
+	UAnimFinger* Pinky;
 	
 	//Arm and Wrist, NB: Consider moving this up the skeletal tree, for leap this is sufficient
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimBone> Wrist;
+	UAnimBone* Wrist;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	TSubobjectPtr<UAnimBone> LowerArm;
+	UAnimBone* LowerArm;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")

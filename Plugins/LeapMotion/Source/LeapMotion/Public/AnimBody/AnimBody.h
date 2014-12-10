@@ -15,14 +15,14 @@ class UAnimBody : public UActorComponent
 
 	//Hands
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Body")
-	TSubobjectPtr<UAnimHand> Left;
+	UAnimHand* Left;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Body")
-	TSubobjectPtr<UAnimHand> Right;
+	UAnimHand* Right;
 
 	//Head
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Body")
-	TSubobjectPtr<UAnimBone> Head;
+	UAnimBone* Head;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Body")

@@ -7,7 +7,7 @@ public:
 };
 
 
-ULeapInteractionBox::ULeapInteractionBox(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateInteractionBox())
+ULeapInteractionBox::ULeapInteractionBox(const FObjectInitializer &init) : UObject(init), _private(new PrivateInteractionBox())
 {
 }
 

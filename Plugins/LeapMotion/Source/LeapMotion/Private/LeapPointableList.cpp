@@ -36,7 +36,7 @@ public:
 	ULeapPointableList* extendedList = NULL;
 };
 
-ULeapPointableList::ULeapPointableList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivatePointableList())
+ULeapPointableList::ULeapPointableList(const FObjectInitializer &init) : UObject(init), _private(new PrivatePointableList())
 {
 }
 

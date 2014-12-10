@@ -22,7 +22,7 @@ public:
 	ULeapPointable* pointable = NULL;
 };
 
-ULeapCircleGesture::ULeapCircleGesture(const FPostConstructInitializeProperties &init) : ULeapGesture(init), _private(new PrivateCircleGesture)
+ULeapCircleGesture::ULeapCircleGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateCircleGesture)
 {
 }
 

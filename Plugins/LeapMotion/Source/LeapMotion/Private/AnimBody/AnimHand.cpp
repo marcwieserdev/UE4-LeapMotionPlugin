@@ -1,7 +1,7 @@
 #include "LeapMotionPrivatePCH.h"
 #include "AnimHand.h"
 
-UAnimHand::UAnimHand(const class FPostConstructInitializeProperties& PCIP)
+UAnimHand::UAnimHand(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 	Thumb = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Thumb"));

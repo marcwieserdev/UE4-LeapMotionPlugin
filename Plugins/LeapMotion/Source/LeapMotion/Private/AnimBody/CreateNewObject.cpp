@@ -4,7 +4,7 @@
 #include "LeapMotionPrivatePCH.h"
 #include "CreateNewObject.h"
 
-UCreateNewObject::UCreateNewObject(const class FPostConstructInitializeProperties& PCIP)
+UCreateNewObject::UCreateNewObject(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 

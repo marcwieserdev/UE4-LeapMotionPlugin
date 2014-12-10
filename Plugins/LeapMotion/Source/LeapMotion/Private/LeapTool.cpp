@@ -7,7 +7,7 @@ public:
 	Leap::Tool tool;
 };
 
-ULeapTool::ULeapTool(const FPostConstructInitializeProperties &init) : ULeapPointable(init), _private(new PrivateTool())
+ULeapTool::ULeapTool(const FObjectInitializer &init) : ULeapPointable(init), _private(new PrivateTool())
 {
 }
 

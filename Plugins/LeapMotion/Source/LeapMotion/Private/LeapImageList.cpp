@@ -22,7 +22,7 @@ public:
 	ULeapImage* indexImage2 = NULL;
 };
 
-ULeapImageList::ULeapImageList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateLeapImageList())
+ULeapImageList::ULeapImageList(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapImageList())
 {
 }
 

@@ -20,7 +20,7 @@ public:
 	ULeapPointable* pointable = NULL;
 };
 
-ULeapScreenTapGesture::ULeapScreenTapGesture(const FPostConstructInitializeProperties &init) : ULeapGesture(init), _private(new PrivateScreenTapGesture())
+ULeapScreenTapGesture::ULeapScreenTapGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateScreenTapGesture())
 {
 }
 

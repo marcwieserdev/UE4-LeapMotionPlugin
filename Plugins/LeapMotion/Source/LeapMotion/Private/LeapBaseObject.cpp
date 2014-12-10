@@ -1,6 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
 #include "LeapBaseObject.h"
 
-ULeapBaseObject::ULeapBaseObject(const FPostConstructInitializeProperties &init) : UObject(init)
+ULeapBaseObject::ULeapBaseObject(const FObjectInitializer &init) : UObject(init)
 {
 }

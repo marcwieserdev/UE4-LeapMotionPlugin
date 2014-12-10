@@ -19,7 +19,7 @@ public:
 	ULeapGesture* gesture = NULL;
 };
 
-ULeapGestureList::ULeapGestureList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateGestureList())
+ULeapGestureList::ULeapGestureList(const FObjectInitializer &init) : UObject(init), _private(new PrivateGestureList())
 {
 }
 

@@ -2,7 +2,7 @@
 #include "LeapEventInterface.h"
 
 
-ULeapEventInterface::ULeapEventInterface(const class FPostConstructInitializeProperties& PCIP)
+ULeapEventInterface::ULeapEventInterface(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 

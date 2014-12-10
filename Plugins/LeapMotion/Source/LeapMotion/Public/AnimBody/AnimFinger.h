@@ -10,16 +10,16 @@ class UAnimFinger : public UObject
 
 	//Not used in basic animation
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Finger")
-	TSubobjectPtr<UAnimBone> Metacarpal;
+	UAnimBone* Metacarpal;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Finger")
-	TSubobjectPtr<UAnimBone> Proximal;
+	UAnimBone* Proximal;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Finger")
-	TSubobjectPtr<UAnimBone> Intermediate;
+	UAnimBone* Intermediate;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Finger")
-	TSubobjectPtr<UAnimBone> Distal;
+	UAnimBone* Distal;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Finger")
 	float Alpha;

@@ -22,7 +22,7 @@ public:
 	ULeapFingerList* fingers = NULL;
 };
 
-ULeapHand::ULeapHand(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateHand())
+ULeapHand::ULeapHand(const FObjectInitializer &init) : UObject(init), _private(new PrivateHand())
 {
 }
 

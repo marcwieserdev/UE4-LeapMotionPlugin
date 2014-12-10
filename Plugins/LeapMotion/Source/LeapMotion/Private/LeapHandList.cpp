@@ -28,7 +28,7 @@ public:
 	ULeapHand* indexHand = NULL;
 };
 
-ULeapHandList::ULeapHandList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateHandList())
+ULeapHandList::ULeapHandList(const FObjectInitializer &init) : UObject(init), _private(new PrivateHandList())
 {
 }
 

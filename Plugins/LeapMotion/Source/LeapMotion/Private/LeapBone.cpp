@@ -7,7 +7,7 @@ public:
 	Leap::Bone bone;
 };
 
-ULeapBone::ULeapBone(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateBone())
+ULeapBone::ULeapBone(const FObjectInitializer &init) : UObject(init), _private(new PrivateBone())
 {
 }
 

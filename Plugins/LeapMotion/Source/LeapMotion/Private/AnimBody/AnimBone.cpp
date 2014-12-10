@@ -2,7 +2,7 @@
 #include "LeapInterfaceUtility.h"
 #include "AnimBone.h"
 
-UAnimBone::UAnimBone(const class FPostConstructInitializeProperties& PCIP)
+UAnimBone::UAnimBone(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 	Scale = FVector(1, 1, 1);

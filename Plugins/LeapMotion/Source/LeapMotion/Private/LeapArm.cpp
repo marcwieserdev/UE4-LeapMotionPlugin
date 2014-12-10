@@ -6,7 +6,7 @@ public:
 	Leap::Arm arm;
 };
 
-ULeapArm::ULeapArm(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateArm())
+ULeapArm::ULeapArm(const FObjectInitializer &init) : UObject(init), _private(new PrivateArm())
 {
 }
 

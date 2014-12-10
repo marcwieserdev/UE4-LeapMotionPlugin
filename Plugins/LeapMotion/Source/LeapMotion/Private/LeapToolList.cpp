@@ -34,7 +34,7 @@ public:
 };
 
 
-ULeapToolList::ULeapToolList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateToolList())
+ULeapToolList::ULeapToolList(const FObjectInitializer &init) : UObject(init), _private(new PrivateToolList())
 {
 }
 

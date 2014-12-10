@@ -36,7 +36,7 @@ public:
 	ULeapFingerList* extendedList = NULL;
 };
 
-ULeapFingerList::ULeapFingerList(const FPostConstructInitializeProperties &init) : UObject(init), _private(new PrivateFingerList())
+ULeapFingerList::ULeapFingerList(const FObjectInitializer &init) : UObject(init), _private(new PrivateFingerList())
 {
 }
 

@@ -1,7 +1,7 @@
 #include "LeapMotionPrivatePCH.h"
 #include "AnimBody.h"
 
-UAnimBody::UAnimBody(const class FPostConstructInitializeProperties& PCIP)
+UAnimBody::UAnimBody(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 	Left = PCIP.CreateDefaultSubobject<UAnimHand>(this, TEXT("Left"));

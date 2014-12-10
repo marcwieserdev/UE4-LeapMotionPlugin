@@ -4,7 +4,7 @@
 #include "AnimFinger.h"
 #include "LeapInterfaceUtility.h"
 
-UAnimFinger::UAnimFinger(const class FPostConstructInitializeProperties& PCIP)
+UAnimFinger::UAnimFinger(const class FObjectInitializer& PCIP)
 	: Super(PCIP)
 {
 	Metacarpal = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Metacarpal"));

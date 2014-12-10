@@ -20,7 +20,7 @@ public:
 	ULeapPointable* pointable = NULL;
 };
 
-ULeapKeyTapGesture::ULeapKeyTapGesture(const FPostConstructInitializeProperties &init) : ULeapGesture(init), _private(new PrivateKeyTapGesture())
+ULeapKeyTapGesture::ULeapKeyTapGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateKeyTapGesture())
 {
 }
 
