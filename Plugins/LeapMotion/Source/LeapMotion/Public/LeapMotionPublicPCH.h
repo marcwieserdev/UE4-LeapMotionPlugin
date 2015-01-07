@@ -2,6 +2,8 @@
 #include "ModuleManager.h"
 #include "Core.h"
 #include "Engine.h"
+
+#include "LeapEnums.h"
 #include "LeapForwardDeclaration.h"
 #include "LeapFinger.h"
 #include "LeapFingerList.h"

@@ -3,15 +3,6 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapPointable.generated.h"
 
-UENUM(BlueprintType)
-enum LeapZone
-{
-	ZONE_ERROR,
-	ZONE_NONE,
-	ZONE_HOVERING,
-	ZONE_TOUCHING
-};
-
 UCLASS(BlueprintType)
 class ULeapPointable : public UObject
 {

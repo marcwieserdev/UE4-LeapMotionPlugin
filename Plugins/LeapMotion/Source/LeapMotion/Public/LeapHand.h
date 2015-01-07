@@ -1,15 +1,9 @@
 #pragma once
 
+#include "LeapEnums.h"
 #include "LeapMotionPublicPCH.h"
 #include "LeapHand.generated.h"
 
-UENUM(BlueprintType)
-enum LeapHandType
-{
-	HAND_UNKNOWN,
-	HAND_LEFT,
-	HAND_RIGHT
-};
 
 UCLASS(BlueprintType)
 class ULeapHand : public UObject

@@ -4,3 +4,4 @@
 *.o
 *.obj
 *.pdb
+*.DS_Store

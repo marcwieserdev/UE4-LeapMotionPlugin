@@ -2631,7 +2631,6 @@ namespace Leap {
   /**
    * The Device class represents a physically connected device.
    *
-   * REVIEW NEEDED
    * The Device class contains information related to a particular connected
    * device such as device id, field of view relative to the device,
    * and the position and orientation of the device in relative coordinates.
@@ -2767,19 +2766,10 @@ namespace Leap {
 
     // primarily for the image API
     /**
-     *  Reports whether the coordinate axes have been reversed.
-     *
-     * The Leap Motion controller can automatically flip the coordinate axes so
-     * that the z-axis is positive toward the user and the x-axis is more positive
-     * from left to right. The user can also manually flip the axes in the Leap
-     * Motion control panel.
-     *
-     * Images from the camera are not flipped, however.
-     *
-     * @return True, if the axes are flipped, that is, if the positive z-axis
-     * extends from the long side of the device that does not have the green LED.
+     * Deprecated. Always reports false.
      *
      * @since 2.1
+     * @deprecated 2.1.1
      */
     LEAP_EXPORT bool isFlipped() const;
 
@@ -2900,6 +2890,15 @@ namespace Leap {
     LEAP_EXPORT Image();
 
     /**
+     * The image sequence ID.
+     *
+     * \include Image_sequenceId.txt
+     *
+     * @since 2.2.1
+     */
+    LEAP_EXPORT int64_t sequenceId() const;
+
+    /**
      * The image ID.
      *
      * Images with ID of 0 are from the left camera; those with an ID of 1 are from the
@@ -2914,7 +2913,7 @@ namespace Leap {
      * The image data.
      *
      * The image data is a set of 8-bit intensity values. The buffer is
-     * ``Image::width() * Image::height()`` bytes long.
+     * ``Image::width() * Image::height() * Image::bytesPerPixel()`` bytes long.
      *
      * \include Image_data_1.txt
      *
@@ -3006,7 +3005,10 @@ namespace Leap {
     /**
      * The number of bytes per pixel.
      *
-     * \include Image_image_bytes_per_pixel_1.txt
+     * Use this value along with ``Image::width()`` and ``Image:::height()``
+     * to calculate the size of the data buffer.
+     *
+     * \include Image_bytesPerPixel.txt
      *
      * @since 2.2.0
      */
@@ -3025,7 +3027,7 @@ namespace Leap {
     /**
      * The image format.
      *
-     * \include Image_image_format_1.txt
+     * \include Image_format.txt
      *
      * @since 2.2.0
      */
@@ -3953,8 +3955,12 @@ namespace Leap {
   /**
    * The ImageList class represents a list of Image objects.
    *
-   * Get a ImageList object by calling Controller::devices().
-   * @since 1.0
+   * Get the ImageList object associated with the a Frame of tracking data
+   * by calling Frame::images(). Get the most recent set of images, which can be 
+   * newer than the images used to create the current frame, by calling
+   * Controller::images().
+   *
+   * @since 2.1.0
    */
   class ImageList : public Interface {
   public:
@@ -4435,10 +4441,10 @@ namespace Leap {
     LEAP_EXPORT GestureList gestures(const Frame& sinceFrame) const;
 
     /**
-     *  The list of images from the Leap Motion cameras.
+     * The list of images from the Leap Motion cameras.
      *
-     *  @return An ImageList object containing the camera images analyzed to create this Frame.
-     *  @since 2.1
+     * @return An ImageList object containing the camera images analyzed to create this Frame.
+     * @since 2.1
      */
     LEAP_EXPORT ImageList images() const;
 
@@ -5232,20 +5238,12 @@ namespace Leap {
 
     /**
      * This function has been deprecated. Use isPolicySet() instead.
-     *
-     * \include Controller_policyFlags.txt
-     *
-     * @returns The current policy flags.
      * @deprecated 2.1.6
      */
     LEAP_EXPORT PolicyFlag policyFlags() const;
 
     /**
      * This function has been deprecated. Use setPolicy() and clearPolicy() instead.
-     *
-     * \include Controller_setPolicyFlags.txt
-     *
-     * @param flags A PolicyFlag value indicating the policies to request.
      * @deprecated 2.1.6
      */
     LEAP_EXPORT void setPolicyFlags(PolicyFlag flags) const;
@@ -5264,7 +5262,7 @@ namespace Leap {
      *
      * \include Controller_setPolicy.txt
      *
-     * @param flags A PolicyFlag value indicating the policy to request.
+     * @param policy A PolicyFlag value indicating the policy to request.
      * @since 2.1.6
      */
     LEAP_EXPORT void setPolicy(PolicyFlag policy) const;
@@ -5316,7 +5314,7 @@ namespace Leap {
      * \include Controller_addListener.txt
      *
      * The Controller does not keep a strong reference to the Listener instance.
-     * Ensure that you maintain a reference until the listener is removed from 
+     * Ensure that you maintain a reference until the listener is removed from
      * the controller.
      *
      * @param listener A subclass of Leap::Listener implementing the callback
@@ -5363,6 +5361,20 @@ namespace Leap {
      * @since 1.0
      */
     LEAP_EXPORT Frame frame(int history = 0) const;
+
+    /**
+     * The most recent set of images from the Leap Motion cameras. 
+     *
+     * \include Controller_images.txt
+     *
+     * Depending on timing and the current processing frame rate, the images
+     * obtained with this function can be newer than images obtained from
+     * the current frame of tracking data.
+     *
+     * @return An ImageList object containing the most recent camera images.
+     * @since 2.2.1
+     */
+    LEAP_EXPORT ImageList images() const;
 
     /**
      * Returns a Config object, which you can use to query the Leap Motion system for
@@ -5567,6 +5579,8 @@ namespace Leap {
     /**
      * Called when the Leap Motion daemon/service connects to your application Controller.
      *
+     * \include Listener_onServiceConnect.txt
+     *
      * @param controller The Controller object invoking this callback function.
      * @since 1.2
      */
@@ -5576,6 +5590,8 @@ namespace Leap {
      *
      * Normally, this callback is not invoked. It is only called if some external event
      * or problem shuts down the service or otherwise interrupts the connection.
+     *
+     * \include Listener_onServiceDisconnect.txt
      *
      * @param controller The Controller object invoking this callback function.
      * @since 1.2
@@ -5589,10 +5605,24 @@ namespace Leap {
      * Note that there is currently no way to query whether a device is in robust mode.
      * You can use Frame::currentFramerate() to get the framerate.
      *
+     * \include Listener_onDeviceChange.txt
+     *
      * @param controller The Controller object invoking this callback function.
      * @since 1.2
      */
     LEAP_EXPORT virtual void onDeviceChange(const Controller&) {}
+
+    /**
+     * Called when new images are available.
+     * Access the new frame data using the Controller::images() function.
+     *
+     * \include Listener_onImages.txt
+     *
+     * @param controller The Controller object invoking this callback function.
+     * @since 2.2.1
+     */
+    LEAP_EXPORT virtual void onImages(const Controller&) {}
+
   };
 }
 
