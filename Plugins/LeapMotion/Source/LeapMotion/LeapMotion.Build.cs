@@ -16,6 +16,11 @@ namespace UnrealBuildTool.Rules
             get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
         }
 
+        private string BinariesPath
+        {
+            get { return Path.GetFullPath(Path.Combine(ModulePath, "../../Binaries/")); }
+        }
+
         private string LibraryPath
         {
             get { return Path.GetFullPath(Path.Combine(ThirdPartyPath, "LeapSDK","Lib")); }
@@ -80,6 +85,14 @@ namespace UnrealBuildTool.Rules
                 string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "Win64" : "Win32";
 
                 PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, PlatformString, "Leap.lib"));
+            }
+            else if (Target.Platform == UnrealTargetPlatform.Mac){
+
+                isLibrarySupported = true;
+
+                string PlatformString = "Mac";
+                PublicAdditionalLibraries.Add(Path.Combine(BinariesPath, PlatformString, "libLeap.dylib"));
+
             }
 
             return isLibrarySupported;

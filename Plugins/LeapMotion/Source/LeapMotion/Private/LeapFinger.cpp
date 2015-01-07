@@ -44,6 +44,8 @@ ULeapFinger::~ULeapFinger()
 
 void ULeapFinger::CleanupRootReferences()
 {
+    ULeapPointable::CleanupRootReferences();
+    
 	if (this->HasAnyFlags(RF_RootSet))
 		this->RemoveFromRoot();
 }

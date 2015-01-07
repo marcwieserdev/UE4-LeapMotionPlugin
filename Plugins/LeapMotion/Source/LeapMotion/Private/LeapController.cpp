@@ -380,10 +380,6 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		Leap::Hand hand = frame.hands()[i];
 		LeapHandStateData pastHandState = _private->pastState.stateForId(hand.id());		//we use a custom class to hold reliable state tracking based on id's
 
-		/*UE_LOG(LeapPluginLog, Warning, TEXT("Debug1"));
-
-		debugAddress(this);*/
-
 		//Make a ULeapHand
 		if (_private->eventHand == NULL)
 		{
@@ -602,7 +598,6 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			{
 				if (_private->eventImage1 == NULL)
 				{
-					//UE_LOG(LeapPluginLog, Log, TEXT("Created Image 1"));
 					_private->eventImage1 = NewObject<ULeapImage>(this);
 					_private->eventImage1->SetFlags(RF_RootSet);
 				}
@@ -612,8 +607,8 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			}
 			else if (i == 1)
 			{
-				if (_private->eventImage2 == NULL){
-					//UE_LOG(LeapPluginLog, Log, TEXT("Created Image 2"));
+				if (_private->eventImage2 == NULL)
+                {
 					_private->eventImage2 = NewObject<ULeapImage>(this);
 					_private->eventImage2->SetFlags(RF_RootSet);
 				}

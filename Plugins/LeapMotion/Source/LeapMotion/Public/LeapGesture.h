@@ -3,39 +3,6 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapGesture.generated.h"
 
-
-UENUM(BlueprintType)
-enum LeapGestureType
-{
-	GESTURE_TYPE_INVALID,
-	GESTURE_TYPE_SWIPE,
-	GESTURE_TYPE_CIRCLE,
-	GESTURE_TYPE_SCREEN_TAP,
-	GESTURE_TYPE_KEY_TAP
-};
-
-UENUM(BlueprintType)
-enum LeapGestureState
-{
-	GESTURE_STATE_INVALID,
-	GESTURE_STATE_START,
-	GESTURE_STATE_UPDATE,
-	GESTURE_STATE_STOP,
-};
-
-//Used for cardinal directions
-UENUM(BlueprintType)
-enum LeapBasicDirection
-{
-	DIRECTION_NONE,
-	DIRECTION_LEFT,
-	DIRECTION_RIGHT,
-	DIRECTION_UP,
-	DIRECTION_DOWN,
-	DIRECTION_AWAY,
-	DIRECTION_TOWARD,
-};
-
 UCLASS(BlueprintType)
 class ULeapGesture : public UObject
 {

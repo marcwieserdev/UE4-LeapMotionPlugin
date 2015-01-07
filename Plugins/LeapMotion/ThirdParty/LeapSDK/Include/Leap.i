@@ -180,6 +180,7 @@
 %constattrib( Leap::KeyTapGesture, float, progress );
 %leapattrib( Leap::KeyTapGesture, Pointable, pointable );
 
+%constattrib( Leap::Image, int64_t, sequenceId );
 %constattrib( Leap::Image, int32_t, id );
 %constattrib( Leap::Image, int, width );
 %constattrib( Leap::Image, int, height );

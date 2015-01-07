@@ -4,16 +4,6 @@
 #include "LeapPointable.h"
 #include "LeapFinger.generated.h"
 
-UENUM(BlueprintType)
-enum LeapFingerType
-{
-	FINGER_TYPE_THUMB,
-	FINGER_TYPE_INDEX,
-	FINGER_TYPE_MIDDLE,
-	FINGER_TYPE_RING,
-	FINGER_TYPE_PINKY
-};
-
 UCLASS(BlueprintType)
 class ULeapFinger : public ULeapPointable
 {

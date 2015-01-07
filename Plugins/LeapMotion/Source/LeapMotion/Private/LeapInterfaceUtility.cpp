@@ -1,5 +1,3 @@
-#pragma once
-
 #include "LeapMotionPrivatePCH.h"
 #include "IHeadMountedDisplay.h"
 #include "LeapGesture.h"

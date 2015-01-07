@@ -34,7 +34,9 @@ ULeapPointable::~ULeapPointable()
 void ULeapPointable::CleanupRootReferences()
 {
 	_private->Cleanup();
-	this->RemoveFromRoot();
+    
+    if (this->HasAnyFlags(RF_RootSet))
+        this->RemoveFromRoot();
 }
 
 ULeapFrame *ULeapPointable::Frame()

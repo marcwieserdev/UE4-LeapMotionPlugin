@@ -3,16 +3,6 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapBone.generated.h"
 
-UENUM(BlueprintType)
-enum LeapBoneType
-{
-	TYPE_METACARPAL,
-	TYPE_PROXIMAL,
-	TYPE_INTERMEDIATE,
-	TYPE_DISTAL,
-	TYPE_ERROR
-};
-
 UCLASS(BlueprintType)
 class ULeapBone : public UObject
 {
