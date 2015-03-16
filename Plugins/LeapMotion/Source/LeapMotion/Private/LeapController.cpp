@@ -153,8 +153,8 @@ public:
 	ULeapImage* eventImage2 = NULL;
 	
 	UObject* interfaceDelegate = NULL;	//NB they have to be set to null manually or MSFT will set them to CDCDCDCD...
-	bool optimizeForHMD;
-	bool allowImages;
+	bool optimizeForHMD = false;
+	bool allowImages = false;
 	bool imageEventsEnabled;
 
 	//Functions

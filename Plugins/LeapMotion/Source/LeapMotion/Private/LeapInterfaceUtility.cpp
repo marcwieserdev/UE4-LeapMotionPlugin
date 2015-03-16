@@ -48,6 +48,21 @@ FVector adjustForHMD(FVector in)
 
 }
 
+FVector adjustForHMDOrientation(FVector in)
+{
+	if (GEngine->HMDDevice.IsValid())
+	{
+		FQuat orientationQuat;
+		FVector position;
+		GEngine->HMDDevice->GetCurrentOrientationAndPosition(orientationQuat, position);
+		FVector out = orientationQuat.RotateVector(in);
+		return out;
+	}
+	else
+		return in;
+
+}
+
 //Conversion - use find and replace to change behavior, no scaling version is typically used for orientations
 FVector convertLeapToUE(Leap::Vector leapVector)
 {
@@ -88,6 +103,43 @@ FVector convertAndScaleLeapToUE(Leap::Vector leapVector)
 			vect = adjustForHMD(vect);
 	}
 	return vect;
+}
+
+FMatrix convertLeapBasisMatrix(Leap::Matrix leapMatrix)
+{
+	/*
+	Leap Basis depends on hand type with -z, x, y as general format. This then needs to be inverted to point correctly (x = forward), which yields the matrix below.
+	*/
+	FVector inX, inY, inZ, inW;
+	inX.Set(leapMatrix.zBasis.z, -leapMatrix.zBasis.x, -leapMatrix.zBasis.y);
+	inY.Set(-leapMatrix.xBasis.z, leapMatrix.xBasis.x, leapMatrix.xBasis.y);
+	inZ.Set(-leapMatrix.yBasis.z, leapMatrix.yBasis.x, leapMatrix.yBasis.y);
+	inW.Set(-leapMatrix.origin.z, leapMatrix.origin.x, leapMatrix.origin.y);
+
+	if (LeapShouldAdjustForFacing)
+	{
+		inX = adjustForLeapFacing(inX);
+		inY = adjustForLeapFacing(inY);
+		inZ = adjustForLeapFacing(inZ);
+		inW = adjustForLeapFacing(inW);
+
+		if (LeapShouldAdjustRotationForHMD){
+			inX = adjustForHMDOrientation(inX);
+			inY = adjustForHMDOrientation(inY);
+			inZ = adjustForHMDOrientation(inZ);
+			inW = adjustForHMDOrientation(inW);
+		}
+	}
+
+
+	return (FMatrix(inX, inY, inZ, inW));
+}
+FMatrix swapLeftHandRuleForRight(FMatrix ueMatrix)
+{
+	//Convenience method to swap the axis correctly, already in UE format to swap Y instead of leap Z
+	FVector inverseVector = -ueMatrix.GetUnitAxis(EAxis::Y);
+	ueMatrix.SetAxes(NULL, &inverseVector, NULL, NULL);
+	return ueMatrix;
 }
 
 Leap::Vector convertUEToLeap(FVector ueVector)
@@ -171,4 +223,15 @@ void UtilityDebugAddress(void* pointer)
 	FString string(name.c_str());
 
 	UE_LOG(LeapPluginLog, Warning, TEXT("Address: %s"), *string);
+}
+
+//Utility function to handle uncaught GC pointer releases (which will typically pass null checks)
+//This is hacky, but guarantees certain GC releases will be caught, make a pull request if you know a better way to handle these cases
+bool UtilityPointerIsValid(void* pointer)
+{
+#if PLATFORM_32BITS
+	return (pointer != nullptr && pointer != (void*)0xdddddddd);
+#else
+	return (pointer != nullptr && pointer != (void*)0xdddddddddddddddd);
+#endif
 }

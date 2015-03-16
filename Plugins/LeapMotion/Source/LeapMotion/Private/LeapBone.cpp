@@ -16,6 +16,15 @@ ULeapBone::~ULeapBone()
 	delete _private;
 }
 
+
+FRotator ULeapBone::GetOrientation(LeapHandType handType)
+{
+	if (handType == LeapHandType::HAND_LEFT)
+		return swapLeftHandRuleForRight(Basis).Rotator();
+	else
+		return Basis.Rotator();
+}
+
 void ULeapBone::CleanupRootReferences()
 {
 	this->RemoveFromRoot();
@@ -52,18 +61,10 @@ void ULeapBone::setBone(const Leap::Bone &bone)
 {
 	_private->bone = bone;
 
-	Leap::Matrix matrix;
-	FVector inX, inY, inZ, inW;
-
-	matrix = _private->bone.basis();
-	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-
-	Basis = (FMatrix(inX, inY, inZ, inW));
+	Basis = convertLeapBasisMatrix(_private->bone.basis());
 	Center = convertAndScaleLeapToUE(_private->bone.center());
 	Direction = convertLeapToUE(_private->bone.direction());
+	//Orientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
 	IsValid = _private->bone.isValid();
 	Length = _private->bone.length();
 	NextJoint = convertAndScaleLeapToUE(_private->bone.nextJoint());

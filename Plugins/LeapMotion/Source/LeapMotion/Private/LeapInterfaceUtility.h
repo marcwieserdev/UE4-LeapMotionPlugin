@@ -10,8 +10,13 @@ FRotator CombineRotators(FRotator A, FRotator B);
 
 
 //Conversion
+//To ue
 FVector convertLeapToUE(Leap::Vector leapVector);
 FVector convertAndScaleLeapToUE(Leap::Vector leapVector);
+FMatrix convertLeapBasisMatrix(Leap::Matrix leapMatrix);
+FMatrix swapLeftHandRuleForRight(FMatrix ueMatrix);		//needed for all left hand basis which will be incorrect in ue format
+
+//To leap
 Leap::Vector convertUEToLeap(FVector ueVector);
 Leap::Vector convertAndScaleUEToLeap(FVector ueVector);
 
@@ -28,3 +33,4 @@ enum LeapBasicDirection basicDirection(FVector direction);
 
 //Pointer debugging
 void UtilityDebugAddress(void* pointer);
+bool UtilityPointerIsValid(void* pointer);

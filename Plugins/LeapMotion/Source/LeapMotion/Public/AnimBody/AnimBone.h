@@ -18,6 +18,9 @@ class UAnimBone : public UObject
 	FVector Scale;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Bone")
+	float Length;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Anim Bone")
 	float Alpha;
 
 

@@ -13,19 +13,19 @@ class UAnimHand : public UObject
 	float Alpha;
 
 	//Fingers
-	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")
 	UAnimFinger* Thumb;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")
 	UAnimFinger* Index;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")
 	UAnimFinger* Middle;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")
 	UAnimFinger* Ring;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")
 	UAnimFinger* Pinky;
 	
 	//Arm and Wrist, NB: Consider moving this up the skeletal tree, for leap this is sufficient
@@ -33,8 +33,10 @@ class UAnimHand : public UObject
 	UAnimBone* Wrist;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
-	UAnimBone* LowerArm;
+	UAnimBone* Palm;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand")
+	UAnimBone* LowerArm;
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
 	bool Enabled();

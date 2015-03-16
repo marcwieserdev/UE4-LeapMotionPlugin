@@ -12,6 +12,7 @@ UAnimHand::UAnimHand(const class FObjectInitializer& PCIP)
 
 	Wrist = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Wrist"));
 	LowerArm = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("LowerArm"));
+	Palm = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Palm"));
 }
 
 bool UAnimHand::Enabled()
@@ -40,6 +41,7 @@ void UAnimHand::SetEnabled(bool enable)
 	//Arm/Wrist
 	Wrist->SetEnabled(enable);
 	LowerArm->SetEnabled(enable);
+	Palm->SetEnabled(enable);
 }
 
 void UAnimHand::TranslateHand(FVector shift)
@@ -72,15 +74,21 @@ void UAnimHand::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVect
 
 void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
 {
+
 	//Wrist/Arm
 	Wrist->Orientation = leapHand->PalmOrientation;
 	Wrist->Position = leapHand->Arm->WristPosition;
 
+	Palm->Orientation = leapHand->PalmOrientation;
+	Palm->Position = leapHand->PalmPosition;
+
+	//Equivalent to elbow in leap
 	LowerArm->Position = leapHand->Arm->ElbowPosition;
-	LowerArm->Orientation = leapHand->Arm->Direction.Rotation();
+	LowerArm->Orientation = leapHand->Arm->Direction.Rotation();	//this works because we derive it from two vectors
 
 	//Fingers
 	ULeapFingerList* fingers = leapHand->Fingers();
+	LeapHandType handType = leapHand->HandType;
 
 	for (int i = 0; i < fingers->Count; i++)
 	{
@@ -88,19 +96,19 @@ void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
 		switch (finger->Type)
 		{
 		case FINGER_TYPE_THUMB:
-			Thumb->SetFromLeapFinger(finger);
+			Thumb->SetFromLeapFinger(finger, handType);
 			break;
 		case FINGER_TYPE_INDEX:
-			Index->SetFromLeapFinger(finger);
+			Index->SetFromLeapFinger(finger, handType);
 			break;
 		case FINGER_TYPE_MIDDLE:
-			Middle->SetFromLeapFinger(finger);
+			Middle->SetFromLeapFinger(finger, handType);
 			break;
 		case FINGER_TYPE_RING:
-			Ring->SetFromLeapFinger(finger);
+			Ring->SetFromLeapFinger(finger, handType);
 			break;
 		case FINGER_TYPE_PINKY:
-			Pinky->SetFromLeapFinger(finger);
+			Pinky->SetFromLeapFinger(finger, handType);
 			break;
 		default:
 			break;

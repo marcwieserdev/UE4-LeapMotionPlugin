@@ -80,17 +80,10 @@ float ULeapHand::RotationAngleWithAxis(class ULeapFrame *frame, const FVector &a
 
 FMatrix ULeapHand::RotationMatrix(const ULeapFrame *frame)
 {
-	Leap::Matrix matrix;
 	Leap::Frame rframe;
-	FVector inX, inY, inZ, inW;
 
 	rframe = frame->getFrame();
-	matrix = _private->hand.rotationMatrix(rframe);
-	inX.Set(matrix.xBasis.x,matrix.xBasis.y,matrix.xBasis.z);
-	inY.Set(matrix.yBasis.x,matrix.yBasis.y,matrix.yBasis.z);
-	inZ.Set(matrix.zBasis.x,matrix.zBasis.y,matrix.zBasis.z);
-	inW.Set(matrix.origin.x,matrix.origin.y,matrix.origin.z);
-	return (FMatrix(inX, inY, inZ, inW));
+	return convertLeapBasisMatrix(_private->hand.rotationMatrix(rframe));
 }
 
 
@@ -183,17 +176,7 @@ void ULeapHand::setHand(const Leap::Hand &hand)
 
 	PalmOrientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
 
-	Leap::Matrix matrix;
-	FVector inX, inY, inZ, inW;
-
-	matrix = _private->hand.basis();
-	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	Basis = (FMatrix(inX, inY, inZ, inW));
-
-
+	Basis = convertLeapBasisMatrix(_private->hand.basis());
 
 	//Convenience Setting, allows for easy branching in blueprint
 	if (IsLeft){

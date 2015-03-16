@@ -1,15 +1,15 @@
-################################################################################
-# Copyright (C) 2012-2013 Leap Motion, Inc. All rights reserved.               #
-# Leap Motion proprietary and confidential. Not for distribution.              #
-# Use subject to the terms of the Leap Motion SDK Agreement available at       #
-# https://developer.leapmotion.com/sdk_agreement, or another agreement         #
-# between Leap Motion and you, your company or other organization.             #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2012-2015 Leap Motion, Inc. All rights reserved.               /
+// Leap Motion proprietary and confidential. Not for distribution.              /
+// Use subject to the terms of the Leap Motion SDK Agreement available at       /
+// https://developer.leapmotion.com/sdk_agreement, or another agreement         /
+// between Leap Motion and you, your company or other organization.             /
+////////////////////////////////////////////////////////////////////////////////
 
-# usage:
-#   swig -c++ -python -o LeapPython.cpp -interface LeapPython Leap.i
-#   swig -c++ -java   -o LeapJava.cpp -package com.leapmotion.leap -outdir com/leapmotion/leap Leap.i
-#   swig -c++ -csharp -o LeapCSharp.cpp -dllimport LeapCSharp -namespace Leap Leap.i
+// usage:
+//   swig -c++ -python -o LeapPython.cpp -interface LeapPython Leap.i
+//   swig -c++ -java   -o LeapJava.cpp -package com.leapmotion.leap -outdir com/leapmotion/leap Leap.i
+//   swig -c++ -csharp -o LeapCSharp.cpp -dllimport LeapCSharp -namespace Leap Leap.i
 
 %module(directors="1", threads="1") Leap
 #pragma SWIG nowarn=325
@@ -19,9 +19,9 @@
 %include "stdint.i"
 %include "attribute.i"
 
-################################################################################
-# Ignore constructors for internal use only                                    #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// Ignore constructors for internal use only                                    /
+////////////////////////////////////////////////////////////////////////////////
 
 %ignore Leap::Pointable::Pointable(PointableImplementation*);
 %ignore Leap::Pointable::Pointable(FingerImplementation*);
@@ -39,11 +39,11 @@
 %ignore Leap::Device::Device(DeviceImplementation*);
 %ignore Leap::InteractionBox::InteractionBox(InteractionBoxImplementation*);
 
-#####################################################################################
-# Set Attributes (done after functions are uppercased, but before vars are lowered) #
-#####################################################################################
-#TODO: If possible, figure out how to auomatically make any C++ function
-# that is const and takes no arguments be defined as a property in C#
+/////////////////////////////////////////////////////////////////////////////////////
+// Set Attributes (done after functions are uppercased, but before vars are lowered) /
+/////////////////////////////////////////////////////////////////////////////////////
+//TODO: If possible, figure out how to auomatically make any C++ function
+// that is const and takes no arguments be defined as a property in C/
 
 %define %constattrib( Class, Type, Name )
   %attribute( Class, Type, Name, Name )
@@ -76,7 +76,7 @@
 
 #endif
 
-# Apply language specific caseing
+// Apply language specific caseing
 #if SWIGCSHARP
 
 %rename("%(camelcase)s", %$not %$isenumitem) "";
@@ -194,7 +194,7 @@
 %constattrib( Leap::Image, float, rayScaleY );
 %constattrib( Leap::Image, bool, isValid );
 
-# Count is made a const attribute in C# but renamed to __len__ in Python
+// Count is made a const attribute in C# but renamed to __len__ in Python
 #if SWIGCSHARP
 %constattrib( Leap::PointableList, int, count );
 %constattrib( Leap::FingerList, int, count );
@@ -256,6 +256,9 @@
 %constattrib( Leap::Device, bool, isStreaming );
 %constattrib( Leap::Device, bool, isFlipped );
 %constattrib( Leap::Device, Leap::Device::Type, type );
+%constattrib( Leap::Device, std::string, serialNumber );
+%leapattrib( Leap::Device, Vector, position );
+%leapattrib( Leap::Device, Matrix, orientation );
 
 %leapattrib( Leap::InteractionBox, Vector, center );
 %constattrib( Leap::InteractionBox, float, width );
@@ -291,6 +294,7 @@
 %constattrib( Leap::Controller, bool, hasFocus );
 %constattrib( Leap::Controller, Controller::PolicyFlag, policyFlags );
 %leapattrib( Leap::Controller, Config, config );
+%leapattrib( Leap::Controller, ImageList, images );
 %leapattrib( Leap::Controller, ScreenList, locatedScreens );
 %leapattrib( Leap::Controller, DeviceList, devices );
 
@@ -581,7 +585,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 %ignore Leap::RAD_TO_DEG;
 %ignore Leap::PI;
 
-# Use proper Java enums
+// Use proper Java enums
 %include "enums.swg"
 %javaconst(1);
 
@@ -589,9 +593,9 @@ SWIG_JAVABODY_PROXY(public, public, SWIGTYPE)
 
 #endif
 
-# Ignore C++ streaming operator
+// Ignore C++ streaming operator
 %ignore operator<<;
-# Ignore C++ equal operator
+// Ignore C++ equal operator
 %ignore operator=;
 
 #if SWIGPYTHON
@@ -689,9 +693,9 @@ extern "C" BOOL WINAPI DllMain(
   }
 %}
 
-################################################################################
-# Operator overloading                                                         #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// Operator overloading                                                         #
+////////////////////////////////////////////////////////////////////////////////
 
 #if SWIGCSHARP
 
@@ -752,7 +756,7 @@ extern "C" BOOL WINAPI DllMain(
 %}
 %typemap(cscode) Leap::Matrix
 %{
-  /** Multiply two matrices. */ 
+  /** Multiply two matrices. */
   public static Matrix operator * (Matrix m1, Matrix m2) {
     return m1._operator_mul(m2);
   }
@@ -895,9 +899,9 @@ extern "C" BOOL WINAPI DllMain(
 
 #endif
 
-################################################################################
-# List Helpers                                                                 #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// List Helpers
+////////////////////////////////////////////////////////////////////////////////
 
 #if SWIGCSHARP
 
@@ -1006,9 +1010,9 @@ extern "C" BOOL WINAPI DllMain(
 %leap_list_helper(Screen);
 %leap_list_helper(Device);
 
-################################################################################
-# Config Helpers                                                               #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// Config Helpers
+////////////////////////////////////////////////////////////////////////////////
 
 #if SWIGPYTHON
 
@@ -1051,9 +1055,9 @@ extern "C" BOOL WINAPI DllMain(
 
 #endif
 
-################################################################################
-# ToString methods                                                             #
-################################################################################
+////////////////////////////////////////////////////////////////////////////////
+// ToString methods
+////////////////////////////////////////////////////////////////////////////////
 
 #if SWIGCSHARP
 

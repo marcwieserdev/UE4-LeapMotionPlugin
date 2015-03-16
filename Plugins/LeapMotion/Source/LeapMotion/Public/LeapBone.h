@@ -19,6 +19,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
 	FVector Direction;
 
+	//Convenience method, requires knowledge of the hand this bone belongs to in order to give a correct orientation (left hand basis is different from right).
+	UFUNCTION(BlueprintCallable, Category = "Leap Bone")
+	FRotator GetOrientation(LeapHandType handType);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
 	bool IsValid;
 
@@ -37,10 +41,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Bone")
 	float Width;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "different", CompactNodeTitle = "!=", Keywords = "different operator"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "different", CompactNodeTitle = "!=", Keywords = "different operator"), Category = "Leap Bone")
 	bool different(const ULeapBone *other) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = Leap)
+	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = "Leap Bone")
 	bool equal(const ULeapBone *other) const;
 
 	void setBone(const class Leap::Bone &bone);

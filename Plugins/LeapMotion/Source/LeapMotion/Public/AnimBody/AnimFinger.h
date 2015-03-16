@@ -1,7 +1,16 @@
 #pragma once
 
 #include "AnimBone.h"
+#include "LeapEnums.h"
 #include "AnimFinger.generated.h"
+
+UENUM(BlueprintType)
+enum AnimHandType
+{
+	ANIM_HAND_UNKNOWN,
+	ANIM_HAND_LEFT,
+	ANIM_HAND_RIGHT
+};
 
 UCLASS(BlueprintType)
 class UAnimFinger : public UObject
@@ -24,7 +33,6 @@ class UAnimFinger : public UObject
 	UPROPERTY(BlueprintReadWrite, Category = "Anim Finger")
 	float Alpha;
 
-
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
 	bool Enabled();
 
@@ -38,5 +46,5 @@ class UAnimFinger : public UObject
 	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
-	void SetFromLeapFinger(class ULeapFinger* finger);
+	void SetFromLeapFinger(class ULeapFinger* finger, LeapHandType handType);
 };

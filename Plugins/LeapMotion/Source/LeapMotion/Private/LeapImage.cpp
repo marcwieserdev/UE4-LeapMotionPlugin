@@ -26,11 +26,13 @@ public:
 	UTexture2D* imageR8Pointer = NULL;
 	UTexture2D* distortionPointer = NULL;
 
-	UTexture2D* validImagePointer(UTexture2D* pointer, int32 pWidth, int32 pHeight, EPixelFormat format);
+	UTexture2D* validImagePointer(UTexture2D* pointer, int32 pWidth, int32 pHeight, EPixelFormat format, bool gammaCorrectionUsed = true);
 
 	UTexture2D* Texture8FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
 	UTexture2D* Texture32FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
-	UTexture2D* Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
+	UTexture2D* Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);		//optimized, requires shader channel flipping
+	UTexture2D* Texture32PrettyFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);	//unoptimized roughly +1ms
+	UTexture2D* Texture128FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);		//4x float 32
 	UTexture2D* TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
 	
 	int32 invalidSizesReported = 0;
@@ -55,7 +57,7 @@ void ULeapImage::CleanupRootReferences()
 }
 
 
-UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidth, int32 pHeight, EPixelFormat format)
+UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidth, int32 pHeight, EPixelFormat format, bool gammaCorrectionUsed)
 {
 	//Make sure we're valid
 	if (!self->IsValid) 
@@ -64,7 +66,7 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidt
 		return NULL;
 	}
 	//Instantiate the texture if needed
-	if (pointer == NULL)
+	if (pointer == nullptr)
 	{
 		if (pWidth == 0 || pHeight == 0)
 		{
@@ -84,14 +86,20 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* pointer, int32 pWidt
 				}
 			}
 			
-			return NULL;
+			return nullptr;
 		}
-		UE_LOG(LeapPluginLog, Log, TEXT("Created Leap Image Texture Sized: %d, %d."), pWidth, pHeight);
+		UE_LOG(LeapPluginLog, Log, TEXT("Created Leap Image Texture Sized: %d, %d, format %d"), pWidth, pHeight, (int)format);
 		pointer = UTexture2D::CreateTransient(pWidth, pHeight, format); //PF_B8G8R8A8
+		
+		//change texture settings
+		if (!gammaCorrectionUsed)
+			pointer->SRGB = 0;
 		pointer->SetFlags(RF_RootSet);	//to support more than one leap component, the pointer shouldn't be reclaimed by GC
 	}
-	//If the size changed, recreate the image
-	if (pointer->PlatformData->SizeX != pWidth ||
+
+	//If the size changed, recreate the image (NB: GC may release the platform data in which case we need to recreate it (since 4.7)
+	if (!UtilityPointerIsValid(pointer->PlatformData) ||
+		pointer->PlatformData->SizeX != pWidth ||
 		pointer->PlatformData->SizeY != pHeight)
 	{
 		UE_LOG(LeapPluginLog, Log, TEXT("ReCreated Leap Image Texture Sized: %d, %d. Old Size: %d, %d"), pWidth, pHeight, pointer->PlatformData->SizeX, pointer->PlatformData->SizeY);
@@ -168,49 +176,54 @@ UTexture2D* PrivateLeapImage::Texture32FromLeapImage(int32 SrcWidth, int32 SrcHe
 	return imagePointer;
 }
 
-/*Lossless distortion map attempts so far no good
-UTexture2D* PrivateLeapImage::TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
-{
-	int32 DestWidth = SrcWidth/2; // Put 2 floats in the R and G channels
-	int32 DestHeight = SrcHeight;
-
-
-	// Create the texture
-	UTexture2D* LeapTexture = UTexture2D::CreateTransient(DestWidth, DestHeight, PF_A32B32G32R32F);
-
-	// Lock the texture so it can be modified
-	float* MipData = static_cast<float*>(LeapTexture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
-
-	// Create base mip.
-	float* DestPtr = NULL;
-	const float* SrcPtr = NULL;
-	for (int32 y = 0; y<SrcHeight; y++)
-	{
-		DestPtr = &MipData[(DestHeight - 1 - y) * DestWidth * sizeof(float)*2];
-		SrcPtr = const_cast<float*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
-		for (int32 x = 0; x<SrcWidth; x++)
-		{
-			*DestPtr++ = 1.f;						//Full 255 alpha
-			*DestPtr++ = 0.f;						//Black
-			*DestPtr++ = (float)*SrcPtr++;//(uint8)(*SrcPtr++ * 0xFF); //Scale the float (0.0..1.0) to a uint8 (0..255)
-			*DestPtr++ = (float)*SrcPtr++;//(uint8)(*SrcPtr++ * 0xFF);
-		}
-	}
-
-	// Unlock the texture
-	LeapTexture->PlatformData->Mips[0].BulkData.Unlock();
-	LeapTexture->UpdateResource();
-
-	return LeapTexture;
-}*/
-
-UTexture2D* PrivateLeapImage::Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
+//Lossless distortion map with no surplus channels, still not working properly, use the 128bit texture instead.
+/*UTexture2D* PrivateLeapImage::TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
 {
 	// Lock the texture so it can be modified
 	if (distortionPointer == NULL)
 		return NULL;
 
-	int32 DestWidth = SrcWidth /2; // Put 2 floats in the R and G channels
+	int32 DestWidth = SrcWidth / 2; // Put 2 floats in the R and G channels
+	int32 DestHeight = SrcHeight;
+
+	// Lock the texture so it can be modified
+	float* MipData = static_cast<float*>(distortionPointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	float* DestPtr = NULL;
+	const float* SrcPtr = imageBuffer;
+	DestPtr = MipData;
+	int32 length = SrcWidth * SrcHeight;
+
+	for (int d = 0; d < length; d += 2)
+	{
+		float dX = imageBuffer[d];
+		float dY = imageBuffer[d + 1];
+		int destIndex = d * 2;
+
+		//R
+		DestPtr[destIndex] = dX;
+
+		//G
+		DestPtr[destIndex + 1] = dY;
+	}
+
+	// Unlock the texture
+	distortionPointer->PlatformData->Mips[0].BulkData.Unlock();
+	distortionPointer->UpdateResource();
+
+	return distortionPointer;
+}*/
+
+//This gives a good looking distortion but it does not cull invalid values nor does it flip the V channel to UE format
+//32bit, 8 per channel. Downsampled.
+UTexture2D* PrivateLeapImage::Texture32PrettyFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
+{
+	// Lock the texture so it can be modified
+	if (distortionPointer == NULL)
+		return NULL;
+
+	int32 DestWidth = SrcWidth / 2; // Put 2 floats in the R and G channels
 	int32 DestHeight = SrcHeight;
 
 	// Lock the texture so it can be modified
@@ -218,19 +231,134 @@ UTexture2D* PrivateLeapImage::Texture32FromLeapDistortion(int32 SrcWidth, int32 
 
 	// Create base mip.
 	uint8* DestPtr = NULL;
-	const float* SrcPtr = NULL;
-	for (int32 y = 0; y<SrcHeight; y++)
-	{
-		DestPtr = &MipData[(DestHeight - 1 - y) * DestWidth * sizeof(FColor)];
-		SrcPtr = const_cast<float*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
-		for (int32 x = 0; x<SrcWidth; x++)
-		{
+	const float* SrcPtr = imageBuffer;
+	DestPtr = MipData;
 
-			*DestPtr++ = (uint8)(*SrcPtr++ * 0xFF);	//Scale floats
-			*DestPtr++ = (uint8)(*SrcPtr++ * 0xFF);
-			*DestPtr++ = (uint8)0x00;						//Black
-			*DestPtr++ = (uint8)0xFF;						//Full 255 alpha
+	for (int d = 0; d < SrcWidth * SrcHeight; d += 2)
+	{
+		float dX = imageBuffer[d];
+		float dY = imageBuffer[d + 1];
+		int destIndex = d * 2;
+
+		if (!((dX < 0) || (dX > 1)) && !((dY < 0) || (dY > 1))) {
+			//R
+			DestPtr[destIndex] = (uint8)FMath::Clamp<int32>(FMath::TruncToInt(dX *255.f), 0, 255);
+
+			//G
+			DestPtr[destIndex + 1] = (uint8)FMath::Clamp<int32>(255 - FMath::TruncToInt(dY *255.f), 0, 255);
+
+			//B
+			DestPtr[destIndex + 2] = 0;
+
+			//A
+			DestPtr[destIndex + 3] = 255;
+
+			//if (d == (SrcHeight / 2) * SrcWidth + (SrcWidth / 2))
+			//	UE_LOG(LeapPluginLog, Log, TEXT("(%d, %d, %d, %d), (%1.3f,%1.3f) @pos: %d"), DestPtr[destIndex], DestPtr[destIndex + 1], DestPtr[destIndex + 2], DestPtr[destIndex + 3],dX, dY, d);
 		}
+		else{
+			//R
+			DestPtr[destIndex] = 0;
+			
+			//G
+			DestPtr[destIndex + 1] = 0;
+
+			//B
+			DestPtr[destIndex + 2] = 255;
+
+			//A
+			DestPtr[destIndex + 3] = 255;
+		}
+	}
+
+	// Unlock the texture
+	distortionPointer->PlatformData->Mips[0].BulkData.Unlock();
+	distortionPointer->UpdateResource();
+
+	return distortionPointer;
+}
+
+//Optimized 32bit format, downsampled to 8bits per channel.
+UTexture2D* PrivateLeapImage::Texture32FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
+{
+	// Lock the texture so it can be modified
+	if (distortionPointer == NULL)
+		return NULL;
+
+	int32 DestWidth = SrcWidth / 2; // Put 2 floats in the R and G channels
+	int32 DestHeight = SrcHeight;
+
+	// Lock the texture so it can be modified
+	uint8* MipData = static_cast<uint8*>(distortionPointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	uint8* DestPtr = NULL;
+	const float* SrcPtr = imageBuffer;
+	DestPtr = MipData;
+	int32 length = SrcWidth * SrcHeight;
+
+	for (int d = 0; d < length; d += 2)
+	{
+		float dX = imageBuffer[d];
+		float dY = imageBuffer[d + 1];
+		int destIndex = d * 2;
+
+		//R
+		DestPtr[destIndex] = (uint8)(dX * 0xFF); //(uint8)FMath::Clamp<int32>(FMath::TruncToInt(dX *255.f), 0, 255);
+
+		//G
+		DestPtr[destIndex + 1] = (uint8)(dY * 0xFF); // (uint8)FMath::Clamp<int32>(255 - FMath::TruncToInt(dY *255.f), 0, 255);
+
+		//B
+		DestPtr[destIndex + 2] = 0x00;
+
+		//A
+		DestPtr[destIndex + 3] = 0xFF;
+	}
+
+	// Unlock the texture
+	distortionPointer->PlatformData->Mips[0].BulkData.Unlock();
+	distortionPointer->UpdateResource();
+
+	return distortionPointer;
+}
+
+//Optimized 128bit format, one float per channel, two channels unused but the function works as expected.
+UTexture2D* PrivateLeapImage::Texture128FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer)
+{
+	// Lock the texture so it can be modified
+	if (distortionPointer == NULL)
+		return NULL;
+
+	int32 DestWidth = SrcWidth / 2; // Put 2 floats in the R and G channels
+	int32 DestHeight = SrcHeight;
+
+	// Lock the texture so it can be modified
+	float* MipData = static_cast<float*>(distortionPointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	float* DestPtr = NULL;
+	const float* SrcPtr = imageBuffer;
+	DestPtr = MipData;
+	int32 length = SrcWidth * SrcHeight;
+
+	for (int d = 0; d < length; d += 2)
+	{
+		float dX = imageBuffer[d];
+		float dY = imageBuffer[d + 1];
+		int destIndex = d * 2;
+
+		//R
+		DestPtr[destIndex] = dX;
+
+		//G
+		DestPtr[destIndex + 1] = dY;
+
+		//B
+		DestPtr[destIndex + 2] = 0.f;
+
+		//A
+		DestPtr[destIndex + 3] = 0.f;
 	}
 
 	// Unlock the texture
@@ -256,9 +384,18 @@ UTexture2D* ULeapImage::R8Texture()
 
 UTexture2D* ULeapImage::Distortion()
 {
-	_private->distortionPointer = _private->validImagePointer(_private->distortionPointer, DistortionWidth / 2, DistortionHeight, PF_B8G8R8A8);
+	//_private->distortionPointer = _private->validImagePointer(_private->distortionPointer, DistortionWidth / 2, DistortionHeight, PF_R8G8B8A8, false);	//8bit
+	_private->distortionPointer = _private->validImagePointer(_private->distortionPointer, DistortionWidth / 2, DistortionHeight, PF_A32B32G32R32F);		//32bit per channel
+	
+	//return _private->Texture32FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_private->leapImage.distortion());	
+	return _private->Texture128FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_private->leapImage.distortion());
+}
 
-	return _private->Texture32FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_private->leapImage.distortion());
+UTexture2D* ULeapImage::DistortionUE()
+{
+	_private->distortionPointer = _private->validImagePointer(_private->distortionPointer, DistortionWidth / 2, DistortionHeight, PF_R8G8B8A8);
+
+	return _private->Texture32PrettyFromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_private->leapImage.distortion());
 }
 
 

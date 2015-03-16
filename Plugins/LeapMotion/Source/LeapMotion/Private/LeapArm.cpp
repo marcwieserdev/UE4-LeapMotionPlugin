@@ -34,16 +34,7 @@ void ULeapArm::setArm(const Leap::Arm &arm)
 {
 	_private->arm = arm;
 
-	Leap::Matrix matrix;
-	FVector inX, inY, inZ, inW;
-
-	matrix = _private->arm.basis();
-	inX.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inY.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inZ.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	inW.Set(matrix.xBasis.x, matrix.xBasis.y, matrix.xBasis.z);
-	Basis = (FMatrix(inX, inY, inZ, inW));
-
+	Basis = convertLeapBasisMatrix(_private->arm.basis());
 	Center = convertAndScaleLeapToUE(_private->arm.center());
 	Direction = convertLeapToUE(_private->arm.direction());
 	ElbowPosition = convertAndScaleLeapToUE(_private->arm.elbowPosition());

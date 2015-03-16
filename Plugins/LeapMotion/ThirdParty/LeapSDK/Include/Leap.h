@@ -1,5 +1,5 @@
 /******************************************************************************\
-* Copyright (C) 2012-2014 Leap Motion, Inc. All rights reserved.               *
+* Copyright (C) 2012-2015 Leap Motion, Inc. All rights reserved.               *
 * Leap Motion proprietary and confidential. Not for distribution.              *
 * Use subject to the terms of the Leap Motion SDK Agreement available at       *
 * https://developer.leapmotion.com/sdk_agreement, or another agreement         *
@@ -664,7 +664,7 @@ namespace Leap {
      * @since 2.0
      */
     enum Type {
-      TYPE_METACARPAL = 0,           /**< Bone connected to the wrist inside the palm */
+      TYPE_METACARPAL = 0,   /**< Bone connected to the wrist inside the palm */
       TYPE_PROXIMAL = 1,     /**< Bone connecting to the palm */
       TYPE_INTERMEDIATE = 2, /**< Bone between the tip and the base*/
       TYPE_DISTAL = 3,       /**< Bone at the tip of the finger */
@@ -1373,7 +1373,6 @@ namespace Leap {
      * @since 2.0.3
      */
     LEAP_EXPORT Vector wristPosition() const;
-
 
     /**
      * The center of a sphere fit to the curvature of this hand.
@@ -2658,6 +2657,10 @@ namespace Leap {
      * @since 1.2
      */
       TYPE_PERIPHERAL = 1,
+    /**
+     * A controller embedded in a keyboard.
+     * @since 1.2
+     */
       TYPE_LAPTOP,
     /**
      * A controller embedded in a laptop computer.
@@ -2787,6 +2790,54 @@ namespace Leap {
     LEAP_EXPORT Type type() const;
 
     /**
+     * An alphanumeric serial number unique to each device.
+     *
+     * Consumer device serial numbers consist of 2 letters followed by 11 digits.
+     *
+     * When using multiple devices, the serial number provides an unambiguous
+     * identifier for each device.
+     * @since 2.2.2
+     */
+    std::string serialNumber() const {
+      const char* cstr = serialNumberCString();
+      std::string str(cstr);
+      deleteCString(cstr);
+      return str;
+    }
+
+    /*
+     * This API is experimental and not currently intended for external use.
+     * Position and orientation can only be manually configured via a config file.
+     * This API and the config file may change in the future or be removed entirely.
+     *
+     * The position of the center of the device in global coordinates (currently defined
+     * in the configuration file).
+     * @since 2.2.2
+     */
+    LEAP_EXPORT Vector position() const;
+
+    /*
+     * This API is experimental and not currently intended for external use.
+     * Position and orientation can only be manually configured via a config file.
+     * This API and the config file may change in the future or be removed entirely.
+     *
+     * The orientation of the device is described by a right-handed basis:
+     * xBasis : Unit vector along baseline axis between camera centers
+     * yBasis : Unit vector in the direction of the center of view of both cameras
+     * zBasis : The completion of the right-handed basis (perpendicular to the
+     *          x and y vectors)
+     *
+     * In the case of a peripheral device, the z-basis vector points
+     * out from the green-status-LED side of the device. When multiple-device
+     * tracking is enabled, automatic coordinate system orientation is disabled.
+     *
+     * \image html images/Leap_Axes.png
+     *
+     * @since 2.2.2
+    */
+    LEAP_EXPORT Matrix orientation() const;
+
+    /**
      * Reports whether this is a valid Device object.
      *
      * \include Device_isValid.txt
@@ -2856,6 +2907,7 @@ namespace Leap {
 
   private:
     LEAP_EXPORT const char* toCString() const;
+    LEAP_EXPORT const char* serialNumberCString() const;
   };
 
   /**
@@ -3215,7 +3267,6 @@ namespace Leap {
   private:
     LEAP_EXPORT const char* toCString() const;
   };
-
 
   // For internal use only.
   template<typename L, typename T>
@@ -3956,7 +4007,7 @@ namespace Leap {
    * The ImageList class represents a list of Image objects.
    *
    * Get the ImageList object associated with the a Frame of tracking data
-   * by calling Frame::images(). Get the most recent set of images, which can be 
+   * by calling Frame::images(). Get the most recent set of images, which can be
    * newer than the images used to create the current frame, by calling
    * Controller::images().
    *
@@ -5363,7 +5414,7 @@ namespace Leap {
     LEAP_EXPORT Frame frame(int history = 0) const;
 
     /**
-     * The most recent set of images from the Leap Motion cameras. 
+     * The most recent set of images from the Leap Motion cameras.
      *
      * \include Controller_images.txt
      *

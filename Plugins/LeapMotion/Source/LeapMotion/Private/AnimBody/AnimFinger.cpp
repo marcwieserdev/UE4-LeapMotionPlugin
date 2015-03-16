@@ -54,11 +54,23 @@ void UAnimFinger::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVe
 	Distal->ChangeBasis(PreBase, PostBase, adjustVectors);
 }
 
-void UAnimFinger::SetFromLeapFinger(ULeapFinger* finger)
+void UAnimFinger::SetFromLeapFinger(ULeapFinger* finger, LeapHandType handType)
 {
-	//For now just set the finger orientations, inverse them
-	Metacarpal->Orientation = (finger->Metacarpal->Direction * -1).Rotation();
-	Proximal->Orientation = (finger->Proximal->Direction * -1).Rotation();
-	Intermediate->Orientation = (finger->Intermediate->Direction * -1).Rotation();
-	Distal->Orientation = (finger->Distal->Direction * -1).Rotation();
+	//Orientation, we need the hand type to reverse matrix basis for left hand bones
+	Metacarpal->Orientation = finger->Metacarpal->GetOrientation(handType);
+	Proximal->Orientation = finger->Proximal->GetOrientation(handType);
+	Intermediate->Orientation = finger->Intermediate->GetOrientation(handType);
+	Distal->Orientation = finger->Distal->GetOrientation(handType);
+
+	//Position
+	Metacarpal->Position = finger->Metacarpal->Center;
+	Proximal->Position = finger->Proximal->Center;
+	Intermediate->Position = finger->Intermediate->Center;
+	Distal->Position = finger->Distal->Center;
+
+	//Length
+	Metacarpal->Length = finger->Metacarpal->Length;
+	Proximal->Length = finger->Proximal->Length;
+	Intermediate->Length = finger->Intermediate->Length;
+	Distal->Length = finger->Distal->Length;
 }
