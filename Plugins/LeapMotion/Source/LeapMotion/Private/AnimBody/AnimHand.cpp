@@ -79,16 +79,18 @@ void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
 	Wrist->Orientation = leapHand->PalmOrientation;
 	Wrist->Position = leapHand->Arm->WristPosition;
 
-	Palm->Orientation = leapHand->PalmOrientation;
+	Palm->Orientation = leapHand->PalmOrientation; //this works because we derive it from two vectors
 	Palm->Position = leapHand->PalmPosition;
+
+	LeapHandType handType = leapHand->HandType;
 
 	//Equivalent to elbow in leap
 	LowerArm->Position = leapHand->Arm->ElbowPosition;
-	LowerArm->Orientation = leapHand->Arm->Direction.Rotation();	//this works because we derive it from two vectors
+	LowerArm->Orientation = leapHand->Arm->GetOrientation(handType);
 
 	//Fingers
 	ULeapFingerList* fingers = leapHand->Fingers();
-	LeapHandType handType = leapHand->HandType;
+
 
 	for (int i = 0; i < fingers->Count; i++)
 	{

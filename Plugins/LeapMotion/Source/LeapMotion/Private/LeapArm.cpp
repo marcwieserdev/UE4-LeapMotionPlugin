@@ -20,6 +20,15 @@ void ULeapArm::CleanupRootReferences()
 	this->RemoveFromRoot();
 }
 
+FRotator ULeapArm::GetOrientation(LeapHandType handType)
+{
+	if (handType == LeapHandType::HAND_LEFT)
+		return swapLeftHandRuleForRight(Basis).Rotator();
+	else
+		return Basis.Rotator();
+}
+
+
 bool ULeapArm::operator!=(const ULeapArm &arm) const
 {
 	return (arm._private->arm != this->_private->arm);

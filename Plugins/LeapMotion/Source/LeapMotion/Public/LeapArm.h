@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
 	FVector ElbowPosition;
 
+	UFUNCTION(BlueprintCallable, Category = "Leap Arm")
+	FRotator GetOrientation(LeapHandType handType);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Arm")
 	bool IsValid;
 
