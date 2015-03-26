@@ -318,11 +318,20 @@
 %ignore Leap::Image::data() const;
 %ignore Leap::Image::distortion() const;
 
+#ifndef SWIGCSHARP
+
+%ignore Leap::Image::dataPointer() const;
+%ignore Leap::Image::distortionPointer() const;
+
+#endif
+
 #if SWIGCSHARP
 
 %include "arrays_csharp.i"
 %apply unsigned char INOUT[] { unsigned char* };
 %apply float OUTPUT[] { float* };
+%typemap(cstype) void* "System.IntPtr"
+%typemap(csout) void* { return $imcall; }
 
 %rename(SerializeWithArg) Leap::Frame::serialize(unsigned char*) const;
 %rename(DeserializeWithLength) Leap::Frame::deserialize(const unsigned char*, int length);
@@ -334,8 +343,8 @@
 
 SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 
-%rename(DataWithArg) Leap::Image::data(unsigned char*) const;
-%rename(DistortionWithArg) Leap::Image::distortion(float*) const;
+%ignore Leap::Image::data(unsigned char*) const;
+%ignore Leap::Image::distortion(float*) const;
 
 %typemap(cscode) Leap::Image %{
   /**
@@ -354,6 +363,9 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
       DataWithArg(ret);
       return ret;
     }
+  }
+  public void DataWithArg(byte[] dst) {
+    System.Runtime.InteropServices.Marshal.Copy(DataPointer(), dst, 0, Width * Height * BytesPerPixel);
   }
   /**
   * The distortion calibration map for this image.
@@ -391,6 +403,9 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
       DistortionWithArg(ret);
       return ret;
     }
+  }
+  public void DistortionWithArg(float[] dst) {
+    System.Runtime.InteropServices.Marshal.Copy(DistortionPointer(), dst, 0, DistortionWidth * DistortionHeight);
   }
 %}
 
@@ -648,7 +663,26 @@ extern "C" BOOL WINAPI DllMain(
         for (int i = len; i >= 0; i--) {
           if (lpPathName[i] == '\\' || lpPathName[i] == '/') {
             lpPathName[i] = '\0';
-            restore = SetDllDirectory(lpPathName);
+            if (sizeof(void*) == 8 &&
+                i >= 14 &&
+                _stricmp(&lpPathName[i - 6], "x86_64") == 0 &&
+                _strnicmp(&lpPathName[i - 14], "Plugins", 7) == 0) {
+              // Unity 5 (64-bit) Editor
+              static TCHAR lpPathVar[8192]; // static to avoid stacksize concerns
+              DWORD sz = GetEnvironmentVariable("PATH", lpPathVar, sizeof(lpPathVar));
+              if (sz == 0) {
+                // %PATH% not defined
+                lpPathVar[0] = '\0';
+              }
+              if (sz + strlen(lpPathName) + 1 < sizeof(lpPathVar)) {
+                // If someone's %PATH% is 8 kB, they have bigger problems
+                strcat(lpPathVar, ";");
+                strcat(lpPathVar, lpPathName);
+                SetEnvironmentVariable("PATH", lpPathVar);
+              }
+            } else {
+              restore = SetDllDirectory(lpPathName);
+            }
             break;
           }
         }
@@ -658,6 +692,8 @@ extern "C" BOOL WINAPI DllMain(
         SetDllDirectory(lpPrevPathName);
         restore = FALSE;
       }
+      // For Unity 5 Editor, don't bother restoring %PATH%. Someone else
+      // may have appended to it anyway.
     }
   }
   return TRUE;
