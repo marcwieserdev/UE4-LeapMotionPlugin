@@ -1,11 +1,13 @@
 leap-ue4
 ====================
 
-An event-driven [Leap Motion](http://www.leapmotion.com) plugin for the Unreal Engine 4.
+An unofficial event-driven [Leap Motion](http://www.leapmotion.com) plugin for the Unreal Engine 4. 
 
 Main method of use is by subscribing to events within your blueprint, but it also supports polling through functions called on the LeapController for up to the 60 past frames. You can extend functionality to any blueprint through adding the LeapInterfaceEvent interface then adding the LeapController component to that blueprint. This same architecture is available to C++ if you prefer, which also supports both event-driven and polling style use.
 
 See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-Leap-Motion-Event-Driven) for version downloads and development updates.
+
+Since UE 4.7, Leap has an official plugin, which can be [found here](https://community.leapmotion.com/t/official-ue4-plugin/2503).
 
 ##How to install it##
 
