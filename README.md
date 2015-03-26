@@ -62,7 +62,7 @@ All rigged characters automatically swap the appropriate leap offset to display 
 
 Should you wish to adjust the offset when using the leap on the table facing up, modify the position of the DefaultModeSprite in the LeapAnimBodyConnector. VR mode needs no adjustment as it is always 1:1 due to being attached to your HMD .
 
-##How to use it - Blueprint without Convenience Contnet, Quick Setup##
+##How to use it - Blueprint without Convenience Content, Quick Setup##
 <ol>
 <li>Open desired blueprint where you want to receive the leap events.</li>
 <li>Click on Class Settings and Scroll down in the details panel to Interfaces. </li>
