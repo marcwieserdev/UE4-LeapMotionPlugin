@@ -13,7 +13,6 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 2. Browse to your project root (typically found at *Documents/Unreal Projects/{Your Project Root}*)
 3. Copy *Plugins* folder into your Project root.
 4. Copy *Binaries* folder into your Project root.
-5. (Optional) Copy *Content* folder into your Project root.
 5. Restart the Editor and open your project again.
 6. Select Window->Plugins. Click on Installed and you should see a category called Input and a plugin called Leap Motion now available. It should be automatically enabled, if not, Select Enabled. The Editor will warn you to restart, click restart.
 7. The plugin should be enabled and ready to use.
@@ -21,10 +20,8 @@ See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-
 <img src="http://i.imgur.com/2In3q5n.png">
 
 
-##How to use it - Convenience Rigged/Debug Character##
-Since 0.7.10 the plugin includes convenience content for easy reference of say a rigged setup. Simply drag the optional Content folder
-
-<img src="http://i.imgur.com/RaHnkWt.png">
+##How to use it - Convenience Rigged Characters##
+Since 0.7.10 the plugin includes convenience content for easy reference of say a rigged setup. Since 0.9 these are automatically included as plugin content.
 
 ####Rigged Character####
 
@@ -36,22 +33,39 @@ That's it! hit play to try it out!
 
 <img src ="http://i.imgur.com/HWVaeid.gif">
 <br>
-####Debug Sphere Character####
+####Passthrough Character####
 
-To try out the debug character, simply change your default pawn to LeapDebugCharacter
-<img src="http://i.imgur.com/Bu5GmBq.png">
+Pass-through is supported from 0.9, useful if you wish to blend real-world for AR purposes or simply wish to see where you type in vr. 
+Simply select LeapPassthroughCharacter as your pawn and keep the controller as VRController
 
-<img src="http://i.imgur.com/MYxyqzD.png">
+<img src ="http://i.imgur.com/D7ifDlj.gif">
+
+Play to try out AR/VR transition with a simple gesture
+
+<img src ="http://i.imgur.com/ozbhr3E.gif">
 <br>
-####Note on HMD mode####
+###Convenience Setup and Notes###
 
-Both characters have two LeapDebugHand objects and swaps dynamically between them to display the hands in both default mode (leap on table facing up) and HMD mode
-<img src="http://i.imgur.com/JbaKYMb.png">
+Convenience content is built with re-usability in mind. Below is a diagram showing how all the blueprint classes relate.
 
-##How to use it - Blueprint Quick Setup##
+<img src ="http://i.imgur.com/TQRDmux.png">
+Convenience content relation diagram
+
+The LeapBasicRiggedCharacter has only one skeletal mesh and can be used as a basis for basic non-VR characters. If you're rigging a VR character you should split the mesh head from the body so that it can be hidden from the character in order to alleviate clipping issues, this is the functionality that the LeapRiggedCharacter extends from the basic version. Finally if you want to have automatic access to passthrough mode, use the LeapPassthroughCharacter.
+
+What this setup gives you in flexibility is that you have many entry points from which to modify any aspect of the rigging. E.g. If you wish to change post process material being used you would change it in the PPChanger blueprint while still retaining every other functionality. Or if you want to adjust the default mode offset (where your leap is in relation to you when place on the table) you would modify the LeapAnimBodyConnector component which specifies its location. If you want to use your own skeletal mesh, simply replace the mesh, but retain the animation blueprint (use animation retargeting if you're using different skeletons). In fact the rigging setup doesn't even need the leap motion to work, any input which would change the AnimBody skeleton to whatever pose you wish to attain would have the same rigged behavior. The setup is the beginning part of a BodyInput plugin which will support a similar setup for various VR inputs in the future.
+<br>
+####Note on Leap Base offset in Default Mode####
+
+All rigged characters automatically swap the appropriate leap offset to display the hands in both default mode (leap on table facing up) and HMD mode by detecting when the user enables their HMD (e.g. by going fullscreen in UE4).
+<img src="http://i.imgur.com/nEk4d3J.png">
+
+Should you wish to adjust the offset when using the leap on the table facing up, modify the position of the DefaultModeSprite in the LeapAnimBodyConnector. VR mode needs no adjustment as it is always 1:1 due to being attached to your HMD .
+
+##How to use it - Blueprint without Convenience Contnet, Quick Setup##
 <ol>
 <li>Open desired blueprint where you want to receive the leap events.</li>
-<li>Click on Blueprint Props and Scroll down in the details panel to Interfaces. </li>
+<li>Click on Class Settings and Scroll down in the details panel to Interfaces. </li>
 
 <img src="http://i.imgur.com/s790gBs.png">
 
@@ -215,8 +229,6 @@ find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. 
 
 ##Todo##
 
-- Convenience content (e.g. fully rigged hand)
-- Wiki
 - C++ how to
 
 ##Contact##
