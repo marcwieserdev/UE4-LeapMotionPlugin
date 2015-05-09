@@ -35,6 +35,26 @@ That's it! hit play to try it out!
 
 <img src ="http://i.imgur.com/HWVaeid.gif">
 <br>
+
+####Collision Character####
+Since 0.9.3 you can add collision by changing your character from LeapRiggedCharacter to LeapCollisionCharacter. If you want to modify the passthrough character or your own sub-class to have collision simply change one setting in your pawn.
+
+First select your mesh
+
+<img src ="http://i.imgur.com/zBzgWaF.png">
+
+Change the collision preset to PhysicsActor
+
+<img src= "http://i.imgur.com/dAsdcEo.png">
+
+This will use the BasicBody_Physics PhysicsAsset included with the plugin content for collision. You can modify the collision shapes there to modify what part of your mesh collides with the world.
+
+<img src="http://i.imgur.com/g9oChrM.png">
+
+Using collision you can now interact directly with movable actors with physics simulation turned on.
+
+<img src="http://i.imgur.com/IVEQ2fp.gif">
+
 ####Passthrough Character####
 
 Pass-through is supported from 0.9, useful if you wish to blend real-world for AR purposes or simply wish to see where you type in vr. 

@@ -167,6 +167,7 @@ void ULeapHand::setHand(const Leap::Hand &hand)
 	PalmWidth = _private->hand.palmWidth();
 	PinchStrength = _private->hand.pinchStrength();
 	SphereCenter = convertAndScaleLeapToUE(_private->hand.sphereCenter());
+	SphereRadius = scaleLeapToUE(_private->hand.sphereRadius());
 	StabilizedPalmPosition = convertAndScaleLeapToUE(_private->hand.stabilizedPalmPosition());
 	TimeVisible = _private->hand.timeVisible();
 
