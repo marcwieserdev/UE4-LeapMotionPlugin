@@ -89,14 +89,14 @@ Should you wish to adjust the offset when using the leap on the table facing up,
 <li>Open desired blueprint where you want to receive the leap events.</li>
 <li>Click on Class Settings and Scroll down in the details panel to Interfaces. </li>
 
-<img src="http://i.imgur.com/s790gBs.png">
+<img src="http://i.imgur.com/apyiM2c.png">
 
 <li>Add the interface called LeapEventInterface</li>
 <li>Add Leap Controller Component through option A <b>or</b> B</li>
 
 <b>Option A:</b> 
-Add directly through components tab
-<img src="http://i.imgur.com/640f5gS.png">
+Add directly through Add Components
+<img src="http://i.imgur.com/bGoWWbg.png">
 
 <br/>
 <b>Option B:</b> Place BeginPlay event on your event graph, drag out from the execute node typing 'Leap', select Add LeapController.</li>
