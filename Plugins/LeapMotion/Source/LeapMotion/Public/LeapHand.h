@@ -49,10 +49,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	FVector Direction;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Frame"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Frame"), Category = "Leap Hand")
 	class ULeapFrame* Frame();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Fingers"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Fingers"), Category = "Leap Hand")
 	class ULeapFingerList* Fingers();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
@@ -64,25 +64,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	float PinchStrength;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAngle"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAngle"), Category = "Leap Hand")
 	float RotationAngle(class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAngleWithAxis"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAngleWithAxis"), Category = "Leap Hand")
 	float RotationAngleWithAxis(class ULeapFrame *otherFrame, const FVector &axis);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationMatrix"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationMatrix"), Category = "Leap Hand")
 	FMatrix RotationMatrix(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationAxis"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAxis"), Category = "Leap Hand")
 	FVector RotationAxis(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "RotationProbability"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationProbability"), Category = "Leap Hand")
 	float RotationProbability(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "ScaleFactor"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ScaleFactor"), Category = "Leap Hand")
 	float ScaleFactor(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "ScaleProbability"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ScaleProbability"), Category = "Leap Hand")
 	float ScaleProbability(const class ULeapFrame *otherFrame);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
@@ -97,10 +97,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	float TimeVisible;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Translation"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Translation"), Category = "Leap Hand")
 	FVector Translation(const class ULeapFrame *otherFrame);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "TranslationProbability"), Category = "Leap Hand")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "TranslationProbability"), Category = "Leap Hand")
 	float TranslationProbability(const class ULeapFrame *otherFrame);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")

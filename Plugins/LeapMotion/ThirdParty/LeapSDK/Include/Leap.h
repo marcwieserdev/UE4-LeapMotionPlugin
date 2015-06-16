@@ -78,8 +78,11 @@ namespace Leap {
   class DeviceImplementation;
   class ImageImplementation;
   class InteractionBoxImplementation;
+  class BugReportImplementation;
   class FrameImplementation;
   class ControllerImplementation;
+  class MaskImplementation;
+  class TrackedQuadImplementation;
   template<typename T> class ListBaseImplementation;
 
   // Forward declarations
@@ -88,6 +91,8 @@ namespace Leap {
   class ToolList;
   class HandList;
   class GestureList;
+  class ImageList;
+  class MaskList;
   class Hand;
   class Gesture;
   class Screen;
@@ -2733,6 +2738,16 @@ namespace Leap {
     LEAP_EXPORT float range() const;
 
     /**
+     * The device baseline refers to the separation distance between stereo sensors on the
+     * device. The baseline value, together with the maximum resolution, influence the
+     * maximum range.
+     *
+     * @returns The separation distance between the center of each sensor, in mm
+     * @since 2.2.5
+     */
+    LEAP_EXPORT float baseline() const;
+
+    /**
      * The distance to the nearest edge of the Leap Motion controller's view volume.
      *
      * The view volume is an axis-aligned, inverted pyramid centered on the device origin
@@ -3284,14 +3299,147 @@ namespace Leap {
     LEAP_EXPORT const char* toCString() const;
   };
 
+  /**
+  * Note: This class is an experimental API for internal use only. It may be
+  * removed without warning.
+  *
+  * A bitmap mask defining areas of an image in which a finger or part of a hand
+  * is in front of the tracked quad. The mask is a subset of the camera image
+  * containing a the region including the quad. Pixels in the mask representing
+  * the hand have the value 255. Pixels in the rest of the mask have the value 0.
+  *
+  * Two masks are provided for every Leap Motion frame. The mask with the id of
+  * 0 is for the left image. The right image has id 1.
+  *
+  * The mask corresponds to the uncorrected image from the camera sensor. If you
+  * correct the image for distortion before displaying it, you should also correct
+  * the mask.
+  *
+  * @since 2.2.6
+  */
+  class Mask : public Interface {
+  public:
+
+    // For internal use only.
+    Mask(MaskImplementation*);
+
+    /**
+    * Constructs a new Mask object. Do not use. Get Mask objects from TrackedQuad.
+    * \include Mask_constructor_controller.txt
+    * \include Mask_constructor_frame.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT Mask();
+
+    /**
+    * An id value based on the sequence in which the mask is produced. Corresponds
+    * to the Image sequence id.
+    * \include Mask_sequenceId.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int64_t sequenceId() const;
+
+    /**
+    * An id indicating whether the mask goes with the left (0) or right (1) image.
+    * \include Mask_id.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int32_t id() const;
+
+    /**
+    * The pixels of the mask.
+    *
+    * Pixels with the value of 255 represent areas of the image where a finger
+    * or part of a hand is in front of the quad. The rest of the mask has the
+    * value 0.
+    * \include Mask_data.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT const unsigned char* data() const;
+
+    void data(unsigned char* dst) const {
+      const unsigned char* src = data();
+      memcpy(dst, src, width() * height() * sizeof(unsigned char));
+    }
+
+    void* dataPointer() const {
+      return (void*) data();
+    }
+
+    /**
+    * The width of the mask in Image pixels.
+    * \include Mask_width.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int width() const;
+
+    /**
+    * The height of the mask in Image pixels.
+    * \include Mask_height.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int height() const;
+
+    /**
+    * The offset of the mask from the left edge of the Image in pixels.
+    * \include Mask_offsetX.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int offsetX() const;
+
+    /**
+    * The offset of the mask from the top edge of the Image in pixels.
+    * \include Mask_offsetY.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int offsetY() const;
+
+    /**
+    * Reports whether this is a valid Mask object.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool isValid() const;
+
+    /** An invalid Mask object.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT static const Mask& invalid();
+
+    /** Compares two Mask objects for equality.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool operator==(const Mask&) const;
+
+    /** Compares two Mask objects for inequality.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool operator!=(const Mask&) const;
+
+    /** Writes a brief, human readable description of the Mask object.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT friend std::ostream& operator<<(std::ostream&, const Mask&);
+
+    std::string toString() const {
+      const char* cstr = toCString();
+      std::string str(cstr);
+      deleteCString(cstr);
+      return str;
+    }
+
+  private:
+    LEAP_EXPORT const char* toCString() const;
+  };
+
   // For internal use only.
   template<typename L, typename T>
   class ConstListIterator {
   public:
-    ConstListIterator<L,T>(const L& list, int index) : m_list(list), m_index(index) {}
+    ConstListIterator<L,T>() : m_list(0), m_index(-1) {}
+    ConstListIterator<L,T>(const L& list, int index) : m_list(&list), m_index(index) {}
 
-    const T operator*() const { return m_list[m_index]; }
-    void operator++(int) {++m_index;}
+    const T operator*() const { return (*m_list)[m_index]; }
+    const ConstListIterator<L,T> operator++(int) { ConstListIterator<L,T> ip(*this); ++m_index; return ip; }
     const ConstListIterator<L,T>& operator++() { ++m_index; return *this; }
     bool operator!=(const ConstListIterator<L,T>& rhs) const { return m_index != rhs.m_index; }
     bool operator==(const ConstListIterator<L,T>& rhs) const { return m_index == rhs.m_index; }
@@ -3303,7 +3451,7 @@ namespace Leap {
     typedef std::forward_iterator_tag iterator_category;
 
   private:
-    const L& m_list;
+    const L* m_list;
     int m_index;
   };
 
@@ -4094,6 +4242,207 @@ namespace Leap {
   };
 
   /**
+  * Note: This class is an experimental API for internal use only. It may be
+  * removed without warning.
+  *
+  * Represents a quad-like object tracked by the Leap Motion sensors.
+  *
+  * Only one quad can be tracked. Once a supported quad is tracked, the state
+  * of that quad will be updated for each frame of Leap Motion tracking data.
+  *
+  * A TrackedQuad object represents the state of the quad at one moment in time.
+  * Get a new object from subsequent frames to get the latest state information.
+  * @since 2.2.6
+  */
+  class TrackedQuad : public Interface {
+  public:
+
+    // For internal use only.
+    TrackedQuad(TrackedQuadImplementation*);
+
+    /**
+    * Constructs a new TrackedQuad object. Do not use. Get valid TrackedQuads
+    * from a Controller or Frame object.
+    * \include TrackedQuad_constructor_controller.txt
+    * \include TrackedQuad_constructor_frame.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT TrackedQuad();
+
+    /**
+    * The physical width of the quad display area in millimeters.
+    * \include TrackedQuad_width.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT float width() const;
+
+    /**
+    * The physical height of the quad display area in millimeters.
+    * \include TrackedQuad_height.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT float height() const;
+
+    /**
+    * The horizontal resolution of the quad display area in pixels.
+    * This value is set in a configuration file. It is not determined dynamically.
+    * \include TrackedQuad_resolutionX.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int resolutionX() const;
+
+    /**
+    * The vertical resolution of the quad display area in pixels.
+    * This value is set in a configuration file. It is not determined dynamically.
+    * \include TrackedQuad_resolutionY.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int resolutionY() const;
+
+    /**
+    * Reports whether the quad is currently detected within the Leap Motion
+    * field of view.
+    * \include TrackedQuad_visible.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool visible() const;
+
+    /**
+    * The orientation of the quad within the Leap Motion frame of reference.
+    * \include TrackedQuad_orientation.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT Matrix orientation() const;
+
+    /**
+    * The position of the center of the quad display area within the Leap
+    * Motion frame of reference. In millimeters.
+    * \include TrackedQuad_position.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT Vector position() const;
+
+    /**
+    * The list of masks for the current set of images. A mask is a bitmap
+    * indicating which pixels in the image contain fingers or part of the hand
+    * in front of the quad.
+    *
+    * The mask at index 0 corresponds to the left image; that with index 1, to
+    * the right image.
+    * \include TrackedQuad_masks.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT MaskList masks() const;
+
+    /**
+    * The images from which the state of this TrackedQuad was derived.
+    * These are the same image objects that you can get from the Controller
+    * or Frame object from which you got this TrackedQuad.
+    * \include TrackedQuad_images.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT ImageList images() const;
+
+    /**
+    * Reports whether this is a valid object.
+    * \include TrackedQuad_isValid.txt
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool isValid() const;
+
+    /**
+    * An invalid object.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT static const TrackedQuad& invalid();
+
+    /**
+    * Compares quad objects for equality.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool operator==(const TrackedQuad&) const;
+
+    /**
+    * Compares quad objects for inequality.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool operator!=(const TrackedQuad&) const;
+
+    /**
+    * Provides a brief, human-readable description of this quad.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT friend std::ostream& operator<<(std::ostream&, const TrackedQuad&);
+
+    std::string toString() const {
+      const char* cstr = toCString();
+      std::string str(cstr);
+      deleteCString(cstr);
+      return str;
+    }
+
+  private:
+    LEAP_EXPORT const char* toCString() const;
+  };
+
+  /**
+  * Note: This class is an experimental API for internal use only. It may be
+  * removed without warning.
+  *
+  * A list containing Mask objects.
+  * @since 2.2.6
+  */
+  class MaskList : public Interface {
+  public:
+    // For internal use only.
+    MaskList(const ListBaseImplementation<Mask>&);
+
+    /**
+    * Constructs an empty list for Mask objects.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT MaskList();
+
+    /**
+    * The number of masks in this list.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT int count() const;
+
+    /**
+    * Reports whether this list is empty.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT bool isEmpty() const;
+
+    /**
+    * The MaskList supports array indexing.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT Mask operator[](int index) const;
+
+    /**
+    * Appends the contents of another list of masks to this one.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT MaskList& append(const MaskList& other);
+
+    typedef ConstListIterator<MaskList, Mask> const_iterator;
+
+    /**
+    * A list iterator set to the beginning of the list.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT const_iterator begin() const;
+
+    /**
+    * A list iterator set to the end of the list.
+    * @since 2.2.6
+    */
+    LEAP_EXPORT const_iterator end() const;
+  };
+
+  /**
    * The InteractionBox class represents a box-shaped region completely
    * within the field of view of the Leap Motion controller.
    *
@@ -4798,6 +5147,18 @@ namespace Leap {
     LEAP_EXPORT friend std::ostream& operator<<(std::ostream&, const Frame&);
 
     /**
+     * Note: This class is an experimental API for internal use only. It may be
+     * removed without warning.
+     *
+     * Returns information about the currently detected quad in the scene.
+     *
+     * \include Frame_trackedQuad.txt
+     * If no quad is being tracked, then an invalid TrackedQuad is returned.
+     * @since 2.2.6
+     **/
+    LEAP_EXPORT TrackedQuad trackedQuad() const;
+
+    /**
      * Encodes this Frame object as a byte string.
      *
      * \include Frame_serialize.txt
@@ -4831,7 +5192,7 @@ namespace Leap {
      * another Frame object as a parameter is undefined when either frame has
      * been deserialized. For example, calling ``gestures(sinceFrame)`` on a
      * deserialized frame or with a deserialized frame as parameter (or both)
-     * does not necessarily return all gestures that occured between the two
+     * does not necessarily return all gestures that occurred between the two
      * frames. Motion functions, like ``scaleFactor(startFrame)``, are more
      * likely to return reasonable results, but could return anomalous values
      * in some cases.
@@ -4890,6 +5251,21 @@ namespace Leap {
     LEAP_EXPORT const char* toCString() const;
     LEAP_EXPORT const char* serializeCString(size_t& length) const;
     LEAP_EXPORT void deserializeCString(const char* str, size_t length);
+  };
+
+  class BugReport : public Interface {
+  public:
+    // For internal use only
+    BugReport(BugReportImplementation*);
+
+    LEAP_EXPORT BugReport();
+
+    LEAP_EXPORT bool beginRecording();
+    LEAP_EXPORT void endRecording();
+
+    LEAP_EXPORT bool isActive() const;
+    LEAP_EXPORT float progress() const;
+    LEAP_EXPORT float duration() const;
   };
 
   /**
@@ -5254,7 +5630,7 @@ namespace Leap {
      *   device cameras. The "Allow Images" checkbox must be enabled in the
      *   Leap Motion Control Panel or this policy will be denied.
      *
-     *   The images policy determines whether an application recieves image data from
+     *   The images policy determines whether an application receives image data from
      *   the Leap Motion sensors which each frame of data. By default, this data is
      *   not sent. Only applications that use the image data should request this policy.
      *
@@ -5476,6 +5852,8 @@ namespace Leap {
      */
     LEAP_EXPORT ScreenList locatedScreens() const;
 
+    LEAP_EXPORT BugReport bugReport() const;
+
     /**
      * Enables or disables reporting of a specified gesture type.
      *
@@ -5508,6 +5886,18 @@ namespace Leap {
      * @since 1.0
      */
     LEAP_EXPORT bool isGestureEnabled(Gesture::Type type) const;
+
+    /**
+     * Note: This class is an experimental API for internal use only. It may be
+     * removed without warning.
+     *
+     * Returns information about the currently detected quad in the scene.
+     *
+     * \include Controller_trackedQuad.txt
+     * If no quad is being tracked, then an invalid TrackedQuad is returned.
+     * @since 2.2.6
+     **/
+    LEAP_EXPORT TrackedQuad trackedQuad() const;
 
   };
 

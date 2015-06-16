@@ -1,9 +1,9 @@
 {
     "FileVersion" : 3,
 	
-	"FriendlyName" : "Leap Motion Plugin",
-	"Version" : 6,
-	"VersionName" : "0.9.3",
+	"DisplayName" : "Leap Motion Plugin",
+	"Version" : 7,
+	"VersionName" : "0.9.4",
 	"CreatedBy" : "Getnamo",
 	"CreatedByURL" : "https://github.com/getnamo/leap-ue4",
 	"EngineVersion" : "4.7+",

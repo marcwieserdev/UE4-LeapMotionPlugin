@@ -33,11 +33,14 @@
 %ignore Leap::Arm::Arm(HandImplementation*);
 %ignore Leap::Gesture::Gesture(GestureImplementation*);
 %ignore Leap::Image::Image(ImageImplementation*);
+%ignore Leap::Mask::Mask(MaskImplementation*);
 %ignore Leap::Screen::Screen(ScreenImplementation*);
 %ignore Leap::Frame::Frame(FrameImplementation*);
 %ignore Leap::Controller::Controller(ControllerImplementation*);
 %ignore Leap::Device::Device(DeviceImplementation*);
 %ignore Leap::InteractionBox::InteractionBox(InteractionBoxImplementation*);
+%ignore Leap::TrackedQuad::TrackedQuad(TrackedQuadImplementation*);
+%ignore Leap::BugReport::BugReport(BugReportImplementation*);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Set Attributes (done after functions are uppercased, but before vars are lowered) /
@@ -109,6 +112,8 @@
 %leapattrib( Leap::Pointable, Vector, stabilizedTipPosition )
 %constattrib( Leap::Pointable, float, timeVisible );
 %leapattrib( Leap::Pointable, Frame, frame );
+
+%constattrib( Leap::Finger, Leap::Finger::Type, type )
 
 %leapattrib( Leap::Bone, Vector, prevJoint );
 %leapattrib( Leap::Bone, Vector, nextJoint );
@@ -194,6 +199,14 @@
 %constattrib( Leap::Image, float, rayScaleY );
 %constattrib( Leap::Image, bool, isValid );
 
+%constattrib( Leap::Mask, int64_t, sequenceId );
+%constattrib( Leap::Mask, int32_t, id );
+%constattrib( Leap::Mask, int, width );
+%constattrib( Leap::Mask, int, height );
+%constattrib( Leap::Mask, int, offsetX );
+%constattrib( Leap::Mask, int, offsetY );
+%constattrib( Leap::Mask, bool, isValid );
+
 // Count is made a const attribute in C# but renamed to __len__ in Python
 #if SWIGCSHARP
 %constattrib( Leap::PointableList, int, count );
@@ -202,6 +215,7 @@
 %constattrib( Leap::HandList, int, count );
 %constattrib( Leap::GestureList, int, count );
 %constattrib( Leap::ImageList, int, count );
+%constattrib( Leap::MaskList, int, count );
 %constattrib( Leap::ScreenList, int, count );
 %constattrib( Leap::DeviceList, int, count );
 #endif
@@ -212,6 +226,7 @@
 %constattrib( Leap::HandList, bool, isEmpty );
 %constattrib( Leap::GestureList, bool, isEmpty );
 %constattrib( Leap::ImageList, bool, isEmpty );
+%constattrib( Leap::MaskList, bool, isEmpty );
 %constattrib( Leap::ScreenList, bool, isEmpty );
 %constattrib( Leap::DeviceList, bool, isEmpty );
 
@@ -251,12 +266,13 @@
 %constattrib( Leap::Device, float, horizontalViewAngle );
 %constattrib( Leap::Device, float, verticalViewAngle );
 %constattrib( Leap::Device, float, range );
+%constattrib( Leap::Device, float, baseline );
 %constattrib( Leap::Device, bool, isValid );
 %constattrib( Leap::Device, bool, isEmbedded );
 %constattrib( Leap::Device, bool, isStreaming );
 %constattrib( Leap::Device, bool, isFlipped );
 %constattrib( Leap::Device, Leap::Device::Type, type );
-%constattrib( Leap::Device, std::string, serialNumber );
+%attributestring( Leap::Device, std::string, serialNumber, serialNumber );
 %leapattrib( Leap::Device, Vector, position );
 %leapattrib( Leap::Device, Matrix, orientation );
 
@@ -265,6 +281,22 @@
 %constattrib( Leap::InteractionBox, float, height );
 %constattrib( Leap::InteractionBox, float, depth );
 %constattrib( Leap::InteractionBox, bool, isValid );
+%leapattrib( Leap::Frame, TrackedQuad, trackedQuad )
+
+%constattrib( Leap::TrackedQuad, float, width );
+%constattrib( Leap::TrackedQuad, float, height );
+%constattrib( Leap::TrackedQuad, int, resolutionX );
+%constattrib( Leap::TrackedQuad, int, resolutionY );
+%constattrib( Leap::TrackedQuad, bool, visible );
+%leapattrib( Leap::TrackedQuad, Matrix, orientation );
+%leapattrib( Leap::TrackedQuad, Vector, position );
+%leapattrib( Leap::TrackedQuad, MaskList, masks );
+%leapattrib( Leap::TrackedQuad, ImageList, images );
+%constattrib( Leap::TrackedQuad, bool, isValid );
+
+%constattrib( Leap::BugReport, bool, isActive );
+%constattrib( Leap::BugReport, float, progress );
+%constattrib( Leap::BugReport, float, duration );
 
 #if SWIGCSHARP
 %csmethodmodifiers Leap::Finger::invalid "public new";
@@ -281,6 +313,7 @@
 %staticattrib( Leap::Screen, static const Screen&, invalid );
 %staticattrib( Leap::Device, static const Device&, invalid );
 %staticattrib( Leap::InteractionBox, static const InteractionBox&, invalid );
+%staticattrib( Leap::TrackedQuad, static const TrackedQuad&, invalid );
 %staticattrib( Leap::Frame, static const Frame&, invalid);
 
 %constattrib( Leap::Vector, float, magnitude );
@@ -297,6 +330,8 @@
 %leapattrib( Leap::Controller, ImageList, images );
 %leapattrib( Leap::Controller, ScreenList, locatedScreens );
 %leapattrib( Leap::Controller, DeviceList, devices );
+%leapattrib( Leap::Controller, TrackedQuad, trackedQuad );
+%leapattrib( Leap::Controller, BugReport, bugReport );
 
 %staticattrib( Leap::Vector, static const Vector&, zero );
 %staticattrib( Leap::Vector, static const Vector&, xAxis );
@@ -317,11 +352,13 @@
 %ignore Leap::Frame::deserialize(const std::string&);
 %ignore Leap::Image::data() const;
 %ignore Leap::Image::distortion() const;
+%ignore Leap::Mask::data() const;
 
-#ifndef SWIGCSHARP
+#if !defined(SWIGCSHARP) && !defined(SWIGPYTHON)
 
 %ignore Leap::Image::dataPointer() const;
 %ignore Leap::Image::distortionPointer() const;
+%ignore Leap::Mask::dataPointer() const;
 
 #endif
 
@@ -345,6 +382,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
 
 %ignore Leap::Image::data(unsigned char*) const;
 %ignore Leap::Image::distortion(float*) const;
+%ignore Leap::Mask::data(unsigned char*) const;
 
 %typemap(cscode) Leap::Image %{
   /**
@@ -409,6 +447,30 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   }
 %}
 
+%typemap(cscode) Leap::Mask %{
+  /**
+  * The mask data.
+  *
+  * The mask data is a set of 8-bit intensity values. The buffer is
+  * ``mask.Width * mask.Height`` bytes long. Areas of the mask which contain part
+  * of a hand or finger covering the quad are assigned the value 255. The rest
+  * of the mask is assigned the value 0.
+  *
+  * \include Mask_data.txt
+  * @since 2.2.5
+  */
+  public byte[] Data {
+    get {
+      byte[] ret = new byte[Width * Height];
+      DataWithArg(ret);
+      return ret;
+    }
+  }
+  public void DataWithArg(byte[] dst) {
+    System.Runtime.InteropServices.Marshal.Copy(DataPointer(), dst, 0, Width * Height);
+  }
+%}
+
 %typemap(cscode) Leap::Frame %{
   /**
   * Encodes this Frame object as a byte string.
@@ -443,7 +505,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   * another Frame object as a parameter is undefined when either frame has
   * been deserialized. For example, calling ``Gestures(sinceFrame)`` on a
   * deserialized frame or with a deserialized frame as parameter (or both)
-  * does not necessarily return all gestures that occured between the two
+  * does not necessarily return all gestures that occurred between the two
   * frames. Motion functions, like ``ScaleFactor(startFrame)``, are more
   * likely to return reasonable results, but could return anomalous values
   * in some cases.
@@ -478,6 +540,16 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   if _newclass:distortion = _swig_property(distortion)
 %}}
 
+%extend Leap::Mask {
+%pythoncode {
+  def data(self):
+      ptr = byte_array(self.width * self.height)
+      LeapPython.Mask_data(self, ptr)
+      return ptr
+  __swig_getmethods__["data"] = data
+  if _newclass:data = _swig_property(data)
+%}}
+
 %extend Leap::Frame {
 %pythoncode {
   def serialize(self):
@@ -490,6 +562,10 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   __swig_getmethods__["serialize"] = serialize
   if _newclass:serialize = _swig_property(serialize)
 %}}
+
+%constattrib( Leap::Image, void*, dataPointer );
+%constattrib( Leap::Image, void*, distortionPointer );
+%constattrib( Leap::Mask, void*, dataPointer );
 
 %rename("%(camelcase)s", %$isclass) "";
 %rename("%(camelcase)s", %$isconstructor) "";
@@ -551,6 +627,25 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   }
 %}
 
+%typemap(javacode) Leap::Mask %{
+  /**
+  * The mask data.
+  *
+  * The mask data is a set of 8-bit intensity values. The buffer is
+  * ``image.width() * image.height()`` bytes long. Areas of the mask which contain part
+  * of a hand or finger covering the quad are assigned the value 255. The rest
+  * of the mask is assigned the value 0.
+  *
+  * \include Mask_data.txt
+  * @since 2.2.5
+  */
+  public byte[] data() {
+    byte[] ptr = new byte[width() * height()];
+    LeapJNI.Mask_data(swigCPtr, this, ptr);
+    return ptr;
+  }
+%}
+
 %typemap(javacode) Leap::Frame %{
  /**
   * Encodes this Frame object as a byte string.
@@ -583,7 +678,7 @@ SWIG_CSBODY_PROXY(public, public, SWIGTYPE)
   * another Frame object as a parameter is undefined when either frame has
   * been deserialized. For example, calling ``gestures(sinceFrame)`` on a
   * deserialized frame or with a deserialized frame as parameter (or both)
-  * does not necessarily return all gestures that occured between the two
+  * does not necessarily return all gestures that occurred between the two
   * frames. Motion functions, like ``scaleFactor(startFrame)``, are more
   * likely to return reasonable results, but could return anomalous values
   * in some cases.
@@ -644,56 +739,35 @@ extern "C" BOOL WINAPI DllMain(
     _In_ LPVOID lpvReserved)
 {
   if (lpvReserved == 0) {
-    static TCHAR lpPrevPathName[1024];
-    static BOOL restore = FALSE;
-
     if (fdwReason == DLL_PROCESS_ATTACH) {
       TCHAR lpPathName[1024];
       int len;
 
-      len = GetDllDirectory(static_cast<DWORD>(sizeof(lpPrevPathName) - 1),
-                            lpPrevPathName);
-      if (len < 0 && len >= sizeof(lpPrevPathName)) {
-        len = 0;
-      }
-      lpPrevPathName[len] = '\0';
       len = static_cast<int>(GetModuleFileName(static_cast<HMODULE>(hinstDLL),
                          lpPathName, static_cast<DWORD>(sizeof(lpPathName))));
       if (len > 0 && len < sizeof(lpPathName)) {
         for (int i = len; i >= 0; i--) {
           if (lpPathName[i] == '\\' || lpPathName[i] == '/') {
             lpPathName[i] = '\0';
-            if (sizeof(void*) == 8 &&
-                i >= 14 &&
-                _stricmp(&lpPathName[i - 6], "x86_64") == 0 &&
-                _strnicmp(&lpPathName[i - 14], "Plugins", 7) == 0) {
-              // Unity 5 (64-bit) Editor
-              static TCHAR lpPathVar[8192]; // static to avoid stacksize concerns
-              DWORD sz = GetEnvironmentVariable("PATH", lpPathVar, sizeof(lpPathVar));
-              if (sz == 0) {
-                // %PATH% not defined
-                lpPathVar[0] = '\0';
-              }
-              if (sz + strlen(lpPathName) + 1 < sizeof(lpPathVar)) {
-                // If someone's %PATH% is 8 kB, they have bigger problems
-                strcat(lpPathVar, ";");
-                strcat(lpPathVar, lpPathName);
-                SetEnvironmentVariable("PATH", lpPathVar);
-              }
-            } else {
-              restore = SetDllDirectory(lpPathName);
+            static TCHAR lpPathVar[8192]; // static to avoid stacksize concerns
+            DWORD sz = GetEnvironmentVariable("PATH", lpPathVar, sizeof(lpPathVar));
+            if (sz == 0) {
+              // %PATH% not defined
+              lpPathVar[0] = '\0';
+            }
+            if (sz + strlen(lpPathName) + 1 < sizeof(lpPathVar)) {
+              // If someone's %PATH% is 8 kB, they have bigger problems
+              static TCHAR lpTmp[8192];
+              strcpy(lpTmp, lpPathVar);
+              strcpy(lpPathVar, lpPathName);
+              lpPathVar[strlen(lpPathName)] = ';';
+              strcat(lpPathVar, lpTmp);
+              SetEnvironmentVariable("PATH", lpPathVar);
             }
             break;
           }
         }
       }
-    } else if (fdwReason == DLL_PROCESS_DETACH) {
-      if (restore && lpPrevPathName[0] != '\0') {
-        SetDllDirectory(lpPrevPathName);
-        restore = FALSE;
-      }
-      // For Unity 5 Editor, don't bother restoring %PATH%. Someone else
-      // may have appended to it anyway.
     }
   }
   return TRUE;
@@ -702,7 +776,7 @@ extern "C" BOOL WINAPI DllMain(
 %}
 #endif
 
-%typemap(csin, pre="    lock(arg0) {", post="      $csinput.Dispose();\n    }") const Leap::Controller& "Controller.getCPtr($csinput)"
+%typemap(csin, pre="    lock($csinput) {", post="      $csinput.Dispose();\n    }") const Leap::Controller& "Controller.getCPtr($csinput)"
 
 %header %{
 #define SWIG
@@ -1042,6 +1116,7 @@ extern "C" BOOL WINAPI DllMain(
 %leap_list_helper(Tool);
 %leap_list_helper(Gesture);
 %leap_list_helper(Image);
+%leap_list_helper(Mask);
 %leap_list_helper(Hand);
 %leap_list_helper(Screen);
 %leap_list_helper(Device);

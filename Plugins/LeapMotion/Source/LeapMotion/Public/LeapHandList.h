@@ -16,16 +16,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand List")
 	int32 Count;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getFrontmost", CompactNodeTitle = "", Keywords = "get frontmost"), Category = "Leap Hand List")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getFrontmost", CompactNodeTitle = "", Keywords = "get frontmost"), Category = "Leap Hand List")
 	class ULeapHand* Frontmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getLeftmost", CompactNodeTitle = "", Keywords = "get leftmost"), Category = "Leap Hand List")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getLeftmost", CompactNodeTitle = "", Keywords = "get leftmost"), Category = "Leap Hand List")
 	class ULeapHand* Leftmost();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getRightmost", CompactNodeTitle = "", Keywords = "get rightmost"), Category = "Leap Hand List")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getRightmost", CompactNodeTitle = "", Keywords = "get rightmost"), Category = "Leap Hand List")
 	class ULeapHand* Rightmost();
 	
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
 	class ULeapHand* getIndex(int32 index);
 
 	void setHandList(const class Leap::HandList &handlist);

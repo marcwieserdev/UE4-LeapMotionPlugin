@@ -11,18 +11,18 @@ class ULeapImage : public UObject
 public:
 	~ULeapImage();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Texture", CompactNodeTitle = "", Keywords = "get texture"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Texture", CompactNodeTitle = "", Keywords = "get texture"), Category = "Leap Image")
 	class UTexture2D* Texture();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "R8Texture", CompactNodeTitle = "", Keywords = "get texture single channel"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "R8Texture", CompactNodeTitle = "", Keywords = "get texture single channel"), Category = "Leap Image")
 	class UTexture2D* R8Texture();
 	
 	//Faster raw distortion (R=U, G=V), requires channel conversion, 32bit float per channel texture will look odd if rendered raw.
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Distortion", CompactNodeTitle = "", Keywords = "distortion"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Distortion", CompactNodeTitle = "", Keywords = "distortion"), Category = "Leap Image")
 	class UTexture2D* Distortion();
 
 	//Visually correct distortion in UE format (R=U, G=1-V) at the cost of additional CPU time (roughly 1ms) in 8bit per channel format
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "Distortion UE", CompactNodeTitle = "", Keywords = "distortion ue"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Distortion UE", CompactNodeTitle = "", Keywords = "distortion ue"), Category = "Leap Image")
 	class UTexture2D* DistortionUE();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
@@ -52,10 +52,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
 	float RayScaleY;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "rectify", CompactNodeTitle = "", Keywords = "rectify"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "rectify", CompactNodeTitle = "", Keywords = "rectify"), Category = "Leap Image")
 	FVector Rectify(FVector uv) const;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "warp", CompactNodeTitle = "", Keywords = "warp"), Category = "Leap Image")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "warp", CompactNodeTitle = "", Keywords = "warp"), Category = "Leap Image")
 	FVector Warp(FVector xy) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")

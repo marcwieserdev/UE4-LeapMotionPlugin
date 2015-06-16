@@ -13,10 +13,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	FVector Direction;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle="", Keywords = "frame"), Category = "Leap Pointable")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "frame", CompactNodeTitle="", Keywords = "frame"), Category = "Leap Pointable")
 	virtual class ULeapFrame *Frame();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hand", CompactNodeTitle="", Keywords = "hand"), Category = "Leap Pointable")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "hand", CompactNodeTitle="", Keywords = "hand"), Category = "Leap Pointable")
 	virtual class ULeapHand *Hand();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
@@ -37,10 +37,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	float Length;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "equal", CompactNodeTitle="==", Keywords = "equal"), Category = "Leap Pointable")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "equal", CompactNodeTitle="==", Keywords = "equal"), Category = "Leap Pointable")
 	virtual bool equal(const ULeapPointable *other);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "different", CompactNodeTitle="!=", Keywords = "different"), Category = "Leap Pointable")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "different", CompactNodeTitle="!=", Keywords = "different"), Category = "Leap Pointable")
 	virtual bool different(const ULeapPointable *other);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")

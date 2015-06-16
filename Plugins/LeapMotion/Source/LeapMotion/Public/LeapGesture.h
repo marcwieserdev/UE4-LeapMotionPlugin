@@ -16,10 +16,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
 	float DurationSeconds;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "frame", CompactNodeTitle = "", Keywords = "frame"), Category = "Leap Gesture")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "frame", CompactNodeTitle = "", Keywords = "frame"), Category = "Leap Gesture")
 	class ULeapFrame* Frame();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "hands", CompactNodeTitle = "", Keywords = "hands"), Category = "Leap Gesture")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "hands", CompactNodeTitle = "", Keywords = "hands"), Category = "Leap Gesture")
 	class ULeapHandList* Hands();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")
 	bool IsValid;
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "pointables"), Category = "Leap Gesture")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "pointables", CompactNodeTitle = "", Keywords = "pointables"), Category = "Leap Gesture")
 	class ULeapPointableList* Pointables();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture")

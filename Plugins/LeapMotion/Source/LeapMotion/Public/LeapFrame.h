@@ -18,34 +18,34 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
 	class ULeapFinger* Finger(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = "Leap Frame")
 	class ULeapFingerList* Fingers();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
 	class ULeapGesture* Gesture(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
 	class ULeapGestureList* Gestures();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
 	class ULeapGestureList* GesturesSinceFrame(class ULeapFrame* frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
 	class ULeapHand* Hand(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = "Leap Frame")
 	class ULeapHandList* Hands();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "images", CompactNodeTitle = "", Keywords = "get images"), Category = "Leap Frame")
 	class ULeapImageList* Images();
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "interactionBox", CompactNodeTitle = "", Keywords = "get interaction box"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "interactionBox", CompactNodeTitle = "", Keywords = "get interaction box"), Category = "Leap Frame")
 	class ULeapInteractionBox* InteractionBox();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
 	class ULeapPointable* Pointable(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
 	class ULeapPointableList* Pointables();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
@@ -69,7 +69,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
 	class ULeapTool* Tool(int32 id);
 
-	UFUNCTION(BlueprintCallable, meta = (FriendlyName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
 	class ULeapToolList* Tools();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
