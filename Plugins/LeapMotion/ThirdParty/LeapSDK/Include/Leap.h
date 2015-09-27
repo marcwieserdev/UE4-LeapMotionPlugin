@@ -2738,11 +2738,12 @@ namespace Leap {
     LEAP_EXPORT float range() const;
 
     /**
-     * The device baseline refers to the separation distance between stereo sensors on the
-     * device. The baseline value, together with the maximum resolution, influence the
+     * The distance between the center points of the stereo sensors.
+     *
+     * The baseline value, together with the maximum resolution, influence the
      * maximum range.
      *
-     * @returns The separation distance between the center of each sensor, in mm
+     * @returns The separation distance between the center of each sensor, in mm.
      * @since 2.2.5
      */
     LEAP_EXPORT float baseline() const;
@@ -3053,7 +3054,7 @@ namespace Leap {
 
     /* Do not call dataPointer(). It is intended only as a helper for C#.
      *
-     * @since 2.3.0
+     * @since 2.2.7
      */
     void* dataPointer() const {
       return (void*) data();
@@ -3061,7 +3062,7 @@ namespace Leap {
 
     /* Do not call distortionPointer(). It is intended only as a helper for C#.
      *
-     * @since 2.3.0
+     * @since 2.2.7
      */
     void* distortionPointer() const {
       return (void*) distortion();
@@ -3236,6 +3237,13 @@ namespace Leap {
     LEAP_EXPORT Vector warp(const Vector& xy) const; // returns vector (u, v, 0). The z-component is ignored
 
     /**
+     * Returns a timestamp indicating when this frame began being captured on the device.
+     * 
+     * @since 2.2.7
+     */
+    LEAP_EXPORT int64_t timestamp() const;
+   
+    /**
      * Reports whether this Image instance contains valid data.
      *
      * @returns true, if and only if the image is valid.
@@ -3249,7 +3257,6 @@ namespace Leap {
      * You can use the instance returned by this function in comparisons testing
      * whether a given Image instance is valid or invalid. (You can also use the
      * Image::isValid() function.)
-     *
      *
      * @returns The invalid Image instance.
      * @since 2.1.0
@@ -4664,7 +4671,10 @@ namespace Leap {
     LEAP_EXPORT int64_t id() const;
 
     /**
-     * The frame capture time in microseconds elapsed since the Leap started.
+     * The frame capture time in microseconds elapsed since an arbitrary point in 
+     * time in the past.
+     *
+     * Use Controller::now() to calculate the age of the frame.
      *
      * \include Frame_timestamp.txt
      *
@@ -5253,6 +5263,7 @@ namespace Leap {
     LEAP_EXPORT void deserializeCString(const char* str, size_t length);
   };
 
+  /* For internal use only. */
   class BugReport : public Interface {
   public:
     // For internal use only
@@ -5260,11 +5271,18 @@ namespace Leap {
 
     LEAP_EXPORT BugReport();
 
+    /* Starts recording data. The recording ends when endRecording() is called
+    * or after 10 seconds. The recording is saved to the local hard drive. */
     LEAP_EXPORT bool beginRecording();
+    /* Ends the recording. */
     LEAP_EXPORT void endRecording();
 
+    /* True while recording is in progress. */
     LEAP_EXPORT bool isActive() const;
+    /* Progress as a fraction of the maximum recording length (i.e. 10 seconds).
+    * The range of the progress value is [0..1]. */
     LEAP_EXPORT float progress() const;
+    /* The recording duration in seconds. */
     LEAP_EXPORT float duration() const;
   };
 
@@ -5852,6 +5870,7 @@ namespace Leap {
      */
     LEAP_EXPORT ScreenList locatedScreens() const;
 
+    /* For internal use only. */
     LEAP_EXPORT BugReport bugReport() const;
 
     /**
@@ -5899,6 +5918,13 @@ namespace Leap {
      **/
     LEAP_EXPORT TrackedQuad trackedQuad() const;
 
+    /**
+     * Returns a timestamp value as close as possible to the current time.
+     * Values are in microseconds, as with all the other timestamp values.
+     *
+     * @since 2.2.7
+     **/
+    LEAP_EXPORT int64_t now() const;
   };
 
   /**

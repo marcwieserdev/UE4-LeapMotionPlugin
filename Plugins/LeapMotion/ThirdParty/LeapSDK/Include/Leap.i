@@ -197,6 +197,7 @@
 %constattrib( Leap::Image, float, rayOffsetY );
 %constattrib( Leap::Image, float, rayScaleX );
 %constattrib( Leap::Image, float, rayScaleY );
+%constattrib( Leap::Image, int64_t, timestamp );
 %constattrib( Leap::Image, bool, isValid );
 
 %constattrib( Leap::Mask, int64_t, sequenceId );
