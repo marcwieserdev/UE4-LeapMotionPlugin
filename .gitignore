@@ -3,18 +3,5 @@
 *.lo
 *.o
 *.obj
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-
-# Executables
-*.exe
-*.out
-*.app
+*.pdb
+*.DS_Store
