@@ -274,6 +274,11 @@ void ULeapController::EnableImageSupport(bool allowImages, bool emitImageEvents)
 	_private->imageEventsEnabled = emitImageEvents;
 }
 
+void ULeapController::EnableBackgroundTracking(bool trackInBackground)
+{
+	_private->SetPolicyStatus(Leap::Controller::PolicyFlag::POLICY_BACKGROUND_FRAMES, trackInBackground);
+}
+
 void ULeapController::EnableGesture(LeapGestureType type, bool enable)
 {
 	Leap::Gesture::Type rawType;
