@@ -134,12 +134,13 @@ FMatrix convertLeapBasisMatrix(Leap::Matrix leapMatrix)
 
 	return (FMatrix(inX, inY, inZ, inW));
 }
-FMatrix swapLeftHandRuleForRight(FMatrix ueMatrix)
+FMatrix swapLeftHandRuleForRight(const FMatrix& ueMatrix)
 {
+	FMatrix matrix = ueMatrix;
 	//Convenience method to swap the axis correctly, already in UE format to swap Y instead of leap Z
-	FVector inverseVector = -ueMatrix.GetUnitAxis(EAxis::Y);
-	ueMatrix.SetAxes(NULL, &inverseVector, NULL, NULL);
-	return ueMatrix;
+	FVector inverseVector = -matrix.GetUnitAxis(EAxis::Y);
+	matrix.SetAxes(NULL, &inverseVector, NULL, NULL);
+	return matrix;
 }
 
 Leap::Vector convertUEToLeap(FVector ueVector)

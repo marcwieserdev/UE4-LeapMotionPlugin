@@ -18,7 +18,7 @@ void UAnimBone::SetEnabled(bool enable)
 	enable ? Alpha = 1.f: Alpha = 0.f;
 }
 
-void UAnimBone::SetFromTransform(FTransform transform)
+void UAnimBone::SetFromTransform(const FTransform& transform)
 {
 	Orientation = FRotator(transform.GetRotation());
 	Position = transform.GetTranslation();

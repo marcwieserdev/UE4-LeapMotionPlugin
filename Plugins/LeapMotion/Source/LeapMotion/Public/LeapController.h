@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableImageSupport", Keywords = "use allow images set policy"), Category = "Leap Controller")
 	void EnableImageSupport(bool allowImages = true, bool emitImageEvents = true);
 
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableBackgroundTracking", Keywords = "enable background tracking"), Category = "Leap Controller")
+	void EnableBackgroundTracking(bool trackInBackground = false);
+
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableGesture", Keywords = "enable gesture"), Category = "Leap Controller")
 	void EnableGesture(enum LeapGestureType type, bool enable = true);
 
