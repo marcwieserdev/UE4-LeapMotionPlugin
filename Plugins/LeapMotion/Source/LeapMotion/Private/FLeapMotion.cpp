@@ -1,7 +1,7 @@
 #include "LeapMotionPrivatePCH.h"
 
 #define LOCTEXT_NAMESPACE "LeapPlugin"
-#define PLUGIN_VERSION "0.9.8"
+#define PLUGIN_VERSION "0.9.9"
 
 void FLeapMotion::StartupModule()
 {
