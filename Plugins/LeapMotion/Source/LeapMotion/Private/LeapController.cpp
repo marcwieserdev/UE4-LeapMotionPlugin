@@ -155,6 +155,7 @@ public:
 	UObject* interfaceDelegate = NULL;	//NB they have to be set to null manually or MSFT will set them to CDCDCDCD...
 	bool optimizeForHMD = false;
 	bool allowImages = false;
+	bool useGammaCorrection = false;
 	bool imageEventsEnabled;
 
 	//Functions
@@ -267,8 +268,9 @@ void ULeapController::OptimizeForHMD(bool useTopdown, bool autoRotate, bool auto
 	//LeapSetShouldAdjustForMountOffset(true);	//this function defaults to true at the moment
 }
 
-void ULeapController::EnableImageSupport(bool allowImages, bool emitImageEvents)
+void ULeapController::EnableImageSupport(bool allowImages, bool emitImageEvents, bool useGammaCorrection)
 {
+	_private->useGammaCorrection = useGammaCorrection;
 	_private->allowImages = allowImages;
 	_private->SetPolicyFlagsFromBools();
 	_private->imageEventsEnabled = emitImageEvents;
@@ -606,6 +608,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 					_private->eventImage1 = NewObject<ULeapImage>(this);
 					_private->eventImage1->SetFlags(RF_RootSet);
 				}
+				_private->eventImage1->UseGammaCorrection = _private->useGammaCorrection;
 				_private->eventImage1->setLeapImage(image);
 
 				ILeapEventInterface::Execute_RawImageReceived(_private->interfaceDelegate, _private->eventImage1->Texture(), _private->eventImage1);
@@ -617,6 +620,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 					_private->eventImage2 = NewObject<ULeapImage>(this);
 					_private->eventImage2->SetFlags(RF_RootSet);
 				}
+				_private->eventImage2->UseGammaCorrection = _private->useGammaCorrection;
 				_private->eventImage2->setLeapImage(image);
 
 				ILeapEventInterface::Execute_RawImageReceived(_private->interfaceDelegate, _private->eventImage2->Texture(), _private->eventImage2);

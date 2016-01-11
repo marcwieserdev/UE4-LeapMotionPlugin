@@ -34,6 +34,8 @@ public:
 	UTexture2D* Texture32PrettyFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);	//unoptimized roughly +1ms
 	UTexture2D* Texture128FromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);		//4x float 32
 	UTexture2D* TextureFFromLeapDistortion(int32 SrcWidth, int32 SrcHeight, float* imageBuffer);
+
+	UTexture2D* Texture32FromLeapImageWithGrid(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer);
 	
 	int32 invalidSizesReported = 0;
 	bool ignoreTwoInvalidSizesDone = false;
@@ -43,6 +45,9 @@ public:
 ULeapImage::ULeapImage(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapImage())
 {
 	_private->self = this;
+
+	//default not using gamma correction
+	UseGammaCorrection = false;
 }
 
 ULeapImage::~ULeapImage()
@@ -174,6 +179,81 @@ UTexture2D* PrivateLeapImage::Texture32FromLeapImage(int32 SrcWidth, int32 SrcHe
 	imagePointer->UpdateResource();
 
 	return imagePointer;
+}
+
+//Used to help alignment tests
+UTexture2D* PrivateLeapImage::Texture32FromLeapImageWithGrid(int32 SrcWidth, int32 SrcHeight, uint8* imageBuffer)
+{
+
+	// Lock the texture so it can be modified
+	if (imagePointer == NULL)
+		return NULL;
+
+	uint8* MipData = static_cast<uint8*>(imagePointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	// Create base mip.
+	uint8* DestPtr = NULL;
+	const uint8* SrcPtr = NULL;
+
+	//mix in the grid
+	//Leap images are 320x240 with 4,8,10,20,40 as common factors
+	int gridSize = 40;
+
+	for (int32 y = 0; y < SrcHeight; y++)
+	{
+		DestPtr = &MipData[(SrcHeight - 1 - y) * SrcWidth * sizeof(FColor)];
+		SrcPtr = const_cast<uint8*>(&imageBuffer[(SrcHeight - 1 - y) * SrcWidth]);
+
+		for (int32 x = 0; x < SrcWidth; x++)
+		{
+			//Grid pixel 0x77 to make the grid, vary color by row
+			if( (y % gridSize) == 0 || (x % gridSize) == 0)
+			{
+				//if(y % gridSize) == 0 || (x % gridSize) == 0)
+				//float fractionColor1 = ((float)y / (float)SrcHeight) * (float)0x77;
+				//float fractionColor2 = ((float)x / (float)SrcWidth) * (float)0x77;
+				*DestPtr++ = (uint8) 0x77;
+				*DestPtr++ = (uint8) 0x77;
+				*DestPtr++ = (uint8) 0x77;
+				*DestPtr++ = 0x77;
+			}
+			else
+			{
+				//Grayscale, copy to all channels
+				*DestPtr++ = *SrcPtr;
+				*DestPtr++ = *SrcPtr;
+				*DestPtr++ = *SrcPtr;
+				*DestPtr++ = 0xFF;
+				/**DestPtr++ = 0x00;
+				*DestPtr++ = 0x00;
+				*DestPtr++ = 0x00;
+				*DestPtr++ = 0xFF;*/
+			}
+
+			SrcPtr++;
+		}
+	}
+
+	// Unlock the texture
+	imagePointer->PlatformData->Mips[0].BulkData.Unlock();
+	imagePointer->UpdateResource();
+
+	return imagePointer;
+
+	//Grid Unity source copy
+	/*int gridSize = 16;
+	gridSize *= colorBytes;
+	int stride = sourceImage.Width * colorBytes;
+	byte[] gridColor = { 0x77, 0x00, 0x00, 0x77 };
+	for (int i = 0; i < sourceImage.Width; i += colorBytes) {
+		for (int j = 0; j < sourceImage.Height; j += colorBytes) {
+			if ((i % gridSize) == 0 || (j % gridSize) == 0) {
+				for (int bpp = 0; bpp < colorBytes; bpp++) {
+					_mainTextureData[i + stride * j + bpp] = gridColor[bpp];
+				}
+			}
+		}
+	}*/
 }
 
 //Lossless distortion map with no surplus channels, still not working properly, use the 128bit texture instead.
@@ -370,9 +450,13 @@ UTexture2D* PrivateLeapImage::Texture128FromLeapDistortion(int32 SrcWidth, int32
 
 UTexture2D* ULeapImage::Texture()
 {
-	_private->imagePointer = _private->validImagePointer(_private->imagePointer, Width, Height, PF_B8G8R8A8);
+	_private->imagePointer = _private->validImagePointer(_private->imagePointer, Width, Height, PF_B8G8R8A8, UseGammaCorrection);
 	
+	//Normal
 	return _private->Texture32FromLeapImage(Width, Height, (uint8*)_private->leapImage.data());
+
+	//Grid Overlay
+	//return _private->Texture32FromLeapImageWithGrid(Width, Height, (uint8*)_private->leapImage.data());
 }
 
 UTexture2D* ULeapImage::R8Texture()

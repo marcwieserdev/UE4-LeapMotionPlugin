@@ -3,6 +3,8 @@
 #include "LeapGesture.h"
 
 DEFINE_LOG_CATEGORY(LeapPluginLog);
+
+//#define LEAP_TO_UE_SCALE 0.16f	//try this for image hands
 #define LEAP_TO_UE_SCALE 0.1f
 #define UE_TO_LEAP_SCALE 10.f
 #define LEAP_MOUNT_OFFSET 8.f	//in cm (UE units) forming FVector(LEAP_MOUNT_OFFSET,0,0) forward vector

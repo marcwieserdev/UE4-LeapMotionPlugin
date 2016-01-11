@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
 	float RayScaleY;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
+	bool UseGammaCorrection;
+
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "rectify", CompactNodeTitle = "", Keywords = "rectify"), Category = "Leap Image")
 	FVector Rectify(FVector uv) const;
 
