@@ -33,7 +33,7 @@ class UAnimBone : public UObject
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
 	void SetFromTransform(const FTransform& in);
 
-	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
+	UFUNCTION(BlueprintPure, Category = "Anim Bone")
 	FTransform GetTransform();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")

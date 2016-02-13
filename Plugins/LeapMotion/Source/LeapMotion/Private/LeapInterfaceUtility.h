@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #include "Leap.h"
 #include "Core.h"
@@ -22,6 +22,8 @@ Leap::Vector convertAndScaleUEToLeap(FVector ueVector);
 
 float scaleLeapToUE(float leapFloat);
 float scaleUEToLeap(float ueFloat);
+
+void LeapSetMountToHMDOffset(FVector offset);
 
 //HMD automation
 void LeapSetShouldAdjustForFacing(bool shouldRotate);

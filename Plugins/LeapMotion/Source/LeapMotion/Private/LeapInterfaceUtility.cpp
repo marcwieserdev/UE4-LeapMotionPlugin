@@ -4,12 +4,13 @@
 
 DEFINE_LOG_CATEGORY(LeapPluginLog);
 
-//#define LEAP_TO_UE_SCALE 0.16f	//try this for image hands
 #define LEAP_TO_UE_SCALE 0.1f
 #define UE_TO_LEAP_SCALE 10.f
-#define LEAP_MOUNT_OFFSET 8.f	//in cm (UE units) forming FVector(LEAP_MOUNT_OFFSET,0,0) forward vector
+//#define LEAP_MOUNT_OFFSET 8.f	//in cm (UE units) forming FVector(LEAP_MOUNT_OFFSET,0,0) forward vector
 
-//NB: localized variable for transforms
+FVector LeapMountOffset = FVector(8.f, 0, 0);
+
+//NB: localized variable for transforms - defaults
 bool LeapShouldAdjustForFacing = false;
 bool LeapShouldAdjustRotationForHMD = false;
 bool LeapShouldAdjustPositionForHMD = false;
@@ -40,7 +41,7 @@ FVector adjustForHMD(FVector in)
 		if (LeapShouldAdjustPositionForHMD)
 		{
 			if (LeapShouldAdjustForMountOffset)
-				position += orientationQuat.RotateVector(FVector(LEAP_MOUNT_OFFSET, 0, 0));
+				position += orientationQuat.RotateVector(LeapMountOffset);
 			out += position;
 		}
 		return out;
@@ -163,6 +164,12 @@ float scaleLeapToUE(float leapFloat)
 float scaleUEToLeap(float ueFloat)
 {
 	return ueFloat * UE_TO_LEAP_SCALE;	//mm->cm
+}
+
+
+void LeapSetMountToHMDOffset(FVector offset)
+{
+	LeapMountOffset = offset;
 }
 
 void LeapSetShouldAdjustForFacing(bool shouldRotate)

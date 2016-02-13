@@ -74,6 +74,8 @@ void UAnimHand::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVect
 
 void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
 {
+	//Confidence value
+	Confidence = leapHand->Confidence;
 
 	//Wrist/Arm
 	Wrist->Orientation = leapHand->PalmOrientation;
@@ -81,6 +83,7 @@ void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
 
 	Palm->Orientation = leapHand->PalmOrientation; //this works because we derive it from two vectors
 	Palm->Position = leapHand->PalmPosition;
+	Palm->Scale = FVector(leapHand->PalmWidth / 8.5f, leapHand->PalmWidth / 8.5f, leapHand->PalmWidth / 8.5f);
 
 	LeapHandType handType = leapHand->HandType;
 

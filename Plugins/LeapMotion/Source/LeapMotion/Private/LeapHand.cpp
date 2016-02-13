@@ -164,7 +164,7 @@ void ULeapHand::setHand(const Leap::Hand &hand)
 	GrabStrength = _private->hand.grabStrength();
 	IsLeft = _private->hand.isLeft();
 	IsRight = _private->hand.isRight();
-	PalmWidth = _private->hand.palmWidth();
+	PalmWidth = scaleLeapToUE(_private->hand.palmWidth());
 	PinchStrength = _private->hand.pinchStrength();
 	SphereCenter = convertAndScaleLeapToUE(_private->hand.sphereCenter());
 	SphereRadius = scaleLeapToUE(_private->hand.sphereRadius());

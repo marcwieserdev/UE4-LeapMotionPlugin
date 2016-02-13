@@ -8,9 +8,13 @@ UCLASS(BlueprintType)
 class UAnimHand : public UObject
 {
 	GENERATED_UCLASS_BODY()
+
 	//Hand Properties
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Hand")
 	float Alpha;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Hand")
+	float Confidence;
 
 	//Fingers
 	UPROPERTY(BlueprintReadOnly, Category = "Anim Hand Finger")

@@ -156,7 +156,8 @@ public:
 	bool optimizeForHMD = false;
 	bool allowImages = false;
 	bool useGammaCorrection = false;
-	bool imageEventsEnabled;
+	bool imageEventsEnabled = false;
+	bool useMountOffset = true;
 
 	//Functions
 	void SetPolicyStatus(Leap::Controller::PolicyFlag flag, bool status);
@@ -265,7 +266,7 @@ void ULeapController::OptimizeForHMD(bool useTopdown, bool autoRotate, bool auto
 		LeapSetShouldAdjustForFacing(false);
 
 	LeapSetShouldAdjustForHMD(autoRotate, autoShift);
-	//LeapSetShouldAdjustForMountOffset(true);	//this function defaults to true at the moment
+	LeapSetShouldAdjustForMountOffset(_private->useMountOffset);	//this function defaults to true at the moment, can be changed via command
 }
 
 void ULeapController::EnableImageSupport(bool allowImages, bool emitImageEvents, bool useGammaCorrection)
@@ -305,6 +306,22 @@ void ULeapController::EnableGesture(LeapGestureType type, bool enable)
 	}
 
 	_private->leap.enableGesture(rawType, enable);
+}
+
+
+void ULeapController::SetLeapMountToHMDOffset(FVector Offset)
+{
+	if (Offset == FVector(0, 0, 0))
+	{
+		_private->useMountOffset = false;
+		LeapSetShouldAdjustForMountOffset(_private->useMountOffset);
+	}
+	else
+	{
+		_private->useMountOffset = true;
+		LeapSetShouldAdjustForMountOffset(_private->useMountOffset);
+		LeapSetMountToHMDOffset(Offset);
+	}
 }
 
 //Leap Event Interface - Event Driven System

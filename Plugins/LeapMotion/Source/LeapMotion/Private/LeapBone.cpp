@@ -64,11 +64,11 @@ void ULeapBone::setBone(const Leap::Bone &bone)
 	Basis = convertLeapBasisMatrix(_private->bone.basis());
 	Center = convertAndScaleLeapToUE(_private->bone.center());
 	Direction = convertLeapToUE(_private->bone.direction());
-	//Orientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
+	//Orientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator(); use GetOrientation()
 	IsValid = _private->bone.isValid();
-	Length = _private->bone.length();
+	Length = scaleLeapToUE(_private->bone.length());
 	NextJoint = convertAndScaleLeapToUE(_private->bone.nextJoint());
 	PrevJoint = convertAndScaleLeapToUE(_private->bone.prevJoint());
 	Type = type(_private->bone.type());
-	Width = _private->bone.width();
+	Width = scaleLeapToUE(_private->bone.width());
 }

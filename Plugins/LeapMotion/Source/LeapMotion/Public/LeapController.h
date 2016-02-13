@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "enable gesture"), Category = "Leap Controller")
 	void EnableGesture(enum LeapGestureType type, bool enable = true);
 
+	UFUNCTION(BlueprintCallable, Category = "Leap Controller")
+	void SetLeapMountToHMDOffset(FVector Offset = FVector(8,0,0));	//default to the leap dk2 offset
+
 	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "set delegate self"), Category = "Leap Interface")
 	void SetInterfaceDelegate(UObject* newDelegate);
