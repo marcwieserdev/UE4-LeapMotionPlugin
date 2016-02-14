@@ -4,6 +4,8 @@
 #include "LeapPointable.h"
 #include "LeapTool.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Tool.html
+
 UCLASS(BlueprintType)
 class ULeapTool : public ULeapPointable
 {
@@ -11,8 +13,8 @@ class ULeapTool : public ULeapPointable
 public:
 	~ULeapTool();
 
-	void setTool(const class Leap::Tool &tool);
+	void SetTool(const class Leap::Tool &Tool);
 
 private:
-	class PrivateTool* _private;
+	class PrivateTool* Private;
 };

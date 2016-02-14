@@ -29,11 +29,11 @@ class UAnimBody : public UActorComponent
 	bool Enabled();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Body")
-	void SetEnabled(bool enable = true);
+	void SetEnabled(bool Enable = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Body")
-	void TranslateBody(FVector shift);
+	void TranslateBody(FVector Shift);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Body")
-	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors = true);
+	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors = true);
 };

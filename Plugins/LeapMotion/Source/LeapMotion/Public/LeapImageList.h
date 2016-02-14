@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapImageList.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.ImageList.html
+
 UCLASS(BlueprintType)
 class ULeapImageList : public UObject
 {
@@ -17,14 +19,14 @@ public:
 	int32 Count;
 	
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Image List")
-	class ULeapImage* getIndex(int32 index);
+	class ULeapImage* GetIndex(int32 Index);
 
-	ULeapImage* operator[](int index);
+	ULeapImage* operator[](int Index);
 
-	void setLeapImageList(const class Leap::ImageList &LeapImageList);
+	void SetLeapImageList(const class Leap::ImageList &LeapImageList);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateLeapImageList* _private;
+	class PrivateLeapImageList* Private;
 };

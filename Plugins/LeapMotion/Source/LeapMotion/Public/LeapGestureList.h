@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapGestureList.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.GestureList.html
+
 UCLASS(BlueprintType)
 class ULeapGestureList : public UObject
 {
@@ -17,14 +19,14 @@ public:
 	int32 Count;
 	
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getIndex", CompactNodeTitle = "[]", Keywords = "get index"), Category = "Leap Gesture List")
-	class ULeapGesture *getIndex(int32 index);
+	class ULeapGesture *GetIndex(int32 Index);
 
-	ULeapGesture* operator[](int index);
+	ULeapGesture* operator[](int Index);
 
-	void setGestureList(const class Leap::GestureList &gesturelist);
+	void SetGestureList(const class Leap::GestureList &Gesturelist);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateGestureList* _private;
+	class PrivateGestureList* Private;
 };

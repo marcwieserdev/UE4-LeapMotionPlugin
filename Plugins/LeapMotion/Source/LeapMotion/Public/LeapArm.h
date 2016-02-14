@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapArm.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Arm.html
+
 UCLASS(BlueprintType)
 class ULeapArm : public UObject
 {
@@ -43,5 +45,5 @@ public:
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateArm* _private;
+	class PrivateArm* Private;
 };

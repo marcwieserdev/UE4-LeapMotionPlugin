@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapFingerList.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.FingerList.html
+
 UCLASS(BlueprintType)
 class ULeapFingerList : public UObject
 {
@@ -11,34 +13,34 @@ public:
 	~ULeapFingerList();
 	
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Finger List")
-	ULeapFingerList *append(const ULeapFingerList *list);
+	ULeapFingerList *Append(const ULeapFingerList *List);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger List")
 	int32 Count;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "extended", CompactNodeTitle = "", Keywords = "extended"), Category = "Leap Finger List")
-	ULeapFingerList *extended();
+	ULeapFingerList *Extended();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost"), Category = "Leap Finger List")
-	class ULeapFinger *frontmost();
+	class ULeapFinger *Frontmost();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger List")
 	bool IsEmpty;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost"), Category = "Leap Finger List")
-	class ULeapFinger *leftmost();
+	class ULeapFinger *Leftmost();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = "Leap Finger List")
-	class ULeapFinger *getPointableById(int32 id);
+	class ULeapFinger *GetPointableById(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Finger List")
-	class ULeapFinger *rightmost();
+	class ULeapFinger *Rightmost();
 
-	void setFingerList(const class Leap::FingerList &pointables);
-	Leap::FingerList* fingerList();
+	void SetFingerList(const class Leap::FingerList &Pointables);
+	Leap::FingerList* FingerList();
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateFingerList* _private;
+	class PrivateFingerList* Private;
 };

@@ -6,58 +6,62 @@ class PrivateSwipeGesture
 public:
 	~PrivateSwipeGesture()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (pointable)
-			pointable->CleanupRootReferences();
-		cleanupCalled = true;
+		if (Pointable)
+		{
+			Pointable->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::SwipeGesture gesture;
-	ULeapPointable* pointable = NULL;
+	bool CleanupCalled = false;
+	Leap::SwipeGesture Gesture;
+	ULeapPointable* Pointable = NULL;
 };
 
-ULeapSwipeGesture::ULeapSwipeGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateSwipeGesture())
+ULeapSwipeGesture::ULeapSwipeGesture(const FObjectInitializer &ObjectInitializer) : ULeapGesture(ObjectInitializer), Private(new PrivateSwipeGesture())
 {
 }
 
 ULeapSwipeGesture::~ULeapSwipeGesture()
 {
-	delete _private;
+	delete Private;
 }
 void ULeapSwipeGesture::CleanupRootReferences()
 {
 	ULeapGesture::CleanupRootReferences();
-	_private->Cleanup();
+	Private->Cleanup();
 	this->RemoveFromRoot();
 }
 
 ULeapPointable* ULeapSwipeGesture::Pointable()
 {
-	if (_private->pointable == NULL)
+	if (Private->Pointable == NULL)
 	{
-		_private->pointable = NewObject<ULeapPointable>(this);
-		_private->pointable->SetFlags(RF_RootSet);
+		Private->Pointable = NewObject<ULeapPointable>(this);
+		Private->Pointable->SetFlags(RF_RootSet);
 	}
-	_private->pointable->setPointable(_private->gesture.pointable());
-	return (_private->pointable);
+	Private->Pointable->SetPointable(Private->Gesture.pointable());
+	return (Private->Pointable);
 }
 
-void ULeapSwipeGesture::setGesture(const Leap::SwipeGesture &Gesture)
+void ULeapSwipeGesture::SetGesture(const Leap::SwipeGesture &Gesture)
 {
 	//Super
-	ULeapGesture::setGesture(Gesture);
+	ULeapGesture::SetGesture(Gesture);
 
-	_private->gesture = Gesture;
+	Private->Gesture = Gesture;
 
-	Direction = convertLeapToUE(_private->gesture.direction());
-	Position = convertAndScaleLeapToUE(_private->gesture.position());
-	Speed = scaleLeapToUE(_private->gesture.speed());
-	StartPosition = convertAndScaleLeapToUE(_private->gesture.startPosition());
+	Direction = ConvertLeapToUE(Private->Gesture.direction());
+	Position = ConvertAndScaleLeapToUE(Private->Gesture.position());
+	Speed = ScaleLeapToUE(Private->Gesture.speed());
+	StartPosition = ConvertAndScaleLeapToUE(Private->Gesture.startPosition());
 
 	//Convenience
-	BasicDirection = basicDirection(Direction);
+	BasicDirection = LeapBasicVectorDirection(Direction);
 }

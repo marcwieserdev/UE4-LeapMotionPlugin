@@ -3,16 +3,16 @@
 class PrivateArm
 {
 public:
-	Leap::Arm arm;
+	Leap::Arm Arm;
 };
 
-ULeapArm::ULeapArm(const FObjectInitializer &init) : UObject(init), _private(new PrivateArm())
+ULeapArm::ULeapArm(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateArm())
 {
 }
 
 ULeapArm::~ULeapArm()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapArm::CleanupRootReferences()
@@ -20,34 +20,38 @@ void ULeapArm::CleanupRootReferences()
 	this->RemoveFromRoot();
 }
 
-FRotator ULeapArm::GetOrientation(LeapHandType handType)
+FRotator ULeapArm::GetOrientation(LeapHandType HandType)
 {
-	if (handType == LeapHandType::HAND_LEFT)
-		return swapLeftHandRuleForRight(Basis).Rotator();
+	if (HandType == LeapHandType::HAND_LEFT)
+	{
+		return SwapLeftHandRuleForRight(Basis).Rotator();
+	}
 	else
+	{
 		return Basis.Rotator();
+	}
 }
 
 
-bool ULeapArm::operator!=(const ULeapArm &arm) const
+bool ULeapArm::operator!=(const ULeapArm &Arm) const
 {
-	return (arm._private->arm != this->_private->arm);
+	return (Arm.Private->Arm != this->Private->Arm);
 }
 
-bool ULeapArm::operator==(const ULeapArm &arm) const
+bool ULeapArm::operator==(const ULeapArm &Arm) const
 {
-	return (arm._private->arm == this->_private->arm);
+	return (Arm.Private->Arm == this->Private->Arm);
 }
 
-void ULeapArm::setArm(const Leap::Arm &arm)
+void ULeapArm::setArm(const Leap::Arm &Arm)
 {
-	_private->arm = arm;
+	Private->Arm = Arm;
 
-	Basis = convertLeapBasisMatrix(_private->arm.basis());
-	Center = convertAndScaleLeapToUE(_private->arm.center());
-	Direction = convertLeapToUE(_private->arm.direction());
-	ElbowPosition = convertAndScaleLeapToUE(_private->arm.elbowPosition());
-	IsValid = _private->arm.isValid();
-	Width = _private->arm.width();
-	WristPosition = convertAndScaleLeapToUE(_private->arm.wristPosition());
+	Basis = ConvertLeapBasisMatrix(Private->Arm.basis());
+	Center = ConvertAndScaleLeapToUE(Private->Arm.center());
+	Direction = ConvertLeapToUE(Private->Arm.direction());
+	ElbowPosition = ConvertAndScaleLeapToUE(Private->Arm.elbowPosition());
+	IsValid = Private->Arm.isValid();
+	Width = Private->Arm.width();
+	WristPosition = ConvertAndScaleLeapToUE(Private->Arm.wristPosition());
 }

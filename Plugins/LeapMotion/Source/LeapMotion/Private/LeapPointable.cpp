@@ -6,74 +6,82 @@ class PrivatePointable
 public:
 	~PrivatePointable()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (frame)
-			frame->CleanupRootReferences();
-		if (hand)
-			hand->CleanupRootReferences();
-		cleanupCalled = true;
+		if (Frame)
+		{
+			Frame->CleanupRootReferences();
+		}
+		if (Hand)
+		{
+			Hand->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::Pointable pointable;
-	ULeapFrame* frame = NULL;
-	ULeapHand* hand = NULL;
+	bool CleanupCalled = false;
+	Leap::Pointable Pointable;
+	ULeapFrame* Frame = NULL;
+	ULeapHand* Hand = NULL;
 };
 
-ULeapPointable::ULeapPointable(const FObjectInitializer &init) : UObject(init), _private(new PrivatePointable())
+ULeapPointable::ULeapPointable(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivatePointable())
 {
 }
 
 ULeapPointable::~ULeapPointable()
 {
-	delete _private;
+	delete Private;
 }
 void ULeapPointable::CleanupRootReferences()
 {
-	_private->Cleanup();
+	Private->Cleanup();
     
-    if (this->HasAnyFlags(RF_RootSet))
-        this->RemoveFromRoot();
+	if (this->HasAnyFlags(RF_RootSet))
+	{
+		this->RemoveFromRoot();
+	}
 }
 
 ULeapFrame *ULeapPointable::Frame()
 {
-	if (!_private->frame)
+	if (!Private->Frame)
 	{
-		_private->frame = NewObject<ULeapFrame>(this);
-		_private->frame->SetFlags(RF_RootSet);
+		Private->Frame = NewObject<ULeapFrame>(this);
+		Private->Frame->SetFlags(RF_RootSet);
 	}
-	_private->frame->setFrame(_private->pointable.frame());
-	return (_private->frame);
+	Private->Frame->SetFrame(Private->Pointable.frame());
+	return (Private->Frame);
 }
 
 ULeapHand *ULeapPointable::Hand()
 {
-	if (!_private->hand)
+	if (!Private->Hand)
 	{
-		_private->hand = NewObject<ULeapHand>(this, ULeapHand::StaticClass());
-		_private->hand->SetFlags(RF_RootSet);
+		Private->Hand = NewObject<ULeapHand>(this, ULeapHand::StaticClass());
+		Private->Hand->SetFlags(RF_RootSet);
 	}
-	_private->hand->setHand(_private->pointable.hand());
-	return (_private->hand);
+	Private->Hand->SetHand(Private->Pointable.hand());
+	return (Private->Hand);
 }
 
-bool ULeapPointable::equal(const ULeapPointable *other)
+bool ULeapPointable::Equal(const ULeapPointable *Other)
 {
-	return (_private->pointable == other->_private->pointable);
+	return (Private->Pointable == Other->Private->Pointable);
 }
 
-bool ULeapPointable::different(const ULeapPointable *other)
+bool ULeapPointable::Different(const ULeapPointable *Other)
 {
-	return (_private->pointable != other->_private->pointable);
+	return (Private->Pointable != Other->Private->Pointable);
 }
 
-LeapZone touchZone(Leap::Pointable::Zone zone)
+LeapZone ConvertTouchZone(Leap::Pointable::Zone Zone)
 {
-	switch (zone)
+	switch (Zone)
 	{
 	case Leap::Pointable::Zone::ZONE_NONE:
 		return (ZONE_NONE);
@@ -86,27 +94,27 @@ LeapZone touchZone(Leap::Pointable::Zone zone)
 	}
 }
 
-void ULeapPointable::setPointable(const Leap::Pointable &pointable)
+void ULeapPointable::SetPointable(const Leap::Pointable &Pointable)
 {
-	_private->pointable = pointable;
+	Private->Pointable = Pointable;
 
-	Direction = convertLeapToUE(_private->pointable.direction());
-	Id = _private->pointable.id();
-	IsExtended = _private->pointable.isExtended();
-	IsFinger = _private->pointable.isFinger();
-	IsTool = _private->pointable.isTool();
-	IsValid = _private->pointable.isValid();
-	Length = _private->pointable.length();
-	StabilizedTipPosition = convertAndScaleLeapToUE(_private->pointable.stabilizedTipPosition());
-	TimeVisible = _private->pointable.timeVisible();
-	TipPosition = convertAndScaleLeapToUE(_private->pointable.tipPosition());
-	TipVelocity = convertAndScaleLeapToUE(_private->pointable.tipVelocity());
-	TouchDistance = _private->pointable.touchDistance();
-	TouchZone = touchZone(_private->pointable.touchZone());
-	Width = _private->pointable.width();
+	Direction = ConvertLeapToUE(Private->Pointable.direction());
+	Id = Private->Pointable.id();
+	IsExtended = Private->Pointable.isExtended();
+	IsFinger = Private->Pointable.isFinger();
+	IsTool = Private->Pointable.isTool();
+	IsValid = Private->Pointable.isValid();
+	Length = ScaleLeapToUE(Private->Pointable.length());
+	StabilizedTipPosition = ConvertAndScaleLeapToUE(Private->Pointable.stabilizedTipPosition());
+	TimeVisible = Private->Pointable.timeVisible();
+	TipPosition = ConvertAndScaleLeapToUE(Private->Pointable.tipPosition());
+	TipVelocity = ConvertAndScaleLeapToUE(Private->Pointable.tipVelocity());
+	TouchDistance = Private->Pointable.touchDistance();
+	TouchZone = ConvertTouchZone(Private->Pointable.touchZone());
+	Width = ScaleLeapToUE(Private->Pointable.width());
 }
 
-const Leap::Pointable &ULeapPointable::getPointable() const
+const Leap::Pointable &ULeapPointable::GetPointable() const
 {
-	return (_private->pointable);
+	return (Private->Pointable);
 }

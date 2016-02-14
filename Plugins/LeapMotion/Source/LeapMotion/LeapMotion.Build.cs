@@ -52,7 +52,9 @@ namespace UnrealBuildTool.Rules
                     "InputCore",
                     "Slate",
                     "SlateCore",
-                    "HeadMountedDisplay"
+                    "HeadMountedDisplay",
+                    "RHI",
+                    "RenderCore",
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);

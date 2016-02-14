@@ -4,6 +4,7 @@
 #include "LeapGesture.h"
 #include "LeapScreenTapGesture.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.ScreenTapGesture.html
 
 UCLASS(BlueprintType)
 class ULeapScreenTapGesture : public ULeapGesture
@@ -27,10 +28,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Screen Tap Gesture")
 	float Progress;
 
-	void setGesture(const class Leap::ScreenTapGesture &Gesture);
+	void SetGesture(const class Leap::ScreenTapGesture &Gesture);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateScreenTapGesture* _private;
+	class PrivateScreenTapGesture* Private;
 };

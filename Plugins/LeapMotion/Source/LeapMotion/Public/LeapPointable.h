@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapPointable.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Pointable.html
+
 UCLASS(BlueprintType)
 class ULeapPointable : public UObject
 {
@@ -38,10 +40,10 @@ public:
 	float Length;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "equal", CompactNodeTitle="==", Keywords = "equal"), Category = "Leap Pointable")
-	virtual bool equal(const ULeapPointable *other);
+	virtual bool Equal(const ULeapPointable *Other);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "different", CompactNodeTitle="!=", Keywords = "different"), Category = "Leap Pointable")
-	virtual bool different(const ULeapPointable *other);
+	virtual bool Different(const ULeapPointable *Other);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	FVector StabilizedTipPosition;
@@ -64,11 +66,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable")
 	float Width;
 
-	void setPointable(const class Leap::Pointable &pointable);
-	const Leap::Pointable &getPointable() const;
+	void SetPointable(const class Leap::Pointable &Pointable);
+	const Leap::Pointable &GetPointable() const;
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivatePointable* _private;
+	class PrivatePointable* Private;
 };

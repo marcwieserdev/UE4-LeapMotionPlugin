@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapGesture.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Gesture.html
+
 UCLASS(BlueprintType)
 class ULeapGesture : public UObject
 {
@@ -40,10 +42,10 @@ public:
 	bool operator!=(const ULeapGesture &rhs) const;
 	bool operator==(const ULeapGesture &rhs) const;
 
-	void setGesture(const class Leap::Gesture &Gesture);
+	void SetGesture(const class Leap::Gesture &Gesture);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateGesture* _private;
+	class PrivateGesture* Private;
 };

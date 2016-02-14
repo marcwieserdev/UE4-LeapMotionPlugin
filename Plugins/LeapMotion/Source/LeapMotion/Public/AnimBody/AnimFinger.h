@@ -37,14 +37,14 @@ class UAnimFinger : public UObject
 	bool Enabled();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
-	void SetEnabled(bool enable = true);
+	void SetEnabled(bool Enable = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
-	void TranslateFinger(FVector shift);
+	void TranslateFinger(FVector Shift);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
-	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors = true);
+	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
-	void SetFromLeapFinger(class ULeapFinger* finger, LeapHandType handType);
+	void SetFromLeapFinger(class ULeapFinger* Finger, LeapHandType HandType);
 };

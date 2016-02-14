@@ -3,6 +3,8 @@
 #include "LeapGesture.h"
 #include "LeapController.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Controller.html
+
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
 class ULeapController : public UActorComponent
 {
@@ -18,7 +20,7 @@ public:
 	bool IsConnected() const;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get Frame", Keywords = "get frame"), Category = "Leap Controller")
-	class ULeapFrame* Frame(int32 history);
+	class ULeapFrame* Frame(int32 History);
 
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "has Focus"), Category = "Leap Controller")
 	bool HasFocus() const;
@@ -27,25 +29,25 @@ public:
 	bool IsServiceConnected() const;
 
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "optimize hmd facing top set policy"), Category = "Leap Controller")
-	void OptimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
+	void OptimizeForHMD(bool UseTopdown = false, bool AutoRotate = true, bool AutoShift = true);
 
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "use allow images set policy"), Category = "Leap Controller")
-	void EnableImageSupport(bool allowImages = true, bool emitImageEvents = true, bool UseGammaCorrection = false);
+	void EnableImageSupport(bool AllowImages = true, bool EmitImageEvents = true, bool UseGammaCorrection = false);
 
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "enable background tracking"), Category = "Leap Controller")
-	void EnableBackgroundTracking(bool trackInBackground = false);
+	void EnableBackgroundTracking(bool TrackInBackground = false);
 
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "enable gesture"), Category = "Leap Controller")
-	void EnableGesture(enum LeapGestureType type, bool enable = true);
+	void EnableGesture(enum LeapGestureType GestureType, bool Enable = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Controller")
 	void SetLeapMountToHMDOffset(FVector Offset = FVector(8,0,0));	//default to the leap dk2 offset
 
 	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
 	UFUNCTION(BlueprintCallable, meta = (Keywords = "set delegate self"), Category = "Leap Interface")
-	void SetInterfaceDelegate(UObject* newDelegate);
+	void SetInterfaceDelegate(UObject* NewDelegate);
 
 private:
-	class LeapControllerPrivate* _private;
-	void InterfaceEventTick(float deltaTime);
+	class LeapControllerPrivate* Private;
+	void InterfaceEventTick(float DeltaTime);
 };

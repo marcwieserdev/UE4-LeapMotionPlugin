@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapInteractionBox.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.InteractionBox.html
+
 UCLASS(BlueprintType)
 class ULeapInteractionBox : public UObject
 {
@@ -14,7 +16,7 @@ public:
 	FVector Center;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "DenormalizePoint", CompactNodeTitle = "", Keywords = "normalize point"), Category = "Leap Interaction Box")
-	FVector DenormalizePoint(FVector position) const;
+	FVector DenormalizePoint(FVector Position) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
 	float Depth;
@@ -26,16 +28,15 @@ public:
 	bool IsValid;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "normalizePoint", CompactNodeTitle = "", Keywords = "normalize point"), Category = "Leap Interaction Box")
-	FVector NormalizePoint(FVector position, bool clamp=true) const;
+	FVector NormalizePoint(FVector Position, bool Clamp=true) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Interaction Box")
 	float Width;
 
-	void setInteractionBox(const class Leap::InteractionBox &InteractionBox);
+	void SetInteractionBox(const class Leap::InteractionBox &InteractionBox);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateInteractionBox* _private;
-
+	class PrivateInteractionBox* Private;
 };

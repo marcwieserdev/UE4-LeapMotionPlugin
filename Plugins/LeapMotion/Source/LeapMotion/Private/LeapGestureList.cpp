@@ -5,55 +5,59 @@ class PrivateGestureList
 public:
 	~PrivateGestureList()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (gesture)
-			gesture->CleanupRootReferences();
-		cleanupCalled = true;
+		if (Gesture)
+		{
+			Gesture->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::GestureList gestures;
-	ULeapGesture* gesture = NULL;
+	bool CleanupCalled = false;
+	Leap::GestureList Gestures;
+	ULeapGesture* Gesture = NULL;
 };
 
-ULeapGestureList::ULeapGestureList(const FObjectInitializer &init) : UObject(init), _private(new PrivateGestureList())
+ULeapGestureList::ULeapGestureList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateGestureList())
 {
 }
 
 ULeapGestureList::~ULeapGestureList()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapGestureList::CleanupRootReferences()
 {
-	_private->Cleanup();
+	Private->Cleanup();
 	this->RemoveFromRoot();
 }
 
-ULeapGesture* ULeapGestureList::getIndex(int32 index)
+ULeapGesture* ULeapGestureList::GetIndex(int32 Index)
 {
-	if (_private->gesture == NULL)
+	if (Private->Gesture == NULL)
 	{
-		_private->gesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
-		_private->gesture->SetFlags(RF_RootSet);
+		Private->Gesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
+		Private->Gesture->SetFlags(RF_RootSet);
 	}
-	_private->gesture->setGesture(_private->gestures[index]);
-	return (_private->gesture);
+	Private->Gesture->SetGesture(Private->Gestures[Index]);
+	return (Private->Gesture);
 }
 
-ULeapGesture* ULeapGestureList::operator[](int index)
+ULeapGesture* ULeapGestureList::operator[](int Index)
 {
-	return getIndex(index);
+	return GetIndex(Index);
 }
 
-void ULeapGestureList::setGestureList(const Leap::GestureList &GestureList)
+void ULeapGestureList::SetGestureList(const Leap::GestureList &GestureList)
 {
-	_private->gestures = GestureList;
+	Private->Gestures = GestureList;
 
-	Count = _private->gestures.count();
-	IsEmpty = _private->gestures.isEmpty();
+	Count = Private->Gestures.count();
+	IsEmpty = Private->Gestures.isEmpty();
 }

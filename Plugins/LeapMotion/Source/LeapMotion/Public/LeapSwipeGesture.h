@@ -4,6 +4,8 @@
 #include "LeapGesture.h"
 #include "LeapSwipeGesture.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.SwipeGesture.html
+
 UCLASS(BlueprintType)
 class ULeapSwipeGesture : public ULeapGesture
 {
@@ -29,10 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Swipe Gesture")
 	FVector StartPosition;
 	
-	void setGesture(const class Leap::SwipeGesture &Gesture);
+	void SetGesture(const class Leap::SwipeGesture &Gesture);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateSwipeGesture* _private;
+	class PrivateSwipeGesture* Private;
 };

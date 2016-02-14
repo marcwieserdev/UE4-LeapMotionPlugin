@@ -5,72 +5,78 @@ class PrivateLeapImageList
 public:
 	~PrivateLeapImageList()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (indexImage1)
-			indexImage1->CleanupRootReferences();
-		if (indexImage2)
-			indexImage2->CleanupRootReferences();
-		cleanupCalled = true;
+		if (IndexImage1)
+		{
+			IndexImage1->CleanupRootReferences();
+		}
+		if (IndexImage2)
+		{
+			IndexImage2->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::ImageList leapImages;
-	ULeapImage* indexImage1 = NULL;
-	ULeapImage* indexImage2 = NULL;
+	bool CleanupCalled = false;
+	Leap::ImageList LeapImages;
+	ULeapImage* IndexImage1 = NULL;
+	ULeapImage* IndexImage2 = NULL;
 };
 
-ULeapImageList::ULeapImageList(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapImageList())
+ULeapImageList::ULeapImageList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateLeapImageList())
 {
 }
 
 ULeapImageList::~ULeapImageList()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapImageList::CleanupRootReferences()
 {
-	_private->Cleanup();
+	Private->Cleanup();
 	this->RemoveFromRoot();
 }
 
-ULeapImage* ULeapImageList::getIndex(int32 index)
+ULeapImage* ULeapImageList::GetIndex(int32 Index)
 {
 	//We need to use two separate objects to ensure we have two separate images
-	if (index == 0)
+	if (Index == 0)
 	{
-		if (_private->indexImage1 == NULL)
+		if (Private->IndexImage1 == NULL)
 		{
-			_private->indexImage1 = NewObject<ULeapImage>(this);
-			_private->indexImage1->SetFlags(RF_RootSet);
+			Private->IndexImage1 = NewObject<ULeapImage>(this);
+			Private->IndexImage1->SetFlags(RF_RootSet);
 		}
-		_private->indexImage1->setLeapImage(_private->leapImages[index]);
-		return (_private->indexImage1);
+		Private->IndexImage1->SetLeapImage(Private->LeapImages[Index]);
+		return (Private->IndexImage1);
 	}
 	else
 	{
-		if (_private->indexImage2 == NULL)
+		if (Private->IndexImage2 == NULL)
 		{
-			_private->indexImage2 = NewObject<ULeapImage>(this);
-			_private->indexImage2->SetFlags(RF_RootSet);
+			Private->IndexImage2 = NewObject<ULeapImage>(this);
+			Private->IndexImage2->SetFlags(RF_RootSet);
 		}
-		_private->indexImage2->setLeapImage(_private->leapImages[index]);
-		return (_private->indexImage2);
+		Private->IndexImage2->SetLeapImage(Private->LeapImages[Index]);
+		return (Private->IndexImage2);
 	}
 }
 
-ULeapImage* ULeapImageList::operator[](int index)
+ULeapImage* ULeapImageList::operator[](int Index)
 {
-	return getIndex(index);
+	return GetIndex(Index);
 }
 
-void ULeapImageList::setLeapImageList(const Leap::ImageList &LeapImageList)
+void ULeapImageList::SetLeapImageList(const Leap::ImageList &LeapImageList)
 {
-	_private->leapImages = LeapImageList;
+	Private->LeapImages = LeapImageList;
 
-	Count = _private->leapImages.count();
-	IsEmpty = _private->leapImages.isEmpty();
+	Count = Private->LeapImages.count();
+	IsEmpty = Private->LeapImages.isEmpty();
 }

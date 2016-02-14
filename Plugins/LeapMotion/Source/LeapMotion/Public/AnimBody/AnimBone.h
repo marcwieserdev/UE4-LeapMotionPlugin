@@ -28,17 +28,17 @@ class UAnimBone : public UObject
 	bool Enabled();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
-	void SetEnabled(bool enable = true);
+	void SetEnabled(bool Enable = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
-	void SetFromTransform(const FTransform& in);
+	void SetFromTransform(const FTransform& Transform);
 
 	UFUNCTION(BlueprintPure, Category = "Anim Bone")
 	FTransform GetTransform();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
-	void TranslateBone(FVector shift);
+	void TranslateBone(FVector Shift);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
-	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors = true);
+	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors = true);
 };

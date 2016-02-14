@@ -4,13 +4,13 @@
 #include "AnimFinger.h"
 #include "LeapInterfaceUtility.h"
 
-UAnimFinger::UAnimFinger(const class FObjectInitializer& PCIP)
-	: Super(PCIP)
+UAnimFinger::UAnimFinger(const class FObjectInitializer& Init)
+	: Super(Init)
 {
-	Metacarpal = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Metacarpal"));
-	Proximal = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Proximal"));
-	Intermediate = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Intermediate"));
-	Distal = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Distal"));
+	Metacarpal = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Metacarpal"));
+	Proximal = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Proximal"));
+	Intermediate = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Intermediate"));
+	Distal = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Distal"));
 }
 
 bool UAnimFinger::Enabled()
@@ -18,9 +18,9 @@ bool UAnimFinger::Enabled()
 	return Alpha == 1.f;
 }
 
-void UAnimFinger::SetEnabled(bool enable)
+void UAnimFinger::SetEnabled(bool Enable)
 {
-	if (enable)
+	if (Enable)
 	{
 		Alpha = 1.f;
 	}
@@ -30,47 +30,47 @@ void UAnimFinger::SetEnabled(bool enable)
 	}
 
 	//Forward to every finger
-	Metacarpal->SetEnabled(enable);
-	Proximal->SetEnabled(enable);
-	Intermediate->SetEnabled(enable);
-	Distal->SetEnabled(enable);
+	Metacarpal->SetEnabled(Enable);
+	Proximal->SetEnabled(Enable);
+	Intermediate->SetEnabled(Enable);
+	Distal->SetEnabled(Enable);
 }
 
-void UAnimFinger::TranslateFinger(FVector shift)
+void UAnimFinger::TranslateFinger(FVector Shift)
 {
 	//Shift all bones
-	Metacarpal->TranslateBone(shift);
-	Proximal->TranslateBone(shift);
-	Intermediate->TranslateBone(shift);
-	Distal->TranslateBone(shift);
+	Metacarpal->TranslateBone(Shift);
+	Proximal->TranslateBone(Shift);
+	Intermediate->TranslateBone(Shift);
+	Distal->TranslateBone(Shift);
 }
 
-void UAnimFinger::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors)
+void UAnimFinger::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Change Basis for all bones
-	Metacarpal->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Proximal->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Intermediate->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Distal->ChangeBasis(PreBase, PostBase, adjustVectors);
+	Metacarpal->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Proximal->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Intermediate->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Distal->ChangeBasis(PreBase, PostBase, AdjustVectors);
 }
 
-void UAnimFinger::SetFromLeapFinger(ULeapFinger* finger, LeapHandType handType)
+void UAnimFinger::SetFromLeapFinger(ULeapFinger* Finger, LeapHandType HandType)
 {
 	//Orientation, we need the hand type to reverse matrix basis for left hand bones
-	Metacarpal->Orientation = finger->Metacarpal->GetOrientation(handType);
-	Proximal->Orientation = finger->Proximal->GetOrientation(handType);
-	Intermediate->Orientation = finger->Intermediate->GetOrientation(handType);
-	Distal->Orientation = finger->Distal->GetOrientation(handType);
+	Metacarpal->Orientation = Finger->Metacarpal->GetOrientation(HandType);
+	Proximal->Orientation = Finger->Proximal->GetOrientation(HandType);
+	Intermediate->Orientation = Finger->Intermediate->GetOrientation(HandType);
+	Distal->Orientation = Finger->Distal->GetOrientation(HandType);
 
 	//Position
-	Metacarpal->Position = finger->Metacarpal->Center;
-	Proximal->Position = finger->Proximal->Center;
-	Intermediate->Position = finger->Intermediate->Center;
-	Distal->Position = finger->Distal->Center;
+	Metacarpal->Position = Finger->Metacarpal->Center;
+	Proximal->Position = Finger->Proximal->Center;
+	Intermediate->Position = Finger->Intermediate->Center;
+	Distal->Position = Finger->Distal->Center;
 
 	//Length
-	Metacarpal->Length = finger->Metacarpal->Length;
-	Proximal->Length = finger->Proximal->Length;
-	Intermediate->Length = finger->Intermediate->Length;
-	Distal->Length = finger->Distal->Length;
+	Metacarpal->Length = Finger->Metacarpal->Length;
+	Proximal->Length = Finger->Proximal->Length;
+	Intermediate->Length = Finger->Intermediate->Length;
+	Distal->Length = Finger->Distal->Length;
 }

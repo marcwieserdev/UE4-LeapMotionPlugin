@@ -7,276 +7,303 @@ public:
 
 	~PrivateLeapFrame()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (finger)
-			finger->CleanupRootReferences();
-		if (fingers)
-			fingers->CleanupRootReferences();
-		if (gesture)
-			gesture->CleanupRootReferences();
-		if (gestures)
-			gestures->CleanupRootReferences();
-		if (hand)
-			hand->CleanupRootReferences();
-		if (hands)
-			hands->CleanupRootReferences();
-		if (images)
-			images->CleanupRootReferences();
-		if (interactionBox)
-			interactionBox->CleanupRootReferences();
-		if (pointable)
-			pointable->CleanupRootReferences();
-		if (pointables)
-			pointables->CleanupRootReferences();
-		if (tool)
-			tool->CleanupRootReferences();
-		if (tools)
-			tools->CleanupRootReferences();
-
-		cleanupCalled = true;
+		if (Finger)
+		{
+			Finger->CleanupRootReferences();
+		}
+		if (Fingers)
+		{
+			Fingers->CleanupRootReferences();
+		}
+		if (Gesture)
+		{
+			Gesture->CleanupRootReferences();
+		}
+		if (Gestures)
+		{
+			Gestures->CleanupRootReferences();
+		}
+		if (Hand)
+		{
+			Hand->CleanupRootReferences();
+		}
+		if (Hands)
+		{
+			Hands->CleanupRootReferences();
+		}
+		if (Images)
+		{
+			Images->CleanupRootReferences();
+		}
+		if (InteractionBox)
+		{
+			InteractionBox->CleanupRootReferences();
+		}
+		if (Pointable)
+		{
+			Pointable->CleanupRootReferences();
+		}
+		if (Pointables)
+		{
+			Pointables->CleanupRootReferences();
+		}
+		if (Tool)
+		{
+			Tool->CleanupRootReferences();
+		}
+		if (Tools)
+		{
+			Tools->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::Frame frame;
+	bool CleanupCalled = false;
+	Leap::Frame Frame;
 
-	ULeapFinger* finger = NULL;
-	ULeapFingerList* fingers = NULL;
+	ULeapFinger* Finger = NULL;
+	ULeapFingerList* Fingers = NULL;
 
-	ULeapGesture* gesture = NULL;
-	ULeapGestureList* gestures = NULL;
+	ULeapGesture* Gesture = NULL;
+	ULeapGestureList* Gestures = NULL;
 
-	ULeapHand* hand = NULL;
-	ULeapHandList* hands = NULL;
+	ULeapHand* Hand = NULL;
+	ULeapHandList* Hands = NULL;
 
-	ULeapImageList* images = NULL;
-	ULeapInteractionBox* interactionBox = NULL;
+	ULeapImageList* Images = NULL;
+	ULeapInteractionBox* InteractionBox = NULL;
 
-	ULeapPointable* pointable = NULL;
-	ULeapPointableList* pointables = NULL;
+	ULeapPointable* Pointable = NULL;
+	ULeapPointableList* Pointables = NULL;
 
-	ULeapTool* tool = NULL;
-	ULeapToolList* tools = NULL;
+	ULeapTool* Tool = NULL;
+	ULeapToolList* Tools = NULL;
 };
 
-ULeapFrame::ULeapFrame(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapFrame())
+ULeapFrame::ULeapFrame(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateLeapFrame())
 {
 }
 
 ULeapFrame::~ULeapFrame()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapFrame::CleanupRootReferences()
 {
-	_private->Cleanup();
+	Private->Cleanup();
 	if (this->HasAnyFlags(RF_RootSet))
+	{
 		this->RemoveFromRoot();
+	}
 }
 
-ULeapFinger* ULeapFrame::Finger(int32 id)
+ULeapFinger* ULeapFrame::Finger(int32 Id)
 {
-	if (_private->finger == NULL)
+	if (Private->Finger == NULL)
 	{
-		_private->finger = NewObject<ULeapFinger>(this);
-		_private->finger->SetFlags(RF_RootSet);
+		Private->Finger = NewObject<ULeapFinger>(this);
+		Private->Finger->SetFlags(RF_RootSet);
 	}
-	_private->finger->setFinger(_private->frame.finger(id));
-	return _private->finger;
+	Private->Finger->SetFinger(Private->Frame.finger(Id));
+	return Private->Finger;
 }
 
 ULeapFingerList* ULeapFrame::Fingers()
 {
-	if (_private->fingers == NULL)
+	if (Private->Fingers == NULL)
 	{
-		_private->fingers = NewObject<ULeapFingerList>(this);
-		_private->fingers->SetFlags(RF_RootSet);
+		Private->Fingers = NewObject<ULeapFingerList>(this);
+		Private->Fingers->SetFlags(RF_RootSet);
 	}
-	_private->fingers->setFingerList(_private->frame.fingers());
-	return (_private->fingers);
+	Private->Fingers->SetFingerList(Private->Frame.fingers());
+	return (Private->Fingers);
 }
 
 ULeapGesture* ULeapFrame::Gesture(int32 id)
 {
-	if (_private->gesture == NULL)
+	if (Private->Gesture == NULL)
 	{
-		_private->gesture = NewObject<ULeapGesture>(this);
-		_private->gesture->SetFlags(RF_RootSet);
+		Private->Gesture = NewObject<ULeapGesture>(this);
+		Private->Gesture->SetFlags(RF_RootSet);
 	}
-	_private->gesture->setGesture(_private->frame.gesture(id));
-	return _private->gesture;
+	Private->Gesture->SetGesture(Private->Frame.gesture(id));
+	return Private->Gesture;
 }
 
 ULeapGestureList* ULeapFrame::Gestures()
 {
-	if (_private->gestures == NULL)
+	if (Private->Gestures == NULL)
 	{
-		_private->gestures = NewObject<ULeapGestureList>(this);
-		_private->gestures->SetFlags(RF_RootSet);
+		Private->Gestures = NewObject<ULeapGestureList>(this);
+		Private->Gestures->SetFlags(RF_RootSet);
 	}
-	_private->gestures->setGestureList(_private->frame.gestures());
-	return (_private->gestures);
+	Private->Gestures->SetGestureList(Private->Frame.gestures());
+	return (Private->Gestures);
 }
 
-ULeapGestureList* ULeapFrame::GesturesSinceFrame(class ULeapFrame* frame)
+ULeapGestureList* ULeapFrame::GesturesSinceFrame(class ULeapFrame* Frame)
 {
-	if (_private->gestures == NULL)
+	if (Private->Gestures == NULL)
 	{
-		_private->gestures = NewObject<ULeapGestureList>(this);
-		_private->gestures->SetFlags(RF_RootSet);
+		Private->Gestures = NewObject<ULeapGestureList>(this);
+		Private->Gestures->SetFlags(RF_RootSet);
 	}
-	_private->gestures->setGestureList(_private->frame.gestures(frame->getFrame()));
-	return (_private->gestures);
+	Private->Gestures->SetGestureList(Private->Frame.gestures(Frame->GetFrame()));
+	return (Private->Gestures);
 }
 
-ULeapHand* ULeapFrame::Hand(int32 id)
+ULeapHand* ULeapFrame::Hand(int32 Id)
 {
-	if (_private->hand == NULL)
+	if (Private->Hand == NULL)
 	{
-		_private->hand = NewObject<ULeapHand>(this);
-		_private->hand->SetFlags(RF_RootSet);
+		Private->Hand = NewObject<ULeapHand>(this);
+		Private->Hand->SetFlags(RF_RootSet);
 	}
-	_private->hand->setHand(_private->frame.hand(id));
-	return _private->hand;
+	Private->Hand->SetHand(Private->Frame.hand(Id));
+	return Private->Hand;
 }
 
 ULeapHandList* ULeapFrame::Hands()
 {
-	if (_private->hands == NULL)
+	if (Private->Hands == NULL)
 	{
-		_private->hands = NewObject<ULeapHandList>(this);
-		_private->hands->SetFlags(RF_RootSet);
+		Private->Hands = NewObject<ULeapHandList>(this);
+		Private->Hands->SetFlags(RF_RootSet);
 	}
-	_private->hands->setHandList(_private->frame.hands());
-	return (_private->hands);
+	Private->Hands->SetHandList(Private->Frame.hands());
+	return (Private->Hands);
 }
 
 
 ULeapImageList* ULeapFrame::Images()
 {
-	if (_private->images == NULL)
+	if (Private->Images == NULL)
 	{
-		_private->images = NewObject<ULeapImageList>(this);
-		_private->images->SetFlags(RF_RootSet);
+		Private->Images = NewObject<ULeapImageList>(this);
+		Private->Images->SetFlags(RF_RootSet);
 	}
-	_private->images->setLeapImageList(_private->frame.images());
-	return (_private->images);
+	Private->Images->SetLeapImageList(Private->Frame.images());
+	return (Private->Images);
 }
 
 ULeapInteractionBox* ULeapFrame::InteractionBox()
 {
-	if (_private->interactionBox == NULL)
+	if (Private->InteractionBox == NULL)
 	{
-		_private->interactionBox = NewObject<ULeapInteractionBox>(this);
-		_private->interactionBox->SetFlags(RF_RootSet);
+		Private->InteractionBox = NewObject<ULeapInteractionBox>(this);
+		Private->InteractionBox->SetFlags(RF_RootSet);
 	}
-	_private->interactionBox->setInteractionBox(_private->frame.interactionBox());
-	return (_private->interactionBox);
+	Private->InteractionBox->SetInteractionBox(Private->Frame.interactionBox());
+	return (Private->InteractionBox);
 }
 
-ULeapPointable* ULeapFrame::Pointable(int32 id)
+ULeapPointable* ULeapFrame::Pointable(int32 Id)
 {
-	if (_private->pointable == NULL)
+	if (Private->Pointable == NULL)
 	{
-		_private->pointable = NewObject<ULeapPointable>(this);
-		_private->pointable->SetFlags(RF_RootSet);
+		Private->Pointable = NewObject<ULeapPointable>(this);
+		Private->Pointable->SetFlags(RF_RootSet);
 	}
-	_private->pointable->setPointable(_private->frame.pointable(id));
-	return _private->pointable;
+	Private->Pointable->SetPointable(Private->Frame.pointable(Id));
+	return Private->Pointable;
 }
 
 ULeapPointableList* ULeapFrame::Pointables()
 {
-	if (_private->pointables == NULL)
+	if (Private->Pointables == NULL)
 	{
-		_private->pointables = NewObject<ULeapPointableList>(this);
-		_private->pointables->SetFlags(RF_RootSet);
+		Private->Pointables = NewObject<ULeapPointableList>(this);
+		Private->Pointables->SetFlags(RF_RootSet);
 	}
-	_private->pointables->setPointableList(_private->frame.pointables());
-	return (_private->pointables);
+	Private->Pointables->SetPointableList(Private->Frame.pointables());
+	return (Private->Pointables);
 }
 
-float ULeapFrame::RotationAngle(class ULeapFrame* frame)
+float ULeapFrame::RotationAngle(class ULeapFrame* Frame)
 {
-	return _private->frame.rotationAngle(frame->getFrame());
+	return Private->Frame.rotationAngle(Frame->GetFrame());
 }
 
-float ULeapFrame::RotationAngleAroundAxis(class ULeapFrame* frame, FVector axis)
+float ULeapFrame::RotationAngleAroundAxis(class ULeapFrame* Frame, FVector Axis)
 {
-	return _private->frame.rotationAngle(frame->getFrame(), convertUEToLeap(axis));
+	return Private->Frame.rotationAngle(Frame->GetFrame(), ConvertUEToLeap(Axis));
 }
 
-FVector ULeapFrame::RotationAxis(class ULeapFrame* frame)
+FVector ULeapFrame::RotationAxis(class ULeapFrame* Frame)
 {
-	return convertLeapToUE(_private->frame.rotationAxis(frame->getFrame()));
+	return ConvertLeapToUE(Private->Frame.rotationAxis(Frame->GetFrame()));
 }
 
-float ULeapFrame::RotationProbability(class ULeapFrame* frame)
+float ULeapFrame::RotationProbability(class ULeapFrame* Frame)
 {
-	return _private->frame.rotationProbability(frame->getFrame());
+	return Private->Frame.rotationProbability(Frame->GetFrame());
 }
 
-float ULeapFrame::ScaleFactor(class ULeapFrame* frame)
+float ULeapFrame::ScaleFactor(class ULeapFrame* Frame)
 {
-	return _private->frame.scaleFactor(frame->getFrame());
+	return Private->Frame.scaleFactor(Frame->GetFrame());
 }
 
-float ULeapFrame::ScaleProbability(class ULeapFrame* frame)
+float ULeapFrame::ScaleProbability(class ULeapFrame* Frame)
 {
-	return _private->frame.scaleProbability(frame->getFrame());
+	return Private->Frame.scaleProbability(Frame->GetFrame());
 }
 
-ULeapTool* ULeapFrame::Tool(int32 id)
+ULeapTool* ULeapFrame::Tool(int32 Id)
 {
-	if (_private->tool == NULL)
+	if (Private->Tool == NULL)
 	{
-		_private->tool = NewObject<ULeapTool>(this);
-		_private->tool->SetFlags(RF_RootSet);
+		Private->Tool = NewObject<ULeapTool>(this);
+		Private->Tool->SetFlags(RF_RootSet);
 	}
-	_private->tool->setTool(_private->frame.tool(id));
-	return _private->tool;
+	Private->Tool->SetTool(Private->Frame.tool(Id));
+	return Private->Tool;
 }
 
 ULeapToolList* ULeapFrame::Tools()
 {
-	if (_private->tools == NULL)
+	if (Private->Tools == NULL)
 	{
-		_private->tools = NewObject<ULeapToolList>(this);
-		_private->tools->SetFlags(RF_RootSet);
+		Private->Tools = NewObject<ULeapToolList>(this);
+		Private->Tools->SetFlags(RF_RootSet);
 	}
-	_private->tools->setToolList(_private->frame.tools());
-	return (_private->tools);
+	Private->Tools->SetToolList(Private->Frame.tools());
+	return (Private->Tools);
 }
 
-FVector ULeapFrame::Translation(class ULeapFrame* frame)
+FVector ULeapFrame::Translation(class ULeapFrame* Frame)
 {
-	return convertLeapToUE(_private->frame.translation(frame->getFrame()));
+	return ConvertLeapToUE(Private->Frame.translation(Frame->GetFrame()));
 }
 
-float ULeapFrame::TranslationProbability(class ULeapFrame* frame)
+float ULeapFrame::TranslationProbability(class ULeapFrame* Frame)
 {
-	return _private->frame.translationProbability(frame->getFrame());
+	return Private->Frame.translationProbability(Frame->GetFrame());
 }
 
-const Leap::Frame &ULeapFrame::getFrame() const
+const Leap::Frame &ULeapFrame::GetFrame() const
 {
-	return (_private->frame);
+	return (Private->Frame);
 }
 
-void ULeapFrame::setFrame(Leap::Controller &leap, int history)
+void ULeapFrame::SetFrame(Leap::Controller &Leap, int History)
 {
-	Leap::Frame frame = leap.frame(history);
+	Leap::Frame frame = Leap.frame(History);
 
-	this->setFrame(frame);
+	this->SetFrame(frame);
 }
 
-void ULeapFrame::setFrame(const Leap::Frame &frame)
+void ULeapFrame::SetFrame(const Leap::Frame &Frame)
 {
-	_private->frame = frame;
-	IsValid = _private->frame.isValid();
-	CurrentFPS = _private->frame.currentFramesPerSecond();
+	Private->Frame = Frame;
+	IsValid = Private->Frame.isValid();
+	CurrentFPS = Private->Frame.currentFramesPerSecond();
 }
 

@@ -4,6 +4,7 @@
 #include "LeapGesture.h"
 #include "LeapCircleGesture.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.CircleGesture.html
 
 UCLASS(BlueprintType)
 class ULeapCircleGesture : public ULeapGesture
@@ -27,10 +28,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Circle Gesture")
 	float Radius;
 
-	void setGesture(const class Leap::CircleGesture &Gesture);
+	void SetGesture(const class Leap::CircleGesture &Gesture);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateCircleGesture* _private;
+	class PrivateCircleGesture* Private;
 };

@@ -4,6 +4,8 @@
 #include "LeapPointable.h"
 #include "LeapFinger.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Finger.html
+
 UCLASS(BlueprintType)
 class ULeapFinger : public ULeapPointable
 {
@@ -12,7 +14,7 @@ public:
 	~ULeapFinger();
 
 	UFUNCTION(BlueprintCallable, meta = (Category = "Leap Finger"))
-	class ULeapBone *Bone(enum LeapBoneType type);
+	class ULeapBone *Bone(enum LeapBoneType Type);
 
 	//Convenience Properties
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger")
@@ -30,10 +32,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Finger")
 	TEnumAsByte<LeapFingerType> Type;
 
-	void setFinger(const class Leap::Finger &pointable);
+	void SetFinger(const class Leap::Finger &Pointable);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateFinger* _private;
+	class PrivateFinger* Private;
 };

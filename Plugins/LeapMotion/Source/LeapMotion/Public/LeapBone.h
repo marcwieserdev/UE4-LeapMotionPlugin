@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapBone.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Bone.html
+
 UCLASS(BlueprintType)
 class ULeapBone : public UObject
 {
@@ -42,15 +44,15 @@ public:
 	float Width;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "different", CompactNodeTitle = "!=", Keywords = "different operator"), Category = "Leap Bone")
-	bool different(const ULeapBone *other) const;
+	bool Different(const ULeapBone *other) const;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "equal", CompactNodeTitle = "==", Keywords = "equal operator"), Category = "Leap Bone")
-	bool equal(const ULeapBone *other) const;
+	bool Equal(const ULeapBone *other) const;
 
-	void setBone(const class Leap::Bone &bone);
+	void SetBone(const class Leap::Bone &bone);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateBone* _private;
+	class PrivateBone* Private;
 };

@@ -3,17 +3,17 @@
 class PrivateInteractionBox
 {
 public:
-	Leap::InteractionBox interactionBox;
+	Leap::InteractionBox InteractionBox;
 };
 
 
-ULeapInteractionBox::ULeapInteractionBox(const FObjectInitializer &init) : UObject(init), _private(new PrivateInteractionBox())
+ULeapInteractionBox::ULeapInteractionBox(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateInteractionBox())
 {
 }
 
 ULeapInteractionBox::~ULeapInteractionBox()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapInteractionBox::CleanupRootReferences()
@@ -22,24 +22,24 @@ void ULeapInteractionBox::CleanupRootReferences()
 }
 
 
-FVector ULeapInteractionBox::DenormalizePoint(FVector vector) const
+FVector ULeapInteractionBox::DenormalizePoint(FVector Vector) const
 {
-	Leap::Vector leapVect = convertAndScaleUEToLeap(vector);
-	return (convertAndScaleLeapToUE(_private->interactionBox.denormalizePoint(leapVect)));
+	Leap::Vector LeapVector = ConvertAndScaleUEToLeap(Vector);
+	return (ConvertAndScaleLeapToUE(Private->InteractionBox.denormalizePoint(LeapVector)));
 }
 
-FVector ULeapInteractionBox::NormalizePoint(FVector vector, bool clamp) const
+FVector ULeapInteractionBox::NormalizePoint(FVector Vector, bool Clamp) const
 {
-	Leap::Vector leapVect = convertAndScaleUEToLeap(vector);
-	return (convertAndScaleLeapToUE(_private->interactionBox.normalizePoint(leapVect, clamp)));
+	Leap::Vector LeapVector = ConvertAndScaleUEToLeap(Vector);
+	return (ConvertAndScaleLeapToUE(Private->InteractionBox.normalizePoint(LeapVector, Clamp)));
 }
 
-void ULeapInteractionBox::setInteractionBox(const Leap::InteractionBox &InteractionBox)
+void ULeapInteractionBox::SetInteractionBox(const Leap::InteractionBox &InteractionBox)
 {
-	_private->interactionBox = InteractionBox;
-	Center = convertAndScaleLeapToUE(_private->interactionBox.center());
-	Depth = _private->interactionBox.depth();
-	Height = _private->interactionBox.height();
-	IsValid = _private->interactionBox.isValid();
-	Width = _private->interactionBox.width();
+	Private->InteractionBox = InteractionBox;
+	Center = ConvertAndScaleLeapToUE(Private->InteractionBox.center());
+	Depth = Private->InteractionBox.depth();
+	Height = Private->InteractionBox.height();
+	IsValid = Private->InteractionBox.isValid();
+	Width = Private->InteractionBox.width();
 }

@@ -2,8 +2,8 @@
 #include "LeapEventInterface.h"
 
 
-ULeapEventInterface::ULeapEventInterface(const class FObjectInitializer& PCIP)
-	: Super(PCIP)
+ULeapEventInterface::ULeapEventInterface(const class FObjectInitializer& Init)
+	: Super(Init)
 {
 
 }

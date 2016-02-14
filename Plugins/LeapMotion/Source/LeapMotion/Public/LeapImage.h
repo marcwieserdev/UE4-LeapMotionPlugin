@@ -3,6 +3,7 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapImage.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Image.html
 
 UCLASS(BlueprintType)
 class ULeapImage : public UObject
@@ -13,9 +14,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Texture", CompactNodeTitle = "", Keywords = "get texture"), Category = "Leap Image")
 	class UTexture2D* Texture();
-
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "R8Texture", CompactNodeTitle = "", Keywords = "get texture single channel"), Category = "Leap Image")
-	class UTexture2D* R8Texture();
 	
 	//Faster raw distortion (R=U, G=V), requires channel conversion, 32bit float per channel texture will look odd if rendered raw.
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Distortion", CompactNodeTitle = "", Keywords = "distortion"), Category = "Leap Image")
@@ -64,10 +62,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Image")
 	int32 Width;
 
-	void setLeapImage(const class Leap::Image &LeapImage);
+	void SetLeapImage(const class Leap::Image &LeapImage);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateLeapImage* _private;
+	class PrivateLeapImage* Private;
 };

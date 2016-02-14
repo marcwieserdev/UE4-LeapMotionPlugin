@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapHandList.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.HandList.html
+
 UCLASS(BlueprintType)
 class ULeapHandList : public UObject
 {
@@ -28,10 +30,10 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getIndex", CompactNodeTitle = "", Keywords = "get index"), Category = "Leap Hand List")
 	class ULeapHand* getIndex(int32 index);
 
-	void setHandList(const class Leap::HandList &handlist);
+	void SetHandList(const class Leap::HandList &Handlist);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateHandList* _private;
+	class PrivateHandList* Private;
 };

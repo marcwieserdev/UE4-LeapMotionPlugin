@@ -8,56 +8,60 @@ class PrivateCircleGesture
 public:
 	~PrivateCircleGesture()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (pointable)
-			pointable->CleanupRootReferences();
-		cleanupCalled = true;
+		if (Pointable)
+		{
+			Pointable->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::CircleGesture gesture;
-	ULeapPointable* pointable = NULL;
+	bool CleanupCalled = false;
+	Leap::CircleGesture Gesture;
+	ULeapPointable* Pointable = NULL;
 };
 
-ULeapCircleGesture::ULeapCircleGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateCircleGesture)
+ULeapCircleGesture::ULeapCircleGesture(const FObjectInitializer &ObjectInitializer) : ULeapGesture(ObjectInitializer), Private(new PrivateCircleGesture)
 {
 }
 
 ULeapCircleGesture::~ULeapCircleGesture()
 {
-	delete _private;
+	delete Private;
 }
 
 void ULeapCircleGesture::CleanupRootReferences()
 {
 	ULeapGesture::CleanupRootReferences();
-	_private->Cleanup();
+	Private->Cleanup();
 	this->RemoveFromRoot();
 }
 
 ULeapPointable* ULeapCircleGesture::Pointable()
 {
-	if (_private->pointable == NULL)
+	if (Private->Pointable == NULL)
 	{
-		_private->pointable = NewObject<ULeapPointable>(this);
-		_private->pointable->SetFlags(RF_RootSet);
+		Private->Pointable = NewObject<ULeapPointable>(this);
+		Private->Pointable->SetFlags(RF_RootSet);
 	}
-	_private->pointable->setPointable(_private->gesture.pointable());
-	return (_private->pointable);
+	Private->Pointable->SetPointable(Private->Gesture.pointable());
+	return (Private->Pointable);
 }
 
-void ULeapCircleGesture::setGesture(const Leap::CircleGesture &Gesture)
+void ULeapCircleGesture::SetGesture(const Leap::CircleGesture &Gesture)
 {
 	//Super
-	ULeapGesture::setGesture(Gesture);
+	ULeapGesture::SetGesture(Gesture);
 
-	_private->gesture = Gesture;
+	Private->Gesture = Gesture;
 
-	Center = convertAndScaleLeapToUE(_private->gesture.center());
-	Normal = convertLeapToUE(_private->gesture.normal());
-	Progress = _private->gesture.progress();
-	Radius = scaleLeapToUE(_private->gesture.radius());	//scale
+	Center = ConvertAndScaleLeapToUE(Private->Gesture.center());
+	Normal = ConvertLeapToUE(Private->Gesture.normal());
+	Progress = Private->Gesture.progress();
+	Radius = ScaleLeapToUE(Private->Gesture.radius());	//scale
 }

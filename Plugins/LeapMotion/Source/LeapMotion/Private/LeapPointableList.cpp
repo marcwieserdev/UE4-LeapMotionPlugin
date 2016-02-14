@@ -7,141 +7,155 @@ class PrivatePointableList
 public:
 	~PrivatePointableList()
 	{
-		if (!cleanupCalled)
+		if (!CleanupCalled)
+		{
 			Cleanup();
+		}
 	}
 	void Cleanup()
 	{
-		if (frontmost)
-			frontmost->CleanupRootReferences();
-		if (leftmost)
-			leftmost->CleanupRootReferences();
-		if (rightmost)
-			rightmost->CleanupRootReferences();
-		if (pointableById)
-			pointableById->CleanupRootReferences();
-		if (appendedList)
-			appendedList->CleanupRootReferences();
-		if (extendedList)
-			extendedList->CleanupRootReferences();
-		cleanupCalled = true;
+		if (Frontmost)
+		{
+			Frontmost->CleanupRootReferences();
+		}
+		if (Leftmost)
+		{
+			Leftmost->CleanupRootReferences();
+		}
+		if (Rightmost)
+		{
+			Rightmost->CleanupRootReferences();
+		}
+		if (PointableById)
+		{
+			PointableById->CleanupRootReferences();
+		}
+		if (AppendedList)
+		{
+			AppendedList->CleanupRootReferences();
+		}
+		if (ExtendedList)
+		{
+			ExtendedList->CleanupRootReferences();
+		}
+		CleanupCalled = true;
 	}
-	bool cleanupCalled = false;
-	Leap::PointableList pointables;
-	ULeapPointable* leftmost = NULL;
-	ULeapPointable* rightmost = NULL;
-	ULeapPointable* frontmost = NULL;
-	ULeapPointable* pointableById = NULL;
-	ULeapPointableList* appendedList = NULL;
-	ULeapPointableList* extendedList = NULL;
+	bool CleanupCalled = false;
+	Leap::PointableList Pointables;
+	ULeapPointable* Leftmost = NULL;
+	ULeapPointable* Rightmost = NULL;
+	ULeapPointable* Frontmost = NULL;
+	ULeapPointable* PointableById = NULL;
+	ULeapPointableList* AppendedList = NULL;
+	ULeapPointableList* ExtendedList = NULL;
 };
 
-ULeapPointableList::ULeapPointableList(const FObjectInitializer &init) : UObject(init), _private(new PrivatePointableList())
+ULeapPointableList::ULeapPointableList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivatePointableList())
 {
 }
 
 ULeapPointableList::~ULeapPointableList()
 {
-	delete _private;
+	delete Private;
 }
 void ULeapPointableList::CleanupRootReferences()
 {
-	_private->Cleanup();
+	Private->Cleanup();
 	this->RemoveFromRoot();
 }
 
-ULeapPointableList *ULeapPointableList::append(ULeapPointableList *list)
+ULeapPointableList *ULeapPointableList::Append(ULeapPointableList *List)
 {
-	if (_private->appendedList == NULL)
+	if (Private->AppendedList == NULL)
 	{
-		_private->appendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
-		_private->appendedList->SetFlags(RF_RootSet);
+		Private->AppendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
+		Private->AppendedList->SetFlags(RF_RootSet);
 	}
-	_private->appendedList->setPointableList(_private->pointables.append(list->_private->pointables));
-	return (_private->appendedList);
+	Private->AppendedList->SetPointableList(Private->Pointables.append(List->Private->Pointables));
+	return (Private->AppendedList);
 }
 
-ULeapPointableList *ULeapPointableList::appendTools(ULeapToolList *list)
+ULeapPointableList *ULeapPointableList::AppendTools(ULeapToolList *List)
 {
-	if (_private->appendedList == NULL)
+	if (Private->AppendedList == NULL)
 	{
-		_private->appendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
-		_private->appendedList->SetFlags(RF_RootSet);
+		Private->AppendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
+		Private->AppendedList->SetFlags(RF_RootSet);
 	}
-	_private->appendedList->setPointableList(this->_private->pointables.append(*list->toolList()));
-	return (_private->appendedList);
+	Private->AppendedList->SetPointableList(this->Private->Pointables.append(*List->ToolList()));
+	return (Private->AppendedList);
 }
 
-ULeapPointableList *ULeapPointableList::appendFingers(ULeapFingerList *list)
+ULeapPointableList *ULeapPointableList::AppendFingers(ULeapFingerList *List)
 {
-	if (_private->appendedList == NULL)
+	if (Private->AppendedList == NULL)
 	{
-		_private->appendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
-		_private->appendedList->SetFlags(RF_RootSet);
+		Private->AppendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
+		Private->AppendedList->SetFlags(RF_RootSet);
 	}
-	_private->appendedList->setPointableList(this->_private->pointables.append(*list->fingerList()));
-	return (_private->appendedList);
+	Private->AppendedList->SetPointableList(this->Private->Pointables.append(*List->FingerList()));
+	return (Private->AppendedList);
 }
 
-ULeapPointableList *ULeapPointableList::extended()
+ULeapPointableList *ULeapPointableList::Extended()
 {
-	if (_private->extendedList == NULL)
+	if (Private->ExtendedList == NULL)
 	{
-		_private->extendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
-		_private->extendedList->SetFlags(RF_RootSet);
+		Private->ExtendedList = NewObject<ULeapPointableList>(this, ULeapPointableList::StaticClass());
+		Private->ExtendedList->SetFlags(RF_RootSet);
 	}
-	_private->extendedList->setPointableList(_private->pointables.extended());
-	return (_private->extendedList);
+	Private->ExtendedList->SetPointableList(Private->Pointables.extended());
+	return (Private->ExtendedList);
 }
 
-ULeapPointable *ULeapPointableList::leftmost()
+ULeapPointable *ULeapPointableList::Leftmost()
 {
-	if (_private->leftmost == NULL)
+	if (Private->Leftmost == NULL)
 	{
-		_private->leftmost = NewObject<ULeapPointable>(this);
-		_private->leftmost->SetFlags(RF_RootSet);
+		Private->Leftmost = NewObject<ULeapPointable>(this);
+		Private->Leftmost->SetFlags(RF_RootSet);
 	}
-	_private->leftmost->setPointable(_private->pointables.leftmost());
-	return (_private->leftmost);
+	Private->Leftmost->SetPointable(Private->Pointables.leftmost());
+	return (Private->Leftmost);
 }
 
-ULeapPointable *ULeapPointableList::rightmost()
+ULeapPointable *ULeapPointableList::Rightmost()
 {
-	if (_private->rightmost == NULL)
+	if (Private->Rightmost == NULL)
 	{
-		_private->rightmost = NewObject<ULeapPointable>(this);
-		_private->rightmost->SetFlags(RF_RootSet);
+		Private->Rightmost = NewObject<ULeapPointable>(this);
+		Private->Rightmost->SetFlags(RF_RootSet);
 	}
-	_private->rightmost->setPointable(_private->pointables.rightmost());
-	return (_private->rightmost);
+	Private->Rightmost->SetPointable(Private->Pointables.rightmost());
+	return (Private->Rightmost);
 }
 
 
-ULeapPointable *ULeapPointableList::frontmost()
+ULeapPointable *ULeapPointableList::Frontmost()
 {
-	if (_private->frontmost == NULL)
+	if (Private->Frontmost == NULL)
 	{
-		_private->frontmost = NewObject<ULeapPointable>(this);
-		_private->frontmost->SetFlags(RF_RootSet);
+		Private->Frontmost = NewObject<ULeapPointable>(this);
+		Private->Frontmost->SetFlags(RF_RootSet);
 	}
-	_private->frontmost->setPointable(_private->pointables.frontmost());
-	return (_private->frontmost);
+	Private->Frontmost->SetPointable(Private->Pointables.frontmost());
+	return (Private->Frontmost);
 }
 
-ULeapPointable *ULeapPointableList::getPointableById(int32 id)
+ULeapPointable *ULeapPointableList::GetPointableById(int32 Id)
 {
-	if (_private->pointableById == NULL)
+	if (Private->PointableById == NULL)
 	{
-		_private->pointableById = NewObject<ULeapPointable>(this);
-		_private->pointableById->SetFlags(RF_RootSet);
+		Private->PointableById = NewObject<ULeapPointable>(this);
+		Private->PointableById->SetFlags(RF_RootSet);
 	}
-	_private->pointableById->setPointable(_private->pointables[id]);
-	return (_private->pointableById);
+	Private->PointableById->SetPointable(Private->Pointables[Id]);
+	return (Private->PointableById);
 }
 
-void ULeapPointableList::setPointableList(const Leap::PointableList &pointables)
+void ULeapPointableList::SetPointableList(const Leap::PointableList &Pointables)
 {
-	_private->pointables = pointables;
-	Count = _private->pointables.count();
-	IsEmpty = _private->pointables.isEmpty();
+	Private->Pointables = Pointables;
+	Count = Private->Pointables.count();
+	IsEmpty = Private->Pointables.isEmpty();
 }

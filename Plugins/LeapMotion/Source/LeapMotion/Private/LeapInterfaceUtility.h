@@ -11,28 +11,28 @@ FRotator CombineRotators(FRotator A, FRotator B);
 
 //Conversion
 //To ue
-FVector convertLeapToUE(Leap::Vector leapVector);
-FVector convertAndScaleLeapToUE(Leap::Vector leapVector);
-FMatrix convertLeapBasisMatrix(Leap::Matrix leapMatrix);
-FMatrix swapLeftHandRuleForRight(const FMatrix &ueMatrix);		//needed for all left hand basis which will be incorrect in ue format
+FVector ConvertLeapToUE(Leap::Vector LeapVector);
+FVector ConvertAndScaleLeapToUE(Leap::Vector LeapVector);
+FMatrix ConvertLeapBasisMatrix(Leap::Matrix LeapMatrix);
+FMatrix SwapLeftHandRuleForRight(const FMatrix &UEMatrix);		//needed for all left hand basis which will be incorrect in ue format
 
 //To leap
-Leap::Vector convertUEToLeap(FVector ueVector);
-Leap::Vector convertAndScaleUEToLeap(FVector ueVector);
+Leap::Vector ConvertUEToLeap(FVector UEVector);
+Leap::Vector ConvertAndScaleUEToLeap(FVector UEVector);
 
-float scaleLeapToUE(float leapFloat);
-float scaleUEToLeap(float ueFloat);
+float ScaleLeapToUE(float LeapFloat);
+float ScaleUEToLeap(float UEFloat);
 
-void LeapSetMountToHMDOffset(FVector offset);
+void LeapSetMountToHMDOffset(FVector Offset);
 
 //HMD automation
-void LeapSetShouldAdjustForFacing(bool shouldRotate);
-void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset);
-void LeapSetShouldAdjustForMountOffset(bool shouldAddOffset);
+void LeapSetShouldAdjustForFacing(bool ShouldRotate);
+void LeapSetShouldAdjustForHMD(bool ShouldRotate, bool ShouldOffset);
+void LeapSetShouldAdjustForMountOffset(bool ShouldAddOffset);
 
 //Convenience gesture determination
-enum LeapBasicDirection basicDirection(FVector direction);
+enum LeapBasicDirection LeapBasicVectorDirection(FVector Direction);
 
 //Pointer debugging
-void UtilityDebugAddress(void* pointer);
-bool UtilityPointerIsValid(void* pointer);
+void UtilityDebugAddress(void* Pointer);
+bool UtilityPointerIsValid(void* Pointer);

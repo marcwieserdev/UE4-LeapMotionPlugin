@@ -4,6 +4,8 @@
 #include "LeapGesture.h"
 #include "LeapKeyTapGesture.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.KeyTapGesture.html
+
 UCLASS(BlueprintType)
 class ULeapKeyTapGesture : public ULeapGesture
 {
@@ -26,10 +28,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Key Tap Gesture")
 	float Progress;
 
-	void setGesture(const class Leap::KeyTapGesture &Gesture);
+	void SetGesture(const class Leap::KeyTapGesture &Gesture);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateKeyTapGesture* _private;
+	class PrivateKeyTapGesture* Private;
 };

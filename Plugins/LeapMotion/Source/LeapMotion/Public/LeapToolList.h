@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapToolList.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.ToolList.html
+
 UCLASS(BlueprintType)
 class ULeapToolList : public UObject
 {
@@ -11,31 +13,31 @@ public:
 	~ULeapToolList();
 	
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Tool List")
-	ULeapToolList *append(const ULeapToolList *list);
+	ULeapToolList *Append(const ULeapToolList *List);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "count", CompactNodeTitle = "", Keywords = "count"), Category = "Leap Tool List")
 	int32 Count() const;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost"), Category = "Leap Tool List")
-	class ULeapTool *frontmost();
+	class ULeapTool *Frontmost();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "isEmpty", CompactNodeTitle = "", Keywords = "is empty"), Category = "Leap Tool List")
-	bool isEmpty() const;
+	bool IsEmpty() const;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost"), Category = "Leap Tool List")
-	class ULeapTool *leftmost();
+	class ULeapTool *Leftmost();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = "Leap Tool List")
-	class ULeapPointable *getPointableById(int32 id);
+	class ULeapPointable *GetPointableById(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Tool List")
-	class ULeapTool *rightmost();
+	class ULeapTool *Rightmost();
 
-	void setToolList(const class Leap::ToolList &tools);
-	const Leap::ToolList* toolList();
+	void SetToolList(const class Leap::ToolList &Tools);
+	const Leap::ToolList* ToolList();
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateToolList* _private;
+	class PrivateToolList* Private;
 };

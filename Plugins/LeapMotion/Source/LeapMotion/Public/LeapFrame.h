@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapFrame.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Frame.html
+
 UCLASS(BlueprintType)
 class ULeapFrame : public UObject
 {
@@ -16,13 +18,13 @@ public:
 	bool IsValid;
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	class ULeapFinger* Finger(int32 id);
+	class ULeapFinger* Finger(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "fingers", CompactNodeTitle = "", Keywords = "get fingers"), Category = "Leap Frame")
 	class ULeapFingerList* Fingers();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	class ULeapGesture* Gesture(int32 id);
+	class ULeapGesture* Gesture(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "gestures", CompactNodeTitle = "", Keywords = "get gestures"), Category = "Leap Frame")
 	class ULeapGestureList* Gestures();
@@ -31,7 +33,7 @@ public:
 	class ULeapGestureList* GesturesSinceFrame(class ULeapFrame* frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	class ULeapHand* Hand(int32 id);
+	class ULeapHand* Hand(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getHands", CompactNodeTitle = "", Keywords = "get hands"), Category = "Leap Frame")
 	class ULeapHandList* Hands();
@@ -43,47 +45,47 @@ public:
 	class ULeapInteractionBox* InteractionBox();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	class ULeapPointable* Pointable(int32 id);
+	class ULeapPointable* Pointable(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
 	class ULeapPointableList* Pointables();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float RotationAngle(class ULeapFrame* frame);
+	float RotationAngle(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float RotationAngleAroundAxis(class ULeapFrame* frame, FVector axis);
+	float RotationAngleAroundAxis(class ULeapFrame* Frame, FVector Axis);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	FVector RotationAxis(class ULeapFrame* frame);
+	FVector RotationAxis(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float RotationProbability(class ULeapFrame* frame);
+	float RotationProbability(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float ScaleFactor(class ULeapFrame* frame);
+	float ScaleFactor(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float ScaleProbability(class ULeapFrame* frame);
+	float ScaleProbability(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	class ULeapTool* Tool(int32 id);
+	class ULeapTool* Tool(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "pointables", CompactNodeTitle = "", Keywords = "get pointables"), Category = "Leap Frame")
 	class ULeapToolList* Tools();
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	FVector Translation(class ULeapFrame* frame);
+	FVector Translation(class ULeapFrame* Frame);
 
 	UFUNCTION(BlueprintCallable, Category = "Leap Frame")
-	float TranslationProbability(class ULeapFrame* frame);
+	float TranslationProbability(class ULeapFrame* Frame);
 
-	void setFrame(Leap::Controller &leap, int history = 0);
-	void setFrame(const class Leap::Frame &frame);
-	const Leap::Frame &getFrame() const;
+	void SetFrame(Leap::Controller &Leap, int32 History = 0);
+	void SetFrame(const class Leap::Frame &Frame);
+	const Leap::Frame &GetFrame() const;
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateLeapFrame* _private;
+	class PrivateLeapFrame* Private;
 };

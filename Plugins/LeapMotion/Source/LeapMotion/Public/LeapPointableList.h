@@ -3,6 +3,8 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapPointableList.generated.h"
 
+//API Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.PointableList.html
+
 UCLASS(BlueprintType)
 class ULeapPointableList : public UObject
 {
@@ -11,39 +13,39 @@ public:
 	~ULeapPointableList();
 	
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "append", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
-	ULeapPointableList* append(class ULeapPointableList *list);
+	ULeapPointableList* Append(class ULeapPointableList *List);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "appendFingers", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
-	ULeapPointableList* appendFingers(class ULeapFingerList *list);
+	ULeapPointableList* AppendFingers(class ULeapFingerList *List);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "appendTools", CompactNodeTitle = "", Keywords = "append"), Category = "Leap Pointable List")
-	ULeapPointableList* appendTools(class ULeapToolList *list);
+	ULeapPointableList* AppendTools(class ULeapToolList *List);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable List")
 	int32 Count;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "extended", CompactNodeTitle = "", Keywords = "extended"), Category = "Leap Pointable List")
-	ULeapPointableList *extended();
+	ULeapPointableList *Extended();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "frontmost", CompactNodeTitle = "", Keywords = "frontmost"), Category = "Leap Pointable List")
-	class ULeapPointable *frontmost();
+	class ULeapPointable *Frontmost();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Pointable List")
 	bool IsEmpty;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "leftmost", CompactNodeTitle = "", Keywords = "leftmost"), Category = "Leap Pointable List")
-	class ULeapPointable *leftmost();
+	class ULeapPointable *Leftmost();
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getPointableById", CompactNodeTitle = "[]", Keywords = "get pointable by id"), Category = "Leap Pointable List")
-	class ULeapPointable *getPointableById(int32 id);
+	class ULeapPointable *GetPointableById(int32 Id);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "rightmost", CompactNodeTitle = "", Keywords = "rightmost"), Category = "Leap Pointable List")
-	class ULeapPointable *rightmost();
+	class ULeapPointable *Rightmost();
 
-	void setPointableList(const class Leap::PointableList &pointables);
+	void SetPointableList(const class Leap::PointableList &Pointables);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivatePointableList* _private;
+	class PrivatePointableList* Private;
 };

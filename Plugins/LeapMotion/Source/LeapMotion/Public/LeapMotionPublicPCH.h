@@ -17,7 +17,6 @@
 #include "LeapSwipeGesture.h"
 #include "LeapPointable.h"
 #include "LeapPointableList.h"
-//#include "LeapTool.h"
 #include "LeapToolList.h"
 #include "LeapImage.h"
 #include "LeapImageList.h"

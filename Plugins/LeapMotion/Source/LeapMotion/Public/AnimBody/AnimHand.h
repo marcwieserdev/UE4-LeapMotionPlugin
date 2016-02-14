@@ -46,16 +46,16 @@ class UAnimHand : public UObject
 	bool Enabled();
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
-	void SetEnabled(bool enable = true);
+	void SetEnabled(bool Enable = true);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
-	void TranslateHand(FVector shift);
+	void TranslateHand(FVector Shift);
 
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
-	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors = true);
+	void ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors = true);
 
 
 	//These will turn into interface events for the general case later on
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
-	void SetFromLeapHand(class ULeapHand* leapHand);
+	void SetFromLeapHand(class ULeapHand* LeapHand);
 };

@@ -4,6 +4,7 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapHand.generated.h"
 
+//Api Reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Hand.html
 
 UCLASS(BlueprintType)
 class ULeapHand : public UObject
@@ -65,25 +66,25 @@ public:
 	float PinchStrength;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAngle"), Category = "Leap Hand")
-	float RotationAngle(class ULeapFrame *otherFrame);
+	float RotationAngle(class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAngleWithAxis"), Category = "Leap Hand")
-	float RotationAngleWithAxis(class ULeapFrame *otherFrame, const FVector &axis);
+	float RotationAngleWithAxis(class ULeapFrame *OtherFrame, const FVector &Axis);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationMatrix"), Category = "Leap Hand")
-	FMatrix RotationMatrix(const class ULeapFrame *otherFrame);
+	FMatrix RotationMatrix(const class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationAxis"), Category = "Leap Hand")
-	FVector RotationAxis(const class ULeapFrame *otherFrame);
+	FVector RotationAxis(const class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RotationProbability"), Category = "Leap Hand")
-	float RotationProbability(const class ULeapFrame *otherFrame);
+	float RotationProbability(const class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ScaleFactor"), Category = "Leap Hand")
-	float ScaleFactor(const class ULeapFrame *otherFrame);
+	float ScaleFactor(const class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ScaleProbability"), Category = "Leap Hand")
-	float ScaleProbability(const class ULeapFrame *otherFrame);
+	float ScaleProbability(const class ULeapFrame *OtherFrame);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	FVector SphereCenter;
@@ -98,10 +99,10 @@ public:
 	float TimeVisible;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Translation"), Category = "Leap Hand")
-	FVector Translation(const class ULeapFrame *otherFrame);
+	FVector Translation(const class ULeapFrame *OtherFrame);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "TranslationProbability"), Category = "Leap Hand")
-	float TranslationProbability(const class ULeapFrame *otherFrame);
+	float TranslationProbability(const class ULeapFrame *OtherFrame);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Hand")
 	int32 Id;
@@ -111,10 +112,10 @@ public:
 
 	bool operator==(const ULeapHand &) const;
 
-	void setHand(const class Leap::Hand &hand);
+	void SetHand(const class Leap::Hand &Hand);
 
 	virtual void CleanupRootReferences();
 
 private:
-	class PrivateHand* _private;
+	class PrivateHand* Private;
 };
