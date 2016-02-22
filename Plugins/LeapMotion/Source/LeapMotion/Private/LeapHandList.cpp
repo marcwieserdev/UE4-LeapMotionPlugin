@@ -12,7 +12,7 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Frontmost)
+		/*if (Frontmost)
 		{
 			Frontmost->CleanupRootReferences();
 		}
@@ -28,7 +28,7 @@ public:
 		{
 			IndexHand->CleanupRootReferences();
 		}
-		CleanupCalled = true;
+		CleanupCalled = true;*/
 	}
 	bool CleanupCalled = false;
 	Leap::HandList Hands;
@@ -49,8 +49,8 @@ ULeapHandList::~ULeapHandList()
 
 void ULeapHandList::CleanupRootReferences()
 {
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapHand* ULeapHandList::Frontmost()
@@ -58,7 +58,7 @@ ULeapHand* ULeapHandList::Frontmost()
 	if (Private->Frontmost == NULL)
 	{
 		Private->Frontmost = NewObject<ULeapHand>(this);
-		Private->Frontmost->SetFlags(RF_RootSet);
+		Private->Frontmost->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Frontmost->SetHand(Private->Hands.frontmost());
 	return (Private->Frontmost);
@@ -69,7 +69,7 @@ ULeapHand* ULeapHandList::Leftmost()
 	if (Private->Leftmost == NULL)
 	{
 		Private->Leftmost = NewObject<ULeapHand>(this);
-		Private->Leftmost->SetFlags(RF_RootSet);
+		Private->Leftmost->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Leftmost->SetHand(Private->Hands.leftmost());
 	return (Private->Leftmost);
@@ -80,7 +80,7 @@ ULeapHand* ULeapHandList::Rightmost()
 	if (Private->Rightmost == NULL)
 	{
 		Private->Rightmost = NewObject<ULeapHand>(this);
-		Private->Rightmost->SetFlags(RF_RootSet);
+		Private->Rightmost->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Rightmost->SetHand(Private->Hands.rightmost());
 	return (Private->Rightmost);
@@ -91,7 +91,7 @@ ULeapHand* ULeapHandList::getIndex(int32 index)
 	if (Private->IndexHand == NULL)
 	{
 		Private->IndexHand = NewObject<ULeapHand>(this);
-		Private->IndexHand->SetFlags(RF_RootSet);
+		Private->IndexHand->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->IndexHand->SetHand(Private->Hands[index]);
 	return (Private->IndexHand);

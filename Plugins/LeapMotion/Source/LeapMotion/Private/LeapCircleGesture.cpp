@@ -15,11 +15,11 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Pointable)
+		/*if (Pointable)
 		{
 			Pointable->CleanupRootReferences();
 		}
-		CleanupCalled = true;
+		CleanupCalled = true;*/
 	}
 	bool CleanupCalled = false;
 	Leap::CircleGesture Gesture;
@@ -37,9 +37,9 @@ ULeapCircleGesture::~ULeapCircleGesture()
 
 void ULeapCircleGesture::CleanupRootReferences()
 {
-	ULeapGesture::CleanupRootReferences();
+	/*ULeapGesture::CleanupRootReferences();
 	Private->Cleanup();
-	this->RemoveFromRoot();
+	this->RemoveFromRoot();*/
 }
 
 ULeapPointable* ULeapCircleGesture::Pointable()
@@ -47,7 +47,7 @@ ULeapPointable* ULeapCircleGesture::Pointable()
 	if (Private->Pointable == NULL)
 	{
 		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_RootSet);
+		Private->Pointable->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointable->SetPointable(Private->Gesture.pointable());
 	return (Private->Pointable);

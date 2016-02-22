@@ -13,11 +13,11 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Pointable)
+		/*if (Pointable)
 		{
 			Pointable->CleanupRootReferences();
 		}
-		CleanupCalled = true;
+		CleanupCalled = true;*/
 	}
 	bool CleanupCalled = false;
 	Leap::SwipeGesture Gesture;
@@ -34,9 +34,9 @@ ULeapSwipeGesture::~ULeapSwipeGesture()
 }
 void ULeapSwipeGesture::CleanupRootReferences()
 {
-	ULeapGesture::CleanupRootReferences();
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//ULeapGesture::CleanupRootReferences();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapPointable* ULeapSwipeGesture::Pointable()
@@ -44,7 +44,7 @@ ULeapPointable* ULeapSwipeGesture::Pointable()
 	if (Private->Pointable == NULL)
 	{
 		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_RootSet);
+		Private->Pointable->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointable->SetPointable(Private->Gesture.pointable());
 	return (Private->Pointable);

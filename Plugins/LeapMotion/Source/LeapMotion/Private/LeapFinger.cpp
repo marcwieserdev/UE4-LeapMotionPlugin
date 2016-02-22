@@ -44,12 +44,12 @@ ULeapFinger::~ULeapFinger()
 
 void ULeapFinger::CleanupRootReferences()
 {
-    ULeapPointable::CleanupRootReferences();
+    /*ULeapPointable::CleanupRootReferences();
     
-	if (this->HasAnyFlags(RF_RootSet))
+	if (this->HasAnyFlags(RF_ClassDefaultObject))
 	{
 		this->RemoveFromRoot();
-	}
+	}*/
 }
 
 ULeapBone *ULeapFinger::Bone(LeapBoneType Type)

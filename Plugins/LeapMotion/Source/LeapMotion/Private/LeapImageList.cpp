@@ -12,14 +12,14 @@ public:
 	}
 	void Cleanup()
 	{
-		if (IndexImage1)
+		/*if (IndexImage1)
 		{
 			IndexImage1->CleanupRootReferences();
 		}
 		if (IndexImage2)
 		{
 			IndexImage2->CleanupRootReferences();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -39,8 +39,8 @@ ULeapImageList::~ULeapImageList()
 
 void ULeapImageList::CleanupRootReferences()
 {
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapImage* ULeapImageList::GetIndex(int32 Index)
@@ -51,7 +51,7 @@ ULeapImage* ULeapImageList::GetIndex(int32 Index)
 		if (Private->IndexImage1 == NULL)
 		{
 			Private->IndexImage1 = NewObject<ULeapImage>(this);
-			Private->IndexImage1->SetFlags(RF_RootSet);
+			Private->IndexImage1->SetFlags(RF_ClassDefaultObject);
 		}
 		Private->IndexImage1->SetLeapImage(Private->LeapImages[Index]);
 		return (Private->IndexImage1);
@@ -61,7 +61,7 @@ ULeapImage* ULeapImageList::GetIndex(int32 Index)
 		if (Private->IndexImage2 == NULL)
 		{
 			Private->IndexImage2 = NewObject<ULeapImage>(this);
-			Private->IndexImage2->SetFlags(RF_RootSet);
+			Private->IndexImage2->SetFlags(RF_ClassDefaultObject);
 		}
 		Private->IndexImage2->SetLeapImage(Private->LeapImages[Index]);
 		return (Private->IndexImage2);

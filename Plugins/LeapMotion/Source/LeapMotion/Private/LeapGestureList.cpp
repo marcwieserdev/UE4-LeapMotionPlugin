@@ -12,10 +12,10 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Gesture)
+		/*if (Gesture)
 		{
 			Gesture->CleanupRootReferences();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -34,8 +34,8 @@ ULeapGestureList::~ULeapGestureList()
 
 void ULeapGestureList::CleanupRootReferences()
 {
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapGesture* ULeapGestureList::GetIndex(int32 Index)
@@ -43,7 +43,7 @@ ULeapGesture* ULeapGestureList::GetIndex(int32 Index)
 	if (Private->Gesture == NULL)
 	{
 		Private->Gesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
-		Private->Gesture->SetFlags(RF_RootSet);
+		Private->Gesture->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Gesture->SetGesture(Private->Gestures[Index]);
 	return (Private->Gesture);

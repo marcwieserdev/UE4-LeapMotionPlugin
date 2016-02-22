@@ -14,7 +14,7 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Finger)
+		/*if (Finger)
 		{
 			Finger->CleanupRootReferences();
 		}
@@ -62,7 +62,7 @@ public:
 		{
 			Tools->CleanupRootReferences();
 		}
-		CleanupCalled = true;
+		CleanupCalled = true;*/
 	}
 	bool CleanupCalled = false;
 	Leap::Frame Frame;
@@ -97,11 +97,11 @@ ULeapFrame::~ULeapFrame()
 
 void ULeapFrame::CleanupRootReferences()
 {
-	Private->Cleanup();
-	if (this->HasAnyFlags(RF_RootSet))
+	/*Private->Cleanup();
+	if (this->HasAnyFlags(RF_ClassDefaultObject))
 	{
 		this->RemoveFromRoot();
-	}
+	}*/
 }
 
 ULeapFinger* ULeapFrame::Finger(int32 Id)
@@ -109,7 +109,7 @@ ULeapFinger* ULeapFrame::Finger(int32 Id)
 	if (Private->Finger == NULL)
 	{
 		Private->Finger = NewObject<ULeapFinger>(this);
-		Private->Finger->SetFlags(RF_RootSet);
+		Private->Finger->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Finger->SetFinger(Private->Frame.finger(Id));
 	return Private->Finger;
@@ -120,7 +120,7 @@ ULeapFingerList* ULeapFrame::Fingers()
 	if (Private->Fingers == NULL)
 	{
 		Private->Fingers = NewObject<ULeapFingerList>(this);
-		Private->Fingers->SetFlags(RF_RootSet);
+		Private->Fingers->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Fingers->SetFingerList(Private->Frame.fingers());
 	return (Private->Fingers);
@@ -131,7 +131,7 @@ ULeapGesture* ULeapFrame::Gesture(int32 id)
 	if (Private->Gesture == NULL)
 	{
 		Private->Gesture = NewObject<ULeapGesture>(this);
-		Private->Gesture->SetFlags(RF_RootSet);
+		Private->Gesture->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Gesture->SetGesture(Private->Frame.gesture(id));
 	return Private->Gesture;
@@ -142,7 +142,7 @@ ULeapGestureList* ULeapFrame::Gestures()
 	if (Private->Gestures == NULL)
 	{
 		Private->Gestures = NewObject<ULeapGestureList>(this);
-		Private->Gestures->SetFlags(RF_RootSet);
+		Private->Gestures->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Gestures->SetGestureList(Private->Frame.gestures());
 	return (Private->Gestures);
@@ -153,7 +153,7 @@ ULeapGestureList* ULeapFrame::GesturesSinceFrame(class ULeapFrame* Frame)
 	if (Private->Gestures == NULL)
 	{
 		Private->Gestures = NewObject<ULeapGestureList>(this);
-		Private->Gestures->SetFlags(RF_RootSet);
+		Private->Gestures->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Gestures->SetGestureList(Private->Frame.gestures(Frame->GetFrame()));
 	return (Private->Gestures);
@@ -164,7 +164,7 @@ ULeapHand* ULeapFrame::Hand(int32 Id)
 	if (Private->Hand == NULL)
 	{
 		Private->Hand = NewObject<ULeapHand>(this);
-		Private->Hand->SetFlags(RF_RootSet);
+		Private->Hand->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Hand->SetHand(Private->Frame.hand(Id));
 	return Private->Hand;
@@ -175,7 +175,7 @@ ULeapHandList* ULeapFrame::Hands()
 	if (Private->Hands == NULL)
 	{
 		Private->Hands = NewObject<ULeapHandList>(this);
-		Private->Hands->SetFlags(RF_RootSet);
+		Private->Hands->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Hands->SetHandList(Private->Frame.hands());
 	return (Private->Hands);
@@ -187,7 +187,7 @@ ULeapImageList* ULeapFrame::Images()
 	if (Private->Images == NULL)
 	{
 		Private->Images = NewObject<ULeapImageList>(this);
-		Private->Images->SetFlags(RF_RootSet);
+		Private->Images->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Images->SetLeapImageList(Private->Frame.images());
 	return (Private->Images);
@@ -198,7 +198,7 @@ ULeapInteractionBox* ULeapFrame::InteractionBox()
 	if (Private->InteractionBox == NULL)
 	{
 		Private->InteractionBox = NewObject<ULeapInteractionBox>(this);
-		Private->InteractionBox->SetFlags(RF_RootSet);
+		Private->InteractionBox->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->InteractionBox->SetInteractionBox(Private->Frame.interactionBox());
 	return (Private->InteractionBox);
@@ -209,7 +209,7 @@ ULeapPointable* ULeapFrame::Pointable(int32 Id)
 	if (Private->Pointable == NULL)
 	{
 		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_RootSet);
+		Private->Pointable->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointable->SetPointable(Private->Frame.pointable(Id));
 	return Private->Pointable;
@@ -220,7 +220,7 @@ ULeapPointableList* ULeapFrame::Pointables()
 	if (Private->Pointables == NULL)
 	{
 		Private->Pointables = NewObject<ULeapPointableList>(this);
-		Private->Pointables->SetFlags(RF_RootSet);
+		Private->Pointables->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointables->SetPointableList(Private->Frame.pointables());
 	return (Private->Pointables);
@@ -261,7 +261,7 @@ ULeapTool* ULeapFrame::Tool(int32 Id)
 	if (Private->Tool == NULL)
 	{
 		Private->Tool = NewObject<ULeapTool>(this);
-		Private->Tool->SetFlags(RF_RootSet);
+		Private->Tool->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Tool->SetTool(Private->Frame.tool(Id));
 	return Private->Tool;
@@ -272,7 +272,7 @@ ULeapToolList* ULeapFrame::Tools()
 	if (Private->Tools == NULL)
 	{
 		Private->Tools = NewObject<ULeapToolList>(this);
-		Private->Tools->SetFlags(RF_RootSet);
+		Private->Tools->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Tools->SetToolList(Private->Frame.tools());
 	return (Private->Tools);

@@ -13,14 +13,14 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Frame)
+		/*if (Frame)
 		{
 			Frame->CleanupRootReferences();
 		}
 		if (Hand)
 		{
 			Hand->CleanupRootReferences();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -39,12 +39,12 @@ ULeapPointable::~ULeapPointable()
 }
 void ULeapPointable::CleanupRootReferences()
 {
-	Private->Cleanup();
+	/*Private->Cleanup();
     
-	if (this->HasAnyFlags(RF_RootSet))
+	if (this->HasAnyFlags(RF_ClassDefaultObject))
 	{
 		this->RemoveFromRoot();
-	}
+	}*/
 }
 
 ULeapFrame *ULeapPointable::Frame()
@@ -52,7 +52,7 @@ ULeapFrame *ULeapPointable::Frame()
 	if (!Private->Frame)
 	{
 		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_RootSet);
+		Private->Frame->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Frame->SetFrame(Private->Pointable.frame());
 	return (Private->Frame);
@@ -63,7 +63,7 @@ ULeapHand *ULeapPointable::Hand()
 	if (!Private->Hand)
 	{
 		Private->Hand = NewObject<ULeapHand>(this, ULeapHand::StaticClass());
-		Private->Hand->SetFlags(RF_RootSet);
+		Private->Hand->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Hand->SetHand(Private->Pointable.hand());
 	return (Private->Hand);

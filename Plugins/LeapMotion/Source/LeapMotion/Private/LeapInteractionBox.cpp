@@ -18,7 +18,7 @@ ULeapInteractionBox::~ULeapInteractionBox()
 
 void ULeapInteractionBox::CleanupRootReferences()
 {
-	this->RemoveFromRoot();
+	//this->RemoveFromRoot();
 }
 
 

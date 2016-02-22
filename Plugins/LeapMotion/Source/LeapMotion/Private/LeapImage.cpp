@@ -14,14 +14,14 @@ public:
 	void Cleanup()
 	{
 		//Ensures our rooted objects are un-rooted so they can be GC'd
-		if (ImagePointer)
+		/*if (ImagePointer)
 		{
 			ImagePointer->RemoveFromRoot();
 		}
 		if (DistortionPointer)
 		{
 			DistortionPointer->RemoveFromRoot();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -66,8 +66,8 @@ ULeapImage::~ULeapImage()
 
 void ULeapImage::CleanupRootReferences()
 {
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 
@@ -112,7 +112,7 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* Pointer, int32 PWidt
 		{
 			Pointer->SRGB = 0;
 		}
-		Pointer->SetFlags(RF_RootSet);	//to support more than one leap component, the pointer shouldn't be reclaimed by GC
+		Pointer->SetFlags(RF_ClassDefaultObject);	//to support more than one leap component, the pointer shouldn't be reclaimed by GC
 	}
 
 	//If the size changed, recreate the image (NB: GC may release the platform data in which case we need to recreate it (since 4.7)

@@ -12,7 +12,7 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Frame)
+		/*if (Frame)
 		{
 			Frame->CleanupRootReferences();
 		}
@@ -23,7 +23,7 @@ public:
 		if (Pointables)
 		{
 			Pointables->CleanupRootReferences();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -44,7 +44,7 @@ ULeapGesture::~ULeapGesture()
 
 void ULeapGesture::CleanupRootReferences()
 {
-	Private->Cleanup();
+	//Private->Cleanup();
 }
 
 ULeapFrame* ULeapGesture::Frame()
@@ -52,7 +52,7 @@ ULeapFrame* ULeapGesture::Frame()
 	if (Private->Frame == NULL)
 	{
 		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_RootSet);
+		Private->Frame->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Frame->SetFrame(Private->Gesture.frame());
 	return (Private->Frame);
@@ -63,7 +63,7 @@ ULeapHandList* ULeapGesture::Hands()
 	if (Private->Hands == NULL)
 	{
 		Private->Hands = NewObject<ULeapHandList>(this);
-		Private->Hands->SetFlags(RF_RootSet);
+		Private->Hands->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Hands->SetHandList(Private->Gesture.hands());
 	return (Private->Hands);
@@ -74,7 +74,7 @@ ULeapPointableList* ULeapGesture::Pointables()
 	if (Private->Pointables == NULL)
 	{
 		Private->Pointables = NewObject<ULeapPointableList>(this);
-		Private->Pointables->SetFlags(RF_RootSet);
+		Private->Pointables->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointables->SetPointableList(Private->Gesture.pointables());
 	return (Private->Pointables);

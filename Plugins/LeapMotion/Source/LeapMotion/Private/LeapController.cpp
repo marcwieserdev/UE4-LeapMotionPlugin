@@ -111,7 +111,7 @@ public:
 	//Ensures our rooted objects are unrooted so they can be GC'd
 	void CleanupEventData()
 	{
-		if (EventHand)
+		/*if (EventHand)
 		{
 			EventHand->CleanupRootReferences();
 		}
@@ -152,7 +152,7 @@ public:
 			Frame->CleanupRootReferences();
 		}
 		CleanupCalled = true;
-		UE_LOG(LeapPluginLog, Log, TEXT("LeapController::CleanupEventData Delete Called"));
+		UE_LOG(LeapPluginLog, Log, TEXT("LeapController::CleanupEventData Delete Called"));*/
 	}
 	bool CleanupCalled = false;
 
@@ -235,7 +235,7 @@ void ULeapController::OnRegister()
 void ULeapController::OnUnregister()
 {
 	//Allow GC of private UObject data
-	Private->CleanupEventData();	//UObjects attached to root need to be unrooted before we unregister so we do not crash between pie sessions (or without attaching to this object, leak them)
+	//Private->CleanupEventData();	//UObjects attached to root need to be unrooted before we unregister so we do not crash between pie sessions (or without attaching to this object, leak them)
 	ControllerCount--;
 
 	Super::OnUnregister();
@@ -256,7 +256,7 @@ ULeapFrame* ULeapController::Frame(int32 History)
 	if (Private->Frame == NULL)
 	{
 		Private->Frame = NewObject<ULeapFrame>(this, ULeapFrame::StaticClass());
-		Private->Frame->SetFlags(RF_RootSet);
+		Private->Frame->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Frame->SetFrame(Private->Leap, History);
 	return (Private->Frame);
@@ -431,7 +431,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		if (Private->EventHand == NULL)
 		{
 			Private->EventHand = NewObject<ULeapHand>(this);
-			Private->EventHand->SetFlags(RF_RootSet);
+			Private->EventHand->SetFlags(RF_ClassDefaultObject);
 		}
 		Private->EventHand->SetHand(Hand);
 
@@ -550,7 +550,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		if (Private->EventFinger == NULL)
 		{
 			Private->EventFinger = NewObject<ULeapFinger>(this);
-			Private->EventFinger->SetFlags(RF_RootSet);
+			Private->EventFinger->SetFlags(RF_ClassDefaultObject);
 		}
 
 		Leap::Finger Finger;
@@ -611,7 +611,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		case Leap::Gesture::TYPE_CIRCLE:
 			if (Private->EventCircleGesture == NULL){
 				Private->EventCircleGesture = NewObject<ULeapCircleGesture>(this);
-				Private->EventCircleGesture->SetFlags(RF_RootSet);
+				Private->EventCircleGesture->SetFlags(RF_ClassDefaultObject);
 			}
 			Private->EventCircleGesture->SetGesture(Leap::CircleGesture(Gesture));
 			ILeapEventInterface::Execute_CircleGestureDetected(Private->InterfaceDelegate, Private->EventCircleGesture);
@@ -621,7 +621,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			if (Private->EventKeyTapGesture == NULL)
 			{
 				Private->EventKeyTapGesture = NewObject<ULeapKeyTapGesture>(this);
-				Private->EventKeyTapGesture->SetFlags(RF_RootSet);
+				Private->EventKeyTapGesture->SetFlags(RF_ClassDefaultObject);
 			}
 			Private->EventKeyTapGesture->SetGesture(Leap::KeyTapGesture(Gesture));
 			ILeapEventInterface::Execute_KeyTapGestureDetected(Private->InterfaceDelegate, Private->EventKeyTapGesture);
@@ -631,7 +631,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			if (Private->EventScreenTapGesture == NULL)
 			{
 				Private->EventScreenTapGesture = NewObject<ULeapScreenTapGesture>(this);
-				Private->EventScreenTapGesture->SetFlags(RF_RootSet);
+				Private->EventScreenTapGesture->SetFlags(RF_ClassDefaultObject);
 			}
 			Private->EventScreenTapGesture->SetGesture(Leap::ScreenTapGesture(Gesture));
 			ILeapEventInterface::Execute_ScreenTapGestureDetected(Private->InterfaceDelegate, Private->EventScreenTapGesture);
@@ -641,7 +641,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			if (Private->EventSwipeGesture == NULL)
 			{
 				Private->EventSwipeGesture = NewObject<ULeapSwipeGesture>(this);
-				Private->EventSwipeGesture->SetFlags(RF_RootSet);
+				Private->EventSwipeGesture->SetFlags(RF_ClassDefaultObject);
 			}
 			Private->EventSwipeGesture->SetGesture(Leap::SwipeGesture(Gesture));
 			ILeapEventInterface::Execute_SwipeGestureDetected(Private->InterfaceDelegate, Private->EventSwipeGesture);
@@ -672,7 +672,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 				if (Private->EventImage1 == NULL)
 				{
 					Private->EventImage1 = NewObject<ULeapImage>(this);
-					Private->EventImage1->SetFlags(RF_RootSet);
+					Private->EventImage1->SetFlags(RF_ClassDefaultObject);
 				}
 				Private->EventImage1->UseGammaCorrection = Private->UseGammaCorrection;
 				Private->EventImage1->SetLeapImage(Image);
@@ -684,7 +684,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 				if (Private->EventImage2 == NULL)
                 {
 					Private->EventImage2 = NewObject<ULeapImage>(this);
-					Private->EventImage2->SetFlags(RF_RootSet);
+					Private->EventImage2->SetFlags(RF_ClassDefaultObject);
 				}
 				Private->EventImage2->UseGammaCorrection = Private->UseGammaCorrection;
 				Private->EventImage2->SetLeapImage(Image);

@@ -13,10 +13,10 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Pointable)
+		/*if (Pointable)
 		{
 			Pointable->CleanupRootReferences();
-		}
+		}*/
 		CleanupCalled = true;
 	}
 	bool CleanupCalled = false;
@@ -34,9 +34,9 @@ ULeapKeyTapGesture::~ULeapKeyTapGesture()
 }
 void ULeapKeyTapGesture::CleanupRootReferences()
 {
-	ULeapGesture::CleanupRootReferences();
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//ULeapGesture::CleanupRootReferences();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapPointable* ULeapKeyTapGesture::Pointable()
@@ -44,7 +44,7 @@ ULeapPointable* ULeapKeyTapGesture::Pointable()
 	if (Private->Pointable == NULL)
 	{
 		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_RootSet);
+		Private->Pointable->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Pointable->SetPointable(Private->Gesture.pointable());
 	return (Private->Pointable);

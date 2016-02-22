@@ -12,7 +12,7 @@ public:
 	}
 	void Cleanup()
 	{
-		if (Fingers)
+		/*if (Fingers)
 		{
 			Fingers->CleanupRootReferences();
 		}
@@ -20,7 +20,7 @@ public:
 		{
 			Frame->CleanupRootReferences();
 		}
-		CleanupCalled = true;
+		CleanupCalled = true;*/
 	}
 	bool CleanupCalled = false;
 	Leap::Hand Hand;
@@ -39,8 +39,8 @@ ULeapHand::~ULeapHand()
 
 void ULeapHand::CleanupRootReferences()
 {
-	Private->Cleanup();
-	this->RemoveFromRoot();
+	//Private->Cleanup();
+	//this->RemoveFromRoot();
 }
 
 ULeapFrame *ULeapHand::Frame()
@@ -48,7 +48,7 @@ ULeapFrame *ULeapHand::Frame()
 	if (Private->Frame == NULL)
 	{
 		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_RootSet);
+		Private->Frame->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Frame->SetFrame(Private->Hand.frame());
 	return (Private->Frame);
@@ -59,7 +59,7 @@ ULeapFingerList* ULeapHand::Fingers()
 	if (Private->Fingers == NULL)
 	{
 		Private->Fingers = NewObject<ULeapFingerList>(this);
-		//_private->fingers->SetFlags(RF_RootSet);
+		Private->Fingers->SetFlags(RF_ClassDefaultObject);
 	}
 	Private->Fingers->SetFingerList(Private->Hand.fingers());
 	return (Private->Fingers);
