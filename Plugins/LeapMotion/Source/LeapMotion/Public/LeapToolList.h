@@ -36,8 +36,17 @@ public:
 	void SetToolList(const class Leap::ToolList &Tools);
 	const Leap::ToolList* ToolList();
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateToolList* Private;
+
+	UPROPERTY()
+	ULeapTool* PLeftmost = nullptr;
+	UPROPERTY()
+	ULeapTool* PRightmost = nullptr;
+	UPROPERTY()
+	ULeapTool* PFrontmost = nullptr;
+	UPROPERTY()
+	ULeapTool* PPointableById = nullptr;
+	UPROPERTY()
+	ULeapToolList* PAppendedList = nullptr;
 };

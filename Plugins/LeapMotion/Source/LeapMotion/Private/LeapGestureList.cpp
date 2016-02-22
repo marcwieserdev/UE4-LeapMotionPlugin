@@ -3,24 +3,8 @@
 class PrivateGestureList
 {
 public:
-	~PrivateGestureList()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Gesture)
-		{
-			Gesture->CleanupRootReferences();
-		}*/
-		CleanupCalled = true;
-	}
-	bool CleanupCalled = false;
+
 	Leap::GestureList Gestures;
-	ULeapGesture* Gesture = NULL;
 };
 
 ULeapGestureList::ULeapGestureList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateGestureList())
@@ -32,21 +16,14 @@ ULeapGestureList::~ULeapGestureList()
 	delete Private;
 }
 
-void ULeapGestureList::CleanupRootReferences()
-{
-	//Private->Cleanup();
-	//this->RemoveFromRoot();
-}
-
 ULeapGesture* ULeapGestureList::GetIndex(int32 Index)
 {
-	if (Private->Gesture == NULL)
+	if (PGesture == nullptr)
 	{
-		Private->Gesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
-		Private->Gesture->SetFlags(RF_ClassDefaultObject);
+		PGesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
 	}
-	Private->Gesture->SetGesture(Private->Gestures[Index]);
-	return (Private->Gesture);
+	PGesture->SetGesture(Private->Gestures[Index]);
+	return (PGesture);
 }
 
 ULeapGesture* ULeapGestureList::operator[](int Index)

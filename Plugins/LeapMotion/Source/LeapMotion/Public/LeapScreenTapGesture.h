@@ -30,8 +30,9 @@ public:
 
 	void SetGesture(const class Leap::ScreenTapGesture &Gesture);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateScreenTapGesture* Private;
+
+	UPROPERTY()
+	ULeapPointable* PPointable = nullptr;
 };

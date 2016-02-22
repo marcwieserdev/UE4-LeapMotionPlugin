@@ -33,8 +33,9 @@ public:
 	
 	void SetGesture(const class Leap::SwipeGesture &Gesture);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateSwipeGesture* Private;
+
+	UPROPERTY()
+	ULeapPointable* PPointable = nullptr;
 };

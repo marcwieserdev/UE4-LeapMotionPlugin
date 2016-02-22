@@ -35,8 +35,6 @@ public:
 
 	void SetInteractionBox(const class Leap::InteractionBox &InteractionBox);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateInteractionBox* Private;
 };

@@ -4,29 +4,9 @@
 class PrivatePointable
 {
 public:
-	~PrivatePointable()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Frame)
-		{
-			Frame->CleanupRootReferences();
-		}
-		if (Hand)
-		{
-			Hand->CleanupRootReferences();
-		}*/
-		CleanupCalled = true;
-	}
-	bool CleanupCalled = false;
 	Leap::Pointable Pointable;
-	ULeapFrame* Frame = NULL;
-	ULeapHand* Hand = NULL;
+	ULeapFrame* PFrame = nullptr;
+	ULeapHand* PHand = nullptr;
 };
 
 ULeapPointable::ULeapPointable(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivatePointable())
@@ -37,36 +17,25 @@ ULeapPointable::~ULeapPointable()
 {
 	delete Private;
 }
-void ULeapPointable::CleanupRootReferences()
-{
-	/*Private->Cleanup();
-    
-	if (this->HasAnyFlags(RF_ClassDefaultObject))
-	{
-		this->RemoveFromRoot();
-	}*/
-}
 
 ULeapFrame *ULeapPointable::Frame()
 {
-	if (!Private->Frame)
+	if (!PFrame)
 	{
-		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_ClassDefaultObject);
+		PFrame = NewObject<ULeapFrame>(this);
 	}
-	Private->Frame->SetFrame(Private->Pointable.frame());
-	return (Private->Frame);
+	PFrame->SetFrame(Private->Pointable.frame());
+	return (PFrame);
 }
 
 ULeapHand *ULeapPointable::Hand()
 {
-	if (!Private->Hand)
+	if (!PHand)
 	{
-		Private->Hand = NewObject<ULeapHand>(this, ULeapHand::StaticClass());
-		Private->Hand->SetFlags(RF_ClassDefaultObject);
+		PHand = NewObject<ULeapHand>(this);
 	}
-	Private->Hand->SetHand(Private->Pointable.hand());
-	return (Private->Hand);
+	PHand->SetHand(Private->Pointable.hand());
+	return (PHand);
 }
 
 bool ULeapPointable::Equal(const ULeapPointable *Other)

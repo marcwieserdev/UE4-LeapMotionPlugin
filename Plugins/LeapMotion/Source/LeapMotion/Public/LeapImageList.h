@@ -25,8 +25,11 @@ public:
 
 	void SetLeapImageList(const class Leap::ImageList &LeapImageList);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateLeapImageList* Private;
+
+	UPROPERTY()
+	ULeapImage* PIndexImage1 = nullptr;
+	UPROPERTY()
+	ULeapImage* PIndexImage2 = nullptr;
 };

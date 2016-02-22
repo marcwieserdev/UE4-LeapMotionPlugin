@@ -25,8 +25,9 @@ public:
 
 	void SetGestureList(const class Leap::GestureList &Gesturelist);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateGestureList* Private;
+
+	UPROPERTY()
+	ULeapGesture* PGesture = nullptr;
 };

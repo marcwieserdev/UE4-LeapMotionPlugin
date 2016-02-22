@@ -15,11 +15,6 @@ ULeapArm::~ULeapArm()
 	delete Private;
 }
 
-void ULeapArm::CleanupRootReferences()
-{
-	this->RemoveFromRoot();
-}
-
 FRotator ULeapArm::GetOrientation(LeapHandType HandType)
 {
 	if (HandType == LeapHandType::HAND_LEFT)

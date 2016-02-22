@@ -51,8 +51,6 @@ public:
 
 	void SetBone(const class Leap::Bone &bone);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateBone* Private;
 };

@@ -44,8 +44,19 @@ public:
 
 	void SetPointableList(const class Leap::PointableList &Pointables);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivatePointableList* Private;
+
+	UPROPERTY()
+	ULeapPointable* PLeftmost = nullptr;
+	UPROPERTY()
+	ULeapPointable* PRightmost = nullptr;
+	UPROPERTY()
+	ULeapPointable* PFrontmost = nullptr;
+	UPROPERTY()
+	ULeapPointable* PPointableById = nullptr;
+	UPROPERTY()
+	ULeapPointableList* PAppendedList = nullptr;
+	UPROPERTY()
+	ULeapPointableList* PExtendedList = nullptr;
 };

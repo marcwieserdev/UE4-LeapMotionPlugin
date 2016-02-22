@@ -30,8 +30,9 @@ public:
 
 	void SetGesture(const class Leap::CircleGesture &Gesture);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateCircleGesture* Private;
+
+	UPROPERTY()
+	class ULeapPointable* PPointable = nullptr;
 };

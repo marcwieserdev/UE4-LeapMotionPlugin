@@ -42,16 +42,6 @@ ULeapFinger::~ULeapFinger()
 	delete Private;
 }
 
-void ULeapFinger::CleanupRootReferences()
-{
-    /*ULeapPointable::CleanupRootReferences();
-    
-	if (this->HasAnyFlags(RF_ClassDefaultObject))
-	{
-		this->RemoveFromRoot();
-	}*/
-}
-
 ULeapBone *ULeapFinger::Bone(LeapBoneType Type)
 {
 	Leap::Bone::Type RType;

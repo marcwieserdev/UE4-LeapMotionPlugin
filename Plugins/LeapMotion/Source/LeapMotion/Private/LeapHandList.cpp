@@ -3,39 +3,7 @@
 class PrivateHandList
 {
 public:
-	~PrivateHandList()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Frontmost)
-		{
-			Frontmost->CleanupRootReferences();
-		}
-		if (Leftmost)
-		{
-			Leftmost->CleanupRootReferences();
-		}
-		if (Rightmost)
-		{
-			Rightmost->CleanupRootReferences();
-		}
-		if (IndexHand)
-		{
-			IndexHand->CleanupRootReferences();
-		}
-		CleanupCalled = true;*/
-	}
-	bool CleanupCalled = false;
 	Leap::HandList Hands;
-	ULeapHand* Frontmost = NULL;
-	ULeapHand* Leftmost = NULL;
-	ULeapHand* Rightmost = NULL;
-	ULeapHand* IndexHand = NULL;
 };
 
 ULeapHandList::ULeapHandList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateHandList())
@@ -47,54 +15,44 @@ ULeapHandList::~ULeapHandList()
 	delete Private;
 }
 
-void ULeapHandList::CleanupRootReferences()
-{
-	//Private->Cleanup();
-	//this->RemoveFromRoot();
-}
-
 ULeapHand* ULeapHandList::Frontmost()
 {
-	if (Private->Frontmost == NULL)
+	if (PFrontmost == nullptr)
 	{
-		Private->Frontmost = NewObject<ULeapHand>(this);
-		Private->Frontmost->SetFlags(RF_ClassDefaultObject);
+		PFrontmost = NewObject<ULeapHand>(this);
 	}
-	Private->Frontmost->SetHand(Private->Hands.frontmost());
-	return (Private->Frontmost);
+	PFrontmost->SetHand(Private->Hands.frontmost());
+	return (PFrontmost);
 }
 
 ULeapHand* ULeapHandList::Leftmost()
 {
-	if (Private->Leftmost == NULL)
+	if (PLeftmost == nullptr)
 	{
-		Private->Leftmost = NewObject<ULeapHand>(this);
-		Private->Leftmost->SetFlags(RF_ClassDefaultObject);
+		PLeftmost = NewObject<ULeapHand>(this);
 	}
-	Private->Leftmost->SetHand(Private->Hands.leftmost());
-	return (Private->Leftmost);
+	PLeftmost->SetHand(Private->Hands.leftmost());
+	return (PLeftmost);
 }
 
 ULeapHand* ULeapHandList::Rightmost()
 {
-	if (Private->Rightmost == NULL)
+	if (PRightmost == nullptr)
 	{
-		Private->Rightmost = NewObject<ULeapHand>(this);
-		Private->Rightmost->SetFlags(RF_ClassDefaultObject);
+		PRightmost = NewObject<ULeapHand>(this);
 	}
-	Private->Rightmost->SetHand(Private->Hands.rightmost());
-	return (Private->Rightmost);
+	PRightmost->SetHand(Private->Hands.rightmost());
+	return (PRightmost);
 }
 
 ULeapHand* ULeapHandList::getIndex(int32 index)
 {
-	if (Private->IndexHand == NULL)
+	if (PIndexHand == nullptr)
 	{
-		Private->IndexHand = NewObject<ULeapHand>(this);
-		Private->IndexHand->SetFlags(RF_ClassDefaultObject);
+		PIndexHand = NewObject<ULeapHand>(this);
 	}
-	Private->IndexHand->SetHand(Private->Hands[index]);
-	return (Private->IndexHand);
+	PIndexHand->SetHand(Private->Hands[index]);
+	return (PIndexHand);
 }
 
 void ULeapHandList::SetHandList(const Leap::HandList &Handlist)

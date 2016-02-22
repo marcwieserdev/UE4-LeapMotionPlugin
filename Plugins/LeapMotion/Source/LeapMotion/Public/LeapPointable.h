@@ -69,8 +69,11 @@ public:
 	void SetPointable(const class Leap::Pointable &Pointable);
 	const Leap::Pointable &GetPointable() const;
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivatePointable* Private;
+
+	UPROPERTY()
+	ULeapFrame* PFrame = nullptr;
+	UPROPERTY()
+	ULeapHand* PHand = nullptr;
 };

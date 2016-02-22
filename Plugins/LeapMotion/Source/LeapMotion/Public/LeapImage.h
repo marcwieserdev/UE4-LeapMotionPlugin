@@ -8,6 +8,8 @@
 UCLASS(BlueprintType)
 class ULeapImage : public UObject
 {
+	friend class PrivateLeapImage;
+
 	GENERATED_UCLASS_BODY()
 public:
 	~ULeapImage();
@@ -64,8 +66,11 @@ public:
 
 	void SetLeapImage(const class Leap::Image &LeapImage);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateLeapImage* Private;
+
+	UPROPERTY()
+	UTexture2D* PImagePointer = nullptr;
+	UPROPERTY()
+	UTexture2D* PDistortionPointer = nullptr;
 };

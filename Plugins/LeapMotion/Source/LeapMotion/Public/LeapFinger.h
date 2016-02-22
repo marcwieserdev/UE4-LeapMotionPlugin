@@ -34,8 +34,6 @@ public:
 
 	void SetFinger(const class Leap::Finger &Pointable);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateFinger* Private;
 };

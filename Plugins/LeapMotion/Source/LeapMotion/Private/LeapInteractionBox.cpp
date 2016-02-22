@@ -16,11 +16,6 @@ ULeapInteractionBox::~ULeapInteractionBox()
 	delete Private;
 }
 
-void ULeapInteractionBox::CleanupRootReferences()
-{
-	//this->RemoveFromRoot();
-}
-
 
 FVector ULeapInteractionBox::DenormalizePoint(FVector Vector) const
 {

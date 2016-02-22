@@ -114,8 +114,11 @@ public:
 
 	void SetHand(const class Leap::Hand &Hand);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateHand* Private;
+
+	UPROPERTY()
+	ULeapFrame* PFrame = nullptr;
+	UPROPERTY()
+	ULeapFingerList* PFingers = nullptr;
 };

@@ -42,8 +42,6 @@ public:
 
 	void setArm(const class Leap::Arm &arm);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateArm* Private;
 };

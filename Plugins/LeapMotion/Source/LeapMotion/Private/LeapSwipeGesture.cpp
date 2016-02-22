@@ -4,24 +4,8 @@
 class PrivateSwipeGesture
 {
 public:
-	~PrivateSwipeGesture()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Pointable)
-		{
-			Pointable->CleanupRootReferences();
-		}
-		CleanupCalled = true;*/
-	}
-	bool CleanupCalled = false;
 	Leap::SwipeGesture Gesture;
-	ULeapPointable* Pointable = NULL;
+	ULeapPointable* PPointable = nullptr;
 };
 
 ULeapSwipeGesture::ULeapSwipeGesture(const FObjectInitializer &ObjectInitializer) : ULeapGesture(ObjectInitializer), Private(new PrivateSwipeGesture())
@@ -32,22 +16,15 @@ ULeapSwipeGesture::~ULeapSwipeGesture()
 {
 	delete Private;
 }
-void ULeapSwipeGesture::CleanupRootReferences()
-{
-	//ULeapGesture::CleanupRootReferences();
-	//Private->Cleanup();
-	//this->RemoveFromRoot();
-}
 
 ULeapPointable* ULeapSwipeGesture::Pointable()
 {
-	if (Private->Pointable == NULL)
+	if (PPointable == nullptr)
 	{
-		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_ClassDefaultObject);
+		PPointable = NewObject<ULeapPointable>(this);
 	}
-	Private->Pointable->SetPointable(Private->Gesture.pointable());
-	return (Private->Pointable);
+	PPointable->SetPointable(Private->Gesture.pointable());
+	return (PPointable);
 }
 
 void ULeapSwipeGesture::SetGesture(const Leap::SwipeGesture &Gesture)

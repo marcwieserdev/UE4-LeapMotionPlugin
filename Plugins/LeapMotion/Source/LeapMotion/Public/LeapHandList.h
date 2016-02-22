@@ -32,8 +32,15 @@ public:
 
 	void SetHandList(const class Leap::HandList &Handlist);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateHandList* Private;
+
+	UPROPERTY()
+	ULeapHand* PFrontmost = nullptr;
+	UPROPERTY()
+	ULeapHand* PLeftmost = nullptr;
+	UPROPERTY()
+	ULeapHand* PRightmost = nullptr;
+	UPROPERTY()
+	ULeapHand* PIndexHand = nullptr;
 };

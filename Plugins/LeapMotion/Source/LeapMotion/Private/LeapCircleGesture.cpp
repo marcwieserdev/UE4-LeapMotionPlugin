@@ -8,22 +8,8 @@ class PrivateCircleGesture
 public:
 	~PrivateCircleGesture()
 	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
 	}
-	void Cleanup()
-	{
-		/*if (Pointable)
-		{
-			Pointable->CleanupRootReferences();
-		}
-		CleanupCalled = true;*/
-	}
-	bool CleanupCalled = false;
 	Leap::CircleGesture Gesture;
-	ULeapPointable* Pointable = NULL;
 };
 
 ULeapCircleGesture::ULeapCircleGesture(const FObjectInitializer &ObjectInitializer) : ULeapGesture(ObjectInitializer), Private(new PrivateCircleGesture)
@@ -35,22 +21,14 @@ ULeapCircleGesture::~ULeapCircleGesture()
 	delete Private;
 }
 
-void ULeapCircleGesture::CleanupRootReferences()
-{
-	/*ULeapGesture::CleanupRootReferences();
-	Private->Cleanup();
-	this->RemoveFromRoot();*/
-}
-
 ULeapPointable* ULeapCircleGesture::Pointable()
 {
-	if (Private->Pointable == NULL)
+	if (PPointable == nullptr)
 	{
-		Private->Pointable = NewObject<ULeapPointable>(this);
-		Private->Pointable->SetFlags(RF_ClassDefaultObject);
+		PPointable = NewObject<ULeapPointable>(this);
 	}
-	Private->Pointable->SetPointable(Private->Gesture.pointable());
-	return (Private->Pointable);
+	PPointable->SetPointable(Private->Gesture.pointable());
+	return (PPointable);
 }
 
 void ULeapCircleGesture::SetGesture(const Leap::CircleGesture &Gesture)

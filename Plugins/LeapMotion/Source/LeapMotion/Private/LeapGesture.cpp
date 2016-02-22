@@ -3,34 +3,7 @@
 class PrivateGesture
 {
 public:
-	~PrivateGesture()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Frame)
-		{
-			Frame->CleanupRootReferences();
-		}
-		if (Hands)
-		{
-			Hands->CleanupRootReferences();
-		}
-		if (Pointables)
-		{
-			Pointables->CleanupRootReferences();
-		}*/
-		CleanupCalled = true;
-	}
-	bool CleanupCalled = false;
 	Leap::Gesture Gesture;
-	ULeapFrame* Frame = NULL;
-	ULeapHandList* Hands = NULL;
-	ULeapPointableList* Pointables = NULL;
 };
 
 ULeapGesture::ULeapGesture(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateGesture())
@@ -42,42 +15,34 @@ ULeapGesture::~ULeapGesture()
 	delete Private;
 }
 
-void ULeapGesture::CleanupRootReferences()
-{
-	//Private->Cleanup();
-}
-
 ULeapFrame* ULeapGesture::Frame()
 {
-	if (Private->Frame == NULL)
+	if (PFrame == nullptr)
 	{
-		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_ClassDefaultObject);
+		PFrame = NewObject<ULeapFrame>(this);
 	}
-	Private->Frame->SetFrame(Private->Gesture.frame());
-	return (Private->Frame);
+	PFrame->SetFrame(Private->Gesture.frame());
+	return (PFrame);
 }
 
 ULeapHandList* ULeapGesture::Hands()
 {
-	if (Private->Hands == NULL)
+	if (PHands == nullptr)
 	{
-		Private->Hands = NewObject<ULeapHandList>(this);
-		Private->Hands->SetFlags(RF_ClassDefaultObject);
+		PHands = NewObject<ULeapHandList>(this);
 	}
-	Private->Hands->SetHandList(Private->Gesture.hands());
-	return (Private->Hands);
+	PHands->SetHandList(Private->Gesture.hands());
+	return (PHands);
 }
 
 ULeapPointableList* ULeapGesture::Pointables()
 {
-	if (Private->Pointables == NULL)
+	if (PPointables == nullptr)
 	{
-		Private->Pointables = NewObject<ULeapPointableList>(this);
-		Private->Pointables->SetFlags(RF_ClassDefaultObject);
+		PPointables = NewObject<ULeapPointableList>(this);
 	}
-	Private->Pointables->SetPointableList(Private->Gesture.pointables());
-	return (Private->Pointables);
+	PPointables->SetPointableList(Private->Gesture.pointables());
+	return (PPointables);
 }
 
 LeapGestureState gestureState(Leap::Gesture::State State)

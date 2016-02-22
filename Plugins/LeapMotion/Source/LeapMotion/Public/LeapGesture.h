@@ -44,8 +44,13 @@ public:
 
 	void SetGesture(const class Leap::Gesture &Gesture);
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateGesture* Private;
+
+	UPROPERTY()
+	ULeapFrame* PFrame = nullptr;
+	UPROPERTY()
+	ULeapHandList* PHands = nullptr;
+	UPROPERTY()
+	ULeapPointableList* PPointables = nullptr;
 };

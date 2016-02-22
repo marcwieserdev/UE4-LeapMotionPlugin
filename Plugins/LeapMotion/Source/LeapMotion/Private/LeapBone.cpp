@@ -29,11 +29,6 @@ FRotator ULeapBone::GetOrientation(LeapHandType HandType)
 	}
 }
 
-void ULeapBone::CleanupRootReferences()
-{
-	this->RemoveFromRoot();
-}
-
 bool ULeapBone::Different(const ULeapBone *Other) const
 {
 	return (Private->Bone != Other->Private->Bone);

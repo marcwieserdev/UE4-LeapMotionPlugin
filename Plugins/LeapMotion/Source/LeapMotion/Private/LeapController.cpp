@@ -104,75 +104,13 @@ class LeapControllerPrivate
 public:
 	~LeapControllerPrivate()
 	{
-		if(!CleanupCalled)
-			CleanupEventData();
 	}
-
-	//Ensures our rooted objects are unrooted so they can be GC'd
-	void CleanupEventData()
-	{
-		/*if (EventHand)
-		{
-			EventHand->CleanupRootReferences();
-		}
-		if (EventFinger)
-		{
-			EventFinger->CleanupRootReferences();
-		}
-		if (EventGesture)
-		{
-			EventGesture->CleanupRootReferences();
-		}
-		if (EventCircleGesture)
-		{
-			EventCircleGesture->CleanupRootReferences();
-		}
-		if (EventKeyTapGesture)
-		{
-			EventKeyTapGesture->CleanupRootReferences();
-		}
-		if (EventScreenTapGesture)
-		{
-			EventScreenTapGesture->CleanupRootReferences();
-		}
-		if (EventSwipeGesture)
-		{
-			EventSwipeGesture->CleanupRootReferences();
-		}
-		if (EventImage1)
-		{
-			EventImage1->CleanupRootReferences();
-		}
-		if (EventImage2)
-		{
-			EventImage2->CleanupRootReferences();
-		}
-		if (Frame)
-		{
-			Frame->CleanupRootReferences();
-		}
-		CleanupCalled = true;
-		UE_LOG(LeapPluginLog, Log, TEXT("LeapController::CleanupEventData Delete Called"));*/
-	}
-	bool CleanupCalled = false;
 
 	//Properties and Pointers
 	LeapStateData PastState;
 	Leap::Controller Leap;
-	ULeapFrame* Frame = NULL;
-
-	//Event UObjects, we have to manage memory for these to stop leaks
-	ULeapHand* EventHand = NULL;
-	ULeapFinger* EventFinger = NULL;
-	ULeapGesture* EventGesture = NULL;
-	ULeapCircleGesture* EventCircleGesture = NULL;
-	ULeapKeyTapGesture* EventKeyTapGesture = NULL;
-	ULeapScreenTapGesture* EventScreenTapGesture = NULL;
-	ULeapSwipeGesture* EventSwipeGesture = NULL;
-	ULeapImage* EventImage1 = NULL;
-	ULeapImage* EventImage2 = NULL;
 	
-	UObject* InterfaceDelegate = NULL;	//NB they have to be set to null manually or MSFT will set them to CDCDCDCD...
+	UObject* InterfaceDelegate = nullptr;	//NB they have to be set to nullptr manually or MSFT will set them to CDCDCDCD...
 	bool OptimizeForHMD = false;
 	bool AllowImages = false;
 	bool UseGammaCorrection = false;
@@ -253,13 +191,12 @@ void ULeapController::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 ULeapFrame* ULeapController::Frame(int32 History)
 {
-	if (Private->Frame == NULL)
+	if (PFrame == nullptr)
 	{
-		Private->Frame = NewObject<ULeapFrame>(this, ULeapFrame::StaticClass());
-		Private->Frame->SetFlags(RF_ClassDefaultObject);
+		PFrame = NewObject<ULeapFrame>(this, ULeapFrame::StaticClass());
 	}
-	Private->Frame->SetFrame(Private->Leap, History);
-	return (Private->Frame);
+	PFrame->SetFrame(Private->Leap, History);
+	return (PFrame);
 }
 
 bool ULeapController::HasFocus() const
@@ -428,30 +365,29 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		LeapHandStateData PastHandState = Private->PastState.StateForId(Hand.id());		//we use a custom class to hold reliable state tracking based on id's
 
 		//Make a ULeapHand
-		if (Private->EventHand == NULL)
+		if (PEventHand == nullptr)
 		{
-			Private->EventHand = NewObject<ULeapHand>(this);
-			Private->EventHand->SetFlags(RF_ClassDefaultObject);
+			PEventHand = NewObject<ULeapHand>(this);
 		}
-		Private->EventHand->SetHand(Hand);
+		PEventHand->SetHand(Hand);
 
 		//Emit hand
-		ILeapEventInterface::Execute_LeapHandMoved(Private->InterfaceDelegate, Private->EventHand);
+		ILeapEventInterface::Execute_LeapHandMoved(Private->InterfaceDelegate, PEventHand);
 
 		//Left/Right hand forwarding
 		if (Hand.isRight())
 		{
-			ILeapEventInterface::Execute_LeapRightHandMoved(Private->InterfaceDelegate, Private->EventHand);
+			ILeapEventInterface::Execute_LeapRightHandMoved(Private->InterfaceDelegate, PEventHand);
 			//Input Mapping
-			FRotator PalmOrientation = Private->EventHand->PalmOrientation;
+			FRotator PalmOrientation = PEventHand->PalmOrientation;
 			EmitAnalogInputEventForKey(EKeysLeap::LeapRightPalmPitch, PalmOrientation.Pitch * LEAP_IM_SCALE, 0, 0);
 			EmitAnalogInputEventForKey(EKeysLeap::LeapRightPalmYaw, PalmOrientation.Yaw * LEAP_IM_SCALE, 0, 0);
 			EmitAnalogInputEventForKey(EKeysLeap::LeapRightPalmRoll, PalmOrientation.Roll * LEAP_IM_SCALE, 0, 0);
 		} else if (Hand.isLeft())
 		{
-			ILeapEventInterface::Execute_LeapLeftHandMoved(Private->InterfaceDelegate, Private->EventHand);
+			ILeapEventInterface::Execute_LeapLeftHandMoved(Private->InterfaceDelegate, PEventHand);
 			//Input Mapping
-			FRotator PalmOrientation = Private->EventHand->PalmOrientation;
+			FRotator PalmOrientation = PEventHand->PalmOrientation;
 			EmitAnalogInputEventForKey(EKeysLeap::LeapLeftPalmPitch, PalmOrientation.Pitch * LEAP_IM_SCALE, 0, 0);
 			EmitAnalogInputEventForKey(EKeysLeap::LeapLeftPalmYaw, PalmOrientation.Yaw * LEAP_IM_SCALE, 0, 0);
 			EmitAnalogInputEventForKey(EKeysLeap::LeapLeftPalmRoll, PalmOrientation.Roll * LEAP_IM_SCALE, 0, 0);
@@ -463,15 +399,15 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 
 		if (Grabbed) 
 		{
-			ILeapEventInterface::Execute_LeapHandGrabbing(Private->InterfaceDelegate, GrabStrength, Private->EventHand);
+			ILeapEventInterface::Execute_LeapHandGrabbing(Private->InterfaceDelegate, GrabStrength, PEventHand);
 		}
 
 		if (Grabbed && !PastHandState.Grabbed)
 		{
-			ILeapEventInterface::Execute_LeapHandGrabbed(Private->InterfaceDelegate, GrabStrength, Private->EventHand);
+			ILeapEventInterface::Execute_LeapHandGrabbed(Private->InterfaceDelegate, GrabStrength, PEventHand);
 			
 			//input mapping
-			if (Private->EventHand->HandType == LeapHandType::HAND_LEFT)
+			if (PEventHand->HandType == LeapHandType::HAND_LEFT)
 			{
 				EmitKeyDownEventForKey(EKeysLeap::LeapLeftGrab, 0, 0);
 			}
@@ -482,10 +418,10 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		}
 		else if (!Grabbed && PastHandState.Grabbed)
 		{
-			ILeapEventInterface::Execute_LeapHandReleased(Private->InterfaceDelegate, GrabStrength, Private->EventHand);
+			ILeapEventInterface::Execute_LeapHandReleased(Private->InterfaceDelegate, GrabStrength, PEventHand);
 
 			//input mapping
-			if (Private->EventHand->HandType == LeapHandType::HAND_LEFT)
+			if (PEventHand->HandType == LeapHandType::HAND_LEFT)
 			{
 				EmitKeyUpEventForKey(EKeysLeap::LeapLeftGrab, 0, 0);
 			}
@@ -508,13 +444,13 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		{
 			if (Pinched)
 			{
-				ILeapEventInterface::Execute_LeapHandPinching(Private->InterfaceDelegate, PinchStrength, Private->EventHand);
+				ILeapEventInterface::Execute_LeapHandPinching(Private->InterfaceDelegate, PinchStrength, PEventHand);
 			}
 			if (Pinched && !PastHandState.Pinched)
 			{
-				ILeapEventInterface::Execute_LeapHandPinched(Private->InterfaceDelegate, PinchStrength, Private->EventHand);
+				ILeapEventInterface::Execute_LeapHandPinched(Private->InterfaceDelegate, PinchStrength, PEventHand);
 				//input mapping
-				if (Private->EventHand->HandType == LeapHandType::HAND_LEFT)
+				if (PEventHand->HandType == LeapHandType::HAND_LEFT)
 				{
 					EmitKeyDownEventForKey(EKeysLeap::LeapLeftPinch, 0, 0);
 				}
@@ -525,9 +461,9 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			}
 			else if (!Pinched && PastHandState.Pinched)
 			{
-				ILeapEventInterface::Execute_LeapHandUnpinched(Private->InterfaceDelegate, PinchStrength, Private->EventHand);
+				ILeapEventInterface::Execute_LeapHandUnpinched(Private->InterfaceDelegate, PinchStrength, PEventHand);
 				//input mapping
-				if (Private->EventHand->HandType == LeapHandType::HAND_LEFT)
+				if (PEventHand->HandType == LeapHandType::HAND_LEFT)
 				{
 					EmitKeyUpEventForKey(EKeysLeap::LeapLeftPinch, 0, 0);
 				}
@@ -547,10 +483,9 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		{
 			ILeapEventInterface::Execute_FingerCountChanged(Private->InterfaceDelegate, FingerCount);
 		}
-		if (Private->EventFinger == NULL)
+		if (PEventFinger == nullptr)
 		{
-			Private->EventFinger = NewObject<ULeapFinger>(this);
-			Private->EventFinger->SetFlags(RF_ClassDefaultObject);
+			PEventFinger = NewObject<ULeapFinger>(this);
 		}
 
 		Leap::Finger Finger;
@@ -559,35 +494,35 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		for (int j = 0; j < FingerCount; j++)
 		{
 			Finger = Fingers[j];
-			Private->EventFinger->SetFinger(Finger);
+			PEventFinger->SetFinger(Finger);
 
 			//Finger Moved
 			if (Finger.isValid())
-				ILeapEventInterface::Execute_LeapFingerMoved(Private->InterfaceDelegate, Private->EventFinger);
+				ILeapEventInterface::Execute_LeapFingerMoved(Private->InterfaceDelegate, PEventFinger);
 		}
 
 		//Do these last so we can easily override debug shapes
 
 		//Leftmost
 		Finger = Fingers.leftmost();
-		Private->EventFinger->SetFinger(Finger);
-		ILeapEventInterface::Execute_LeapLeftMostFingerMoved(Private->InterfaceDelegate, Private->EventFinger);
+		PEventFinger->SetFinger(Finger);
+		ILeapEventInterface::Execute_LeapLeftMostFingerMoved(Private->InterfaceDelegate, PEventFinger);
 
 		//Rightmost
 		Finger = Fingers.rightmost();
-		Private->EventFinger->SetFinger(Finger);
-		ILeapEventInterface::Execute_LeapRightMostFingerMoved(Private->InterfaceDelegate, Private->EventFinger);
+		PEventFinger->SetFinger(Finger);
+		ILeapEventInterface::Execute_LeapRightMostFingerMoved(Private->InterfaceDelegate, PEventFinger);
 
 		//Frontmost
 		Finger = Fingers.frontmost();
-		Private->EventFinger->SetFinger(Finger);
-		ILeapEventInterface::Execute_LeapFrontMostFingerMoved(Private->InterfaceDelegate, Private->EventFinger);
+		PEventFinger->SetFinger(Finger);
+		ILeapEventInterface::Execute_LeapFrontMostFingerMoved(Private->InterfaceDelegate, PEventFinger);
 
 		//touch only for front-most finger, most common use case
 		float touchDistance = Finger.touchDistance();
 		if (touchDistance <= 0.f)
 		{
-			ILeapEventInterface::Execute_LeapFrontFingerTouch(Private->InterfaceDelegate, Private->EventFinger);
+			ILeapEventInterface::Execute_LeapFrontFingerTouch(Private->InterfaceDelegate, PEventFinger);
 		}
 
 		//Set the state data for next cycle
@@ -609,43 +544,39 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		switch (Type)
 		{
 		case Leap::Gesture::TYPE_CIRCLE:
-			if (Private->EventCircleGesture == NULL){
-				Private->EventCircleGesture = NewObject<ULeapCircleGesture>(this);
-				Private->EventCircleGesture->SetFlags(RF_ClassDefaultObject);
+			if (PEventCircleGesture == nullptr){
+				PEventCircleGesture = NewObject<ULeapCircleGesture>(this);
 			}
-			Private->EventCircleGesture->SetGesture(Leap::CircleGesture(Gesture));
-			ILeapEventInterface::Execute_CircleGestureDetected(Private->InterfaceDelegate, Private->EventCircleGesture);
-			Private->EventGesture = Private->EventCircleGesture;
+			PEventCircleGesture->SetGesture(Leap::CircleGesture(Gesture));
+			ILeapEventInterface::Execute_CircleGestureDetected(Private->InterfaceDelegate, PEventCircleGesture);
+			PEventGesture = PEventCircleGesture;
 			break;
 		case Leap::Gesture::TYPE_KEY_TAP:
-			if (Private->EventKeyTapGesture == NULL)
+			if (PEventKeyTapGesture == nullptr)
 			{
-				Private->EventKeyTapGesture = NewObject<ULeapKeyTapGesture>(this);
-				Private->EventKeyTapGesture->SetFlags(RF_ClassDefaultObject);
+				PEventKeyTapGesture = NewObject<ULeapKeyTapGesture>(this);
 			}
-			Private->EventKeyTapGesture->SetGesture(Leap::KeyTapGesture(Gesture));
-			ILeapEventInterface::Execute_KeyTapGestureDetected(Private->InterfaceDelegate, Private->EventKeyTapGesture);
-			Private->EventGesture = Private->EventKeyTapGesture;
+			PEventKeyTapGesture->SetGesture(Leap::KeyTapGesture(Gesture));
+			ILeapEventInterface::Execute_KeyTapGestureDetected(Private->InterfaceDelegate, PEventKeyTapGesture);
+			PEventGesture = PEventKeyTapGesture;
 			break;
 		case Leap::Gesture::TYPE_SCREEN_TAP:
-			if (Private->EventScreenTapGesture == NULL)
+			if (PEventScreenTapGesture == nullptr)
 			{
-				Private->EventScreenTapGesture = NewObject<ULeapScreenTapGesture>(this);
-				Private->EventScreenTapGesture->SetFlags(RF_ClassDefaultObject);
+				PEventScreenTapGesture = NewObject<ULeapScreenTapGesture>(this);
 			}
-			Private->EventScreenTapGesture->SetGesture(Leap::ScreenTapGesture(Gesture));
-			ILeapEventInterface::Execute_ScreenTapGestureDetected(Private->InterfaceDelegate, Private->EventScreenTapGesture);
-			Private->EventGesture = Private->EventScreenTapGesture;
+			PEventScreenTapGesture->SetGesture(Leap::ScreenTapGesture(Gesture));
+			ILeapEventInterface::Execute_ScreenTapGestureDetected(Private->InterfaceDelegate, PEventScreenTapGesture);
+			PEventGesture = PEventScreenTapGesture;
 			break;
 		case Leap::Gesture::TYPE_SWIPE:
-			if (Private->EventSwipeGesture == NULL)
+			if (PEventSwipeGesture == nullptr)
 			{
-				Private->EventSwipeGesture = NewObject<ULeapSwipeGesture>(this);
-				Private->EventSwipeGesture->SetFlags(RF_ClassDefaultObject);
+				PEventSwipeGesture = NewObject<ULeapSwipeGesture>(this);
 			}
-			Private->EventSwipeGesture->SetGesture(Leap::SwipeGesture(Gesture));
-			ILeapEventInterface::Execute_SwipeGestureDetected(Private->InterfaceDelegate, Private->EventSwipeGesture);
-			Private->EventGesture = Private->EventSwipeGesture;
+			PEventSwipeGesture->SetGesture(Leap::SwipeGesture(Gesture));
+			ILeapEventInterface::Execute_SwipeGestureDetected(Private->InterfaceDelegate, PEventSwipeGesture);
+			PEventGesture = PEventSwipeGesture;
 			break;
 		default:
 			break;
@@ -654,7 +585,7 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 		//emit gesture
 		if (Type != Leap::Gesture::TYPE_INVALID)
 		{
-			ILeapEventInterface::Execute_GestureDetected(Private->InterfaceDelegate, Private->EventGesture);
+			ILeapEventInterface::Execute_GestureDetected(Private->InterfaceDelegate, PEventGesture);
 		}
 	}
 
@@ -669,27 +600,25 @@ void ULeapController::InterfaceEventTick(float DeltaTime)
 			//Loop modification - Only emit 0 and 1, use two different pointers so we can get different images
 			if (i == 0)
 			{
-				if (Private->EventImage1 == NULL)
+				if (PEventImage1 == nullptr)
 				{
-					Private->EventImage1 = NewObject<ULeapImage>(this);
-					Private->EventImage1->SetFlags(RF_ClassDefaultObject);
+					PEventImage1 = NewObject<ULeapImage>(this);
 				}
-				Private->EventImage1->UseGammaCorrection = Private->UseGammaCorrection;
-				Private->EventImage1->SetLeapImage(Image);
+				PEventImage1->UseGammaCorrection = Private->UseGammaCorrection;
+				PEventImage1->SetLeapImage(Image);
 
-				ILeapEventInterface::Execute_RawImageReceived(Private->InterfaceDelegate, Private->EventImage1->Texture(), Private->EventImage1);
+				ILeapEventInterface::Execute_RawImageReceived(Private->InterfaceDelegate, PEventImage1->Texture(), PEventImage1);
 			}
 			else if (i == 1)
 			{
-				if (Private->EventImage2 == NULL)
+				if (PEventImage2 == nullptr)
                 {
-					Private->EventImage2 = NewObject<ULeapImage>(this);
-					Private->EventImage2->SetFlags(RF_ClassDefaultObject);
+					PEventImage2 = NewObject<ULeapImage>(this);
 				}
-				Private->EventImage2->UseGammaCorrection = Private->UseGammaCorrection;
-				Private->EventImage2->SetLeapImage(Image);
+				PEventImage2->UseGammaCorrection = Private->UseGammaCorrection;
+				PEventImage2->SetLeapImage(Image);
 
-				ILeapEventInterface::Execute_RawImageReceived(Private->InterfaceDelegate, Private->EventImage2->Texture(), Private->EventImage2);
+				ILeapEventInterface::Execute_RawImageReceived(Private->InterfaceDelegate, PEventImage2->Texture(), PEventImage2);
 			}
 		}
 	}

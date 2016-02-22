@@ -84,8 +84,31 @@ public:
 	void SetFrame(const class Leap::Frame &Frame);
 	const Leap::Frame &GetFrame() const;
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateLeapFrame* Private;
+
+	UPROPERTY()
+	ULeapFinger* PFinger = nullptr;
+	UPROPERTY()
+	ULeapFingerList* PFingers = nullptr;
+	UPROPERTY()
+	ULeapGesture* PGesture = nullptr;
+	UPROPERTY()
+	ULeapGestureList* PGestures = nullptr;
+	UPROPERTY()
+	ULeapHand* PHand = nullptr;
+	UPROPERTY()
+	ULeapHandList* PHands = nullptr;
+	UPROPERTY()
+	ULeapImageList* PImages = nullptr;
+	UPROPERTY()
+	ULeapInteractionBox* PInteractionBox = nullptr;
+	UPROPERTY()
+	ULeapPointable* PPointable = nullptr;
+	UPROPERTY()
+	ULeapPointableList* PPointables = nullptr;
+	UPROPERTY()
+	ULeapTool* PTool = nullptr;
+	UPROPERTY()
+	ULeapToolList* PTools = nullptr;
 };

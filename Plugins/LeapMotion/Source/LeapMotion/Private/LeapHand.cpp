@@ -3,29 +3,7 @@
 class PrivateHand
 {
 public:
-	~PrivateHand()
-	{
-		if (!CleanupCalled)
-		{
-			Cleanup();
-		}
-	}
-	void Cleanup()
-	{
-		/*if (Fingers)
-		{
-			Fingers->CleanupRootReferences();
-		}
-		if (Frame)
-		{
-			Frame->CleanupRootReferences();
-		}
-		CleanupCalled = true;*/
-	}
-	bool CleanupCalled = false;
 	Leap::Hand Hand;
-	ULeapFrame* Frame = NULL;
-	ULeapFingerList* Fingers = NULL;
 };
 
 ULeapHand::ULeapHand(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateHand())
@@ -37,32 +15,24 @@ ULeapHand::~ULeapHand()
 	delete Private;
 }
 
-void ULeapHand::CleanupRootReferences()
-{
-	//Private->Cleanup();
-	//this->RemoveFromRoot();
-}
-
 ULeapFrame *ULeapHand::Frame()
 {
-	if (Private->Frame == NULL)
+	if (PFrame == nullptr)
 	{
-		Private->Frame = NewObject<ULeapFrame>(this);
-		Private->Frame->SetFlags(RF_ClassDefaultObject);
+		PFrame = NewObject<ULeapFrame>(this);
 	}
-	Private->Frame->SetFrame(Private->Hand.frame());
-	return (Private->Frame);
+	PFrame->SetFrame(Private->Hand.frame());
+	return (PFrame);
 }
 
 ULeapFingerList* ULeapHand::Fingers()
 {
-	if (Private->Fingers == NULL)
+	if (PFingers == nullptr)
 	{
-		Private->Fingers = NewObject<ULeapFingerList>(this);
-		Private->Fingers->SetFlags(RF_ClassDefaultObject);
+		PFingers = NewObject<ULeapFingerList>(this);
 	}
-	Private->Fingers->SetFingerList(Private->Hand.fingers());
-	return (Private->Fingers);
+	PFingers->SetFingerList(Private->Hand.fingers());
+	return (PFingers);
 }
 
 float ULeapHand::RotationAngle(ULeapFrame *Frame)
@@ -162,7 +132,7 @@ void ULeapHand::SetHand(const Leap::Hand &Hand)
 	Private->Hand = Hand;
 
 	//Set Properties
-	if (Arm == NULL || !Arm->IsValidLowLevel())
+	if (Arm == nullptr || !Arm->IsValidLowLevel())
 		Arm = NewObject<ULeapArm>(this, ULeapArm::StaticClass());
 	Arm->setArm(Private->Hand.arm());
 

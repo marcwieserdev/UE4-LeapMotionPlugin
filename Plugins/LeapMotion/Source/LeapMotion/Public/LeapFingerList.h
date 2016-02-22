@@ -39,8 +39,19 @@ public:
 	void SetFingerList(const class Leap::FingerList &Pointables);
 	Leap::FingerList* FingerList();
 
-	virtual void CleanupRootReferences();
-
 private:
 	class PrivateFingerList* Private;
+
+	UPROPERTY()
+	class ULeapFinger* PFrontmost = nullptr;
+	UPROPERTY()
+	ULeapFinger* PLeftmost = nullptr;
+	UPROPERTY()
+	ULeapFinger* PRightmost = nullptr;
+	UPROPERTY()
+	ULeapFinger* PPointableById = nullptr;
+	UPROPERTY()
+	class ULeapFingerList* PAppendedList = nullptr;
+	UPROPERTY()
+	ULeapFingerList* PExtendedList = nullptr;
 };

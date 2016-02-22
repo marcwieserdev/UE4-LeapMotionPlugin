@@ -50,25 +50,27 @@ public:
 private:
 	class LeapControllerPrivate* Private;
 
-	//Private properties
-	/*UPROPERTY()
-	ULeapHand* EventHand = NULL;
+	//Private UProperties
 	UPROPERTY()
-	ULeapFinger* EventFinger = NULL;
+	ULeapFrame* PFrame = nullptr;
 	UPROPERTY()
-	ULeapGesture* EventGesture = NULL;
+	class ULeapHand* PEventHand = nullptr;
 	UPROPERTY()
-	ULeapCircleGesture* EventCircleGesture = NULL;
+	class ULeapFinger* PEventFinger = nullptr;
 	UPROPERTY()
-	ULeapKeyTapGesture* EventKeyTapGesture = NULL;
+	class ULeapGesture* PEventGesture = nullptr;
 	UPROPERTY()
-	ULeapScreenTapGesture* EventScreenTapGesture = NULL;
+	class ULeapCircleGesture* PEventCircleGesture = nullptr;
 	UPROPERTY()
-	ULeapSwipeGesture* EventSwipeGesture = NULL;
+	class ULeapKeyTapGesture* PEventKeyTapGesture = nullptr;
 	UPROPERTY()
-	ULeapImage* EventImage1 = NULL;
+	class ULeapScreenTapGesture* PEventScreenTapGesture = nullptr;
 	UPROPERTY()
-	ULeapImage* EventImage2 = NULL;*/
+	class ULeapSwipeGesture* PEventSwipeGesture = nullptr;
+	UPROPERTY()
+	class ULeapImage* PEventImage1 = nullptr;
+	UPROPERTY()
+	class ULeapImage* PEventImage2 = nullptr;
 
 	void InterfaceEventTick(float DeltaTime);
 };
