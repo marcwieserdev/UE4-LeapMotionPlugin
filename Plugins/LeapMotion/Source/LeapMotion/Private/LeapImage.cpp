@@ -82,7 +82,8 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* Pointer, int32 PWidt
 		{
 			Pointer->SRGB = 0;
 		}
-		Pointer->SetFlags(RF_ClassDefaultObject);	//to support more than one leap component, the pointer shouldn't be reclaimed by GC
+		
+		//keep it around?
 	}
 
 	//If the size changed, recreate the image (NB: GC may release the platform data in which case we need to recreate it (since 4.7)
@@ -102,8 +103,11 @@ UTexture2D* PrivateLeapImage::validImagePointer(UTexture2D* Pointer, int32 PWidt
 UTexture2D* PrivateLeapImage::Texture32FromLeapImage(int32 SrcWidth, int32 SrcHeight, uint8* ImageBuffer)
 {
 	// Lock the texture so it can be modified
-	if (Self->PImagePointer == nullptr)
+	if (Self->PImagePointer == nullptr) {
+		UE_LOG(LeapPluginLog, Log, TEXT("Image is null!"));
 		return nullptr;
+	}
+
 
 	uint8* MipData = static_cast<uint8*>(Self->PImagePointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
 	
@@ -378,6 +382,7 @@ UTexture2D* PrivateLeapImage::Texture128FromLeapDistortion(int32 SrcWidth, int32
 
 UTexture2D* ULeapImage::Texture()
 {
+
 	PImagePointer = Private->validImagePointer(PImagePointer, Width, Height, PF_B8G8R8A8, UseGammaCorrection);
 	
 	//Normal
