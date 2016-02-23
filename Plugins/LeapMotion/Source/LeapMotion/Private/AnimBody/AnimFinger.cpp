@@ -73,4 +73,15 @@ void UAnimFinger::SetFromLeapFinger(ULeapFinger* Finger, LeapHandType HandType)
 	Proximal->Length = Finger->Proximal->Length;
 	Intermediate->Length = Finger->Intermediate->Length;
 	Distal->Length = Finger->Distal->Length;
+
+	//Joints
+	Metacarpal->PrevJoint = Finger->Metacarpal->PrevJoint;
+	Metacarpal->NextJoint = Finger->Metacarpal->NextJoint;
+	Proximal->PrevJoint = Finger->Proximal->PrevJoint;
+	Proximal->NextJoint = Finger->Proximal->NextJoint;
+	Intermediate->PrevJoint = Finger->Intermediate->PrevJoint;
+	Intermediate->NextJoint = Finger->Intermediate->NextJoint;
+	Distal->PrevJoint = Finger->Distal->PrevJoint;
+	Distal->NextJoint = Finger->Distal->NextJoint;
+
 }
