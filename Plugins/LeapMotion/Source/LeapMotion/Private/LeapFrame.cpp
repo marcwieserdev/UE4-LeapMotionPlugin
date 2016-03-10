@@ -205,5 +205,6 @@ void ULeapFrame::SetFrame(const Leap::Frame &Frame)
 	Private->Frame = Frame;
 	IsValid = Private->Frame.isValid();
 	CurrentFPS = Private->Frame.currentFramesPerSecond();
+	Timestamp = Private->Frame.timestamp();
 }
 
