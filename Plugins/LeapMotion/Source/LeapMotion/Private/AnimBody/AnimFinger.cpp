@@ -45,6 +45,15 @@ void UAnimFinger::TranslateFinger(FVector Shift)
 	Distal->TranslateBone(Shift);
 }
 
+
+void UAnimFinger::TransformFinger(FTransform& ByTransform)
+{
+	Metacarpal->TransformBone(ByTransform);
+	Proximal->TransformBone(ByTransform);
+	Intermediate->TransformBone(ByTransform);
+	Distal->TransformBone(ByTransform);
+}
+
 void UAnimFinger::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Change Basis for all bones

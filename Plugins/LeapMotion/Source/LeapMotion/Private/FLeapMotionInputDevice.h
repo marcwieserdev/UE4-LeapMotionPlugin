@@ -17,6 +17,11 @@ struct LeapControllerData
 	bool bUseGammaCorrection = false;
 	bool bImageEventsEnabled = false;
 	bool bUseMountOffset = true;
+	bool bTimeWarpEnabled = false;	//v 2.0.1 disable timewarp until it works correctly
+	float TimeWarpAmountMs = 0.f;	//In milliseconds
+	float TimeWarpFactor = 1.f;	//0-1.f magnitude of timewarp applied
+	float TimeWarpTween = 1.f;
+	LeapHMDSnapshot TimeWarpSnapshot;	//latest timewarp snapshot
 };
 
 class FLeapMotionInputDevice : public IInputDevice
@@ -24,13 +29,13 @@ class FLeapMotionInputDevice : public IInputDevice
 public:
 	FLeapMotionInputDevice(const TSharedRef< FGenericApplicationMessageHandler >& MessageHandler);
 
-	void CustomInitializer();
-
 	/** Tick the interface (e.g. check for new controllers) */
 	virtual void Tick(float DeltaTime) override;
 
 	/** Poll for controller state and send events if needed */
 	virtual void SendControllerEvents() override;
+
+	void ParseEvents();
 
 	/** Set which MessageHandler will get the events from SendControllerEvents. */
 	virtual void SetMessageHandler(const TSharedRef< FGenericApplicationMessageHandler >& InMessageHandler) override;
@@ -66,8 +71,9 @@ private:
 	class ULeapImage* PEventImage1 = nullptr;
 	class ULeapImage* PEventImage2 = nullptr;
 
-	class LeapStateData* PastState;
-	TArray<UObject*> EventDelegates;
+	class LeapStateData* PastState;			//state handling
+	TArray<UObject*> EventDelegates;		//delegate storage
+	class HMDSnapshotSamples* HMDSamples;	//timewarp
 
 	//Private utility methods
 	void CallFunctionOnDelegates(TFunction< void(UObject*)> InFunction);	//lambda multi-cast convenience wrapper

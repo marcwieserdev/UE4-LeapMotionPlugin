@@ -21,5 +21,10 @@ public:
 	virtual void AddEventDelegate(UObject* EventDelegate) override;
 	virtual void RemoveEventDelegate(UObject* EventDelegate) override;
 
+	bool IsActive();
+
 	TSharedPtr< class FLeapMotionInputDevice > LeapInputDevice;
+
+private:
+	bool bActive = false;
 };

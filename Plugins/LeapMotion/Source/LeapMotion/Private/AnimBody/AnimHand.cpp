@@ -1,5 +1,6 @@
 #include "LeapMotionPrivatePCH.h"
 #include "AnimHand.h"
+#include "FLeapMotionInputDevice.h"
 
 UAnimHand::UAnimHand(const class FObjectInitializer& Init)
 	: Super(Init)
@@ -58,6 +59,21 @@ void UAnimHand::TranslateHand(FVector Shift)
 	LowerArm->TranslateBone(Shift);
 }
 
+
+void UAnimHand::TransformHand(FTransform& ByTransform)
+{
+	//Shift all fingers
+	Thumb->TransformFinger(ByTransform);
+	Index->TransformFinger(ByTransform);
+	Middle->TransformFinger(ByTransform);
+	Ring->TransformFinger(ByTransform);
+	Pinky->TransformFinger(ByTransform);
+
+	//Arm/Wrist
+	Wrist->TransformBone(ByTransform);
+	LowerArm->TransformBone(ByTransform);
+}
+
 void UAnimHand::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Change Basis for all fingers
@@ -94,7 +110,6 @@ void UAnimHand::SetFromLeapHand(ULeapHand* LeapHand)
 	//Fingers
 	ULeapFingerList* Fingers = LeapHand->Fingers();
 
-
 	for (int i = 0; i < Fingers->Count; i++)
 	{
 		ULeapFinger* Finger = Fingers->GetPointableById(i);
@@ -119,4 +134,34 @@ void UAnimHand::SetFromLeapHand(ULeapHand* LeapHand)
 			break;
 		}
 	}
+	
+	//This may be too early if we haven't adjusted our positioning?
+	//ApplyTimewarp();
+
+	LeapControllerData* Data = ILeapMotionPlugin::Get().ControllerData();
+
+	if (Data->bTimeWarpEnabled)
+	{
+		//Transform this hand by timewarp, this will apply it recursively
+		FTransform TimeWarpTransform = Data->TimeWarpSnapshot.Transform();
+
+		//Debug override, what does the transform do?
+		//TimeWarpTransform = FTransform();
+		//TimeWarpTransform.SetRotation(FRotator(0, -90, 0).Quaternion());
+		TransformHand(TimeWarpTransform);
+	}
+}
+
+void UAnimHand::ApplyTimewarp()
+{
+	/*if (ILeapMotionPlugin::Get().ControllerData()->bTimeWarpEnabled)
+	{
+		//Transform this hand by timewarp, this will apply it recursively
+		FTransform TimeWarpTransform = LeapHand->TimewarpSnapshot.Transform();
+
+		//Debug override
+		TimeWarpTransform = FTransform();
+		TimeWarpTransform.SetRotation(FRotator(0,90,0).Quaternion());
+		TransformHand(TimeWarpTransform);
+	}*/
 }

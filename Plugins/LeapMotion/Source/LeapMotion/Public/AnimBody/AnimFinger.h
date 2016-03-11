@@ -77,6 +77,14 @@ class LEAPMOTION_API UAnimFinger : public UObject
 	void TranslateFinger(FVector Shift);
 
 	/**
+	* Transform all the bones in the finger by the given transform
+	*
+	* @param ByTransform	Affecting transform
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
+	void TransformFinger(FTransform& ByTransform);
+
+	/**
 	* Changes the Basis by rotations sets. Used for rotating from XForward to YForward defaults
 	* in animation.
 	*

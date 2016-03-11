@@ -26,7 +26,14 @@ void FLeapMotionPlugin::ShutdownModule()
 
 LeapControllerData* FLeapMotionPlugin::ControllerData()
 {
-	return &(LeapInputDevice->ControllerData);
+	if (bActive) 
+	{
+		return &(LeapInputDevice->ControllerData);
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void FLeapMotionPlugin::AddEventDelegate(UObject* EventDelegate)
@@ -60,6 +67,8 @@ TSharedPtr< class IInputDevice > FLeapMotionPlugin::CreateInputDevice(const TSha
 	EKeys::AddKey(FKeyDetails(EKeysLeap::LeapRightPalmRoll, LOCTEXT("LeapRightPalmRoll", "Leap Right Palm Roll"), FKeyDetails::FloatAxis));
 
 	FLeapMotionPlugin::LeapInputDevice = MakeShareable(new FLeapMotionInputDevice(InMessageHandler));
+
+	bActive = true;
 
 	return TSharedPtr< class IInputDevice >(LeapInputDevice);
 }

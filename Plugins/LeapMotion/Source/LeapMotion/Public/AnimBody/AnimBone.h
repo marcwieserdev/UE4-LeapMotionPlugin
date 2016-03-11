@@ -95,6 +95,15 @@ class LEAPMOTION_API UAnimBone : public UObject
 	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
 	void TranslateBone(FVector Shift);
 
+
+	/**
+	* Transform the bone by the given transform
+	*
+	* @param ByTransform	Affecting transform
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Anim Bone")
+	void TransformBone(FTransform& ByTransform);
+	
 	/**
 	* Changes the Basis by rotations sets. Used for rotating from XForward to YForward defaults
 	* in animation.

@@ -1,4 +1,5 @@
 #include "LeapMotionPrivatePCH.h"
+#include "FLeapMotionInputDevice.h"
 
 class PrivateHand
 {

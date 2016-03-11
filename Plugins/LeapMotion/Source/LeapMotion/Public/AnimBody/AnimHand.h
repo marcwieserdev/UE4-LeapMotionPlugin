@@ -101,6 +101,14 @@ class LEAPMOTION_API UAnimHand : public UObject
 	void TranslateHand(FVector Shift);
 
 	/**
+	* Transform all the bones in the hand by the given transform
+	*
+	* @param ByTransform	Affecting transform
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Anim Finger")
+	void TransformHand(FTransform& ByTransform);
+
+	/**
 	* Changes the Basis by rotations sets. Used for rotating from XForward to YForward defaults
 	* in animation.
 	*
@@ -119,4 +127,10 @@ class LEAPMOTION_API UAnimHand : public UObject
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
 	void SetFromLeapHand(class ULeapHand* LeapHand);
+
+	/**
+	* Apply the timewarp now
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Anim Hand")
+	void ApplyTimewarp();
 };

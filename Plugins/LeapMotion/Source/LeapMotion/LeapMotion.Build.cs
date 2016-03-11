@@ -88,6 +88,7 @@ namespace UnrealBuildTool.Rules
                 string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "Win64" : "Win32";
 
                 PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, PlatformString, "Leap.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibraryPath, PlatformString, "LeapC.lib"));
             }
             else if (Target.Platform == UnrealTargetPlatform.Mac){
 

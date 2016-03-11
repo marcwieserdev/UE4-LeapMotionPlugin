@@ -2,6 +2,7 @@
 
 #include "LeapEnums.h"
 #include "LeapMotionPublicPCH.h"
+#include "LeapHMDSnapshot.h"
 #include "LeapHand.generated.h"
 
 /**

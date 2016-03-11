@@ -1,11 +1,14 @@
 #include "LeapMotionPrivatePCH.h"
+#include "IHeadMountedDisplay.h"
 #include "LeapEventInterface.h"
 #include "FLeapMotionInputDevice.h"
 #include "LeapHand.h"
 #include "LeapBaseObject.h"
-
+#include "LeapHMDSnapshot.h"
+#include "LeapC.h"
 
 #define LEAP_IM_SCALE 0.01111111111 //this is 1/90. We consider 90 degrees to be 1.0 for Input mapping
+#define MAX_HMD_SNAPSHOT_COUNT 20
 
 //Define each FKey const in a .cpp so we can compile
 const FKey EKeysLeap::LeapLeftPinch("LeapLeftPinch");
@@ -20,7 +23,84 @@ const FKey EKeysLeap::LeapRightPalmPitch("LeapRightPalmPitch");
 const FKey EKeysLeap::LeapRightPalmYaw("LeapRightPalmYaw");
 const FKey EKeysLeap::LeapRightPalmRoll("LeapRightPalmRoll");
 
+/**
+* Keep last 20 samples for finding the closest sample to a specified timestamp
+*/
+class HMDSnapshotSamples
+{
+public:
+	HMDSnapshotSamples(Leap::Controller InController) : LeapController(InController) {};
 
+	//Timewarp utility methods
+	void AddCurrentHMDSample();
+	LeapHMDSnapshot CurrentHMDSample();
+	LeapHMDSnapshot LastHMDSample();
+	LeapHMDSnapshot& HMDSampleClosestToTimestamp(int64 Timestamp);
+
+	Leap::Controller& LeapController;
+private:
+	LeapHMDSnapshot Samples[MAX_HMD_SNAPSHOT_COUNT];
+	int CurrentIndex = 0;
+};
+
+void HMDSnapshotSamples::AddCurrentHMDSample()
+{
+	//Grab current sample
+	Samples[CurrentIndex] = CurrentHMDSample();
+
+	//Circular tracker - slot it in correctly
+	CurrentIndex++;
+	if (CurrentIndex >= MAX_HMD_SNAPSHOT_COUNT)
+	{
+		CurrentIndex = 0;
+	}
+}
+
+LeapHMDSnapshot HMDSnapshotSamples::CurrentHMDSample()
+{
+	LeapHMDSnapshot Snapshot;
+
+	//we use leap time stamps to keep things consistent
+	//Snapshot.Timestamp = LeapController.now();		//This is missing from current leap 3.1 api in LeapC++ api!
+	Snapshot.Timestamp = LeapGetNow();					//Workaround use LeapC api
+	Snapshot.Orientation;
+	Snapshot.Position;
+
+	GEngine->HMDDevice->GetCurrentOrientationAndPosition(Snapshot.Orientation, Snapshot.Position);
+	return Snapshot;
+}
+
+
+LeapHMDSnapshot HMDSnapshotSamples::LastHMDSample()
+{
+	return Samples[CurrentIndex];
+}
+
+LeapHMDSnapshot& HMDSnapshotSamples::HMDSampleClosestToTimestamp(int64 Timestamp)
+{
+	int64 MinDifference = INT64_MAX;
+	int32 MinIndex = 0;	//always have a valid index in case something goes wrong
+
+	//UE_LOG(LeapPluginLog, Log, TEXT("Timewarp Debug - Now: %d"), Timestamp);
+
+	for (int32 i = 0; i < MAX_HMD_SNAPSHOT_COUNT; i++)
+	{
+		LeapHMDSnapshot& Snapshot = Samples[i];
+		int32 Difference = FMath::Abs(Snapshot.Timestamp - Timestamp);
+
+		//UE_LOG(LeapPluginLog, Log, TEXT("Timewarp Debug - Snapshot: %d, Difference: %d"), Snapshot.Timestamp, Difference);
+
+		if (Difference < MinDifference)
+		{
+			MinDifference = Difference;
+			MinIndex = i;
+		}
+	}
+	//UE_LOG(LeapPluginLog, Log, TEXT("Timewarp Debug - MinSnapshot: %d, MinDifference: %d"), Samples[MinIndex].Timestamp, MinDifference);
+	return Samples[MinIndex];
+}
+
+//Function call Utility
 void FLeapMotionInputDevice::CallFunctionOnDelegates(TFunction< void(UObject*)> InFunction)
 {
 	for (UObject* EventDelegate : EventDelegates)
@@ -128,25 +208,33 @@ void LeapStateData::SetStateForId(LeapHandStateData HandState, int32 HandId)
 FLeapMotionInputDevice::FLeapMotionInputDevice(const TSharedRef< FGenericApplicationMessageHandler >& InMessageHandler) : MessageHandler(InMessageHandler) 
 {
 	PastState = new LeapStateData;
+	HMDSamples = new HMDSnapshotSamples(ControllerData.LeapController); 	//store a reference for our timing circuits
+
 	//PRoot = NewObject<ULeapBaseObject>();
 	//PRoot->AddToRoot();  //work around to keep our custom event objects in memory until we're done with them
 }
 
-void FLeapMotionInputDevice::CustomInitializer()
-{
-
-}
 
 void FLeapMotionInputDevice::Tick(float DeltaTime)
 {
+	//Add HMD samples when you tick for timewarp
+
+
 
 }
+
 
 //Main loop event emitter
 void FLeapMotionInputDevice::SendControllerEvents()
 {
+	HMDSamples->AddCurrentHMDSample();
+	ParseEvents();
+}
+
+void FLeapMotionInputDevice::ParseEvents()
+{
 	//Optimization: If we don't have any delegates, skip
-	if (EventDelegates.Num()==0)
+	if (EventDelegates.Num() == 0)
 	{
 		return;
 	}
@@ -154,6 +242,22 @@ void FLeapMotionInputDevice::SendControllerEvents()
 	//Pointers
 	Leap::Frame Frame = ControllerData.LeapController.frame();
 	Leap::Frame PastFrame = ControllerData.LeapController.frame(1);
+
+	//Calculate HMD Timewarp if valid
+	if (GEngine->HMDDevice.IsValid() && ControllerData.bTimeWarpEnabled) {
+		LeapHMDSnapshot ThenSnapshot = HMDSamples->HMDSampleClosestToTimestamp(Frame.timestamp());
+		LeapHMDSnapshot NowSnapShot = HMDSamples->CurrentHMDSample();
+
+		LeapHMDSnapshot HistorySnapshot = HMDSamples->LastHMDSample();	//reduce jitter
+		//ControllerData.TimeWarpSnapshot = NowSnapShot.Difference(ThenSnapshot, ControllerData.TimeWarpFactor);// * ControllerData.TimeWarpFactor;
+
+		FQuat WarpQuat = NowSnapShot.Orientation;//FQuat::Slerp(NowSnapShot.Orientation, HistorySnapshot.Orientation, ControllerData.TimeWarpTween);
+		FQuat ThenTweened = FQuat::Slerp(ThenSnapshot.Orientation, HistorySnapshot.Orientation, ControllerData.TimeWarpTween);
+
+		ControllerData.TimeWarpSnapshot.Orientation = (WarpQuat.Inverse() * ControllerData.TimeWarpFactor) * ThenTweened;
+
+		ControllerData.TimeWarpAmountMs = (ControllerData.TimeWarpSnapshot.Timestamp) / 1000.f;
+	}
 
 	//-Hands-
 
@@ -184,7 +288,7 @@ void FLeapMotionInputDevice::SendControllerEvents()
 		Leap::Hand Hand = Frame.hands()[i];
 		LeapHandStateData PastHandState = PastState->StateForId(Hand.id());		//we use a custom class to hold reliable state tracking based on id's
 
-																						//Make a ULeapHand
+																				//Make a ULeapHand
 		if (PEventHand == nullptr)
 		{
 			PEventHand = NewObject<ULeapHand>();
@@ -219,7 +323,7 @@ void FLeapMotionInputDevice::SendControllerEvents()
 			{
 				ILeapEventInterface::Execute_LeapLeftHandMoved(EventDelegate, PEventHand);
 			});
-			
+
 			//Input Mapping
 			FRotator PalmOrientation = PEventHand->PalmOrientation;
 			EmitAnalogInputEventForKey(EKeysLeap::LeapLeftPalmPitch, PalmOrientation.Pitch * LEAP_IM_SCALE, 0, 0);
@@ -237,7 +341,7 @@ void FLeapMotionInputDevice::SendControllerEvents()
 			{
 				ILeapEventInterface::Execute_LeapHandGrabbing(EventDelegate, GrabStrength, PEventHand);
 			});
-			
+
 		}
 
 		if (Grabbed && !PastHandState.Grabbed)
@@ -360,7 +464,7 @@ void FLeapMotionInputDevice::SendControllerEvents()
 				{
 					ILeapEventInterface::Execute_LeapFingerMoved(EventDelegate, PEventFinger);
 				});
-			}	
+			}
 		}
 
 		//Do these last so we can easily override debug shapes
@@ -489,7 +593,7 @@ void FLeapMotionInputDevice::SendControllerEvents()
 		int ImageCount = Frame.images().count();
 
 		//We only support getting both images
-		if(ImageCount>=2)
+		if (ImageCount >= 2)
 		{
 			Leap::Image Image1 = Frame.images()[0];
 			if (PEventImage1 == nullptr)
@@ -560,8 +664,9 @@ void FLeapMotionInputDevice::ClearReferences(UObject* object)
 FLeapMotionInputDevice::~FLeapMotionInputDevice()
 {
 	delete PastState;
+	delete HMDSamples;
 
-	//TODO: cleaner memory handling for event objects
+	//TODO: cleaner memory handling for event objects, any ideas?
 	//ClearReferences(PRoot);
 	ClearReferences(PEventHand);
 	ClearReferences(PEventFinger);

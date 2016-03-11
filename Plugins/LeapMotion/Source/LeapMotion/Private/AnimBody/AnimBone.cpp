@@ -42,6 +42,20 @@ void UAnimBone::TranslateBone(FVector Shift)
 	Position += Shift;
 }
 
+void UAnimBone::TransformBone(FTransform& ByTransform)
+{
+	//The transform works differently we're only using it for timewarp right now, which is disabled (2.0.1)
+	//FTransform Transform = GetTransform();
+	//Transform.Accumulate(ByTransform);
+	//SetFromTransform(Transform);
+
+	Orientation = CombineRotators(Orientation, FRotator(ByTransform.GetRotation()));
+	//Orientation = FRotator(Orientation.Quaternion() * ByTransform.GetRotation() );
+
+	//Rotate the vector based on transform orientation
+	Position = ByTransform.GetRotation().RotateVector(Position);
+}
+
 void UAnimBone::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Adjust the orientation
@@ -49,6 +63,8 @@ void UAnimBone::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVect
 	Orientation = CombineRotators(PreBase, PostCombine);
 
 	//Rotate our vector/s
-	if(AdjustVectors)
+	if (AdjustVectors)
+	{
 		Position = PostBase.RotateVector(Position);
+	}
 }

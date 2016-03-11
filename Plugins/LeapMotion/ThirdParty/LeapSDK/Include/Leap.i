@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012-2015 Leap Motion, Inc. All rights reserved.               /
+// Copyright (C) 2012-2016 Leap Motion, Inc. All rights reserved.               /
 // Leap Motion proprietary and confidential. Not for distribution.              /
 // Use subject to the terms of the Leap Motion SDK Agreement available at       /
 // https://developer.leapmotion.com/sdk_agreement, or another agreement         /
@@ -34,10 +34,10 @@
 %ignore Leap::Gesture::Gesture(GestureImplementation*);
 %ignore Leap::Image::Image(ImageImplementation*);
 %ignore Leap::Mask::Mask(MaskImplementation*);
-%ignore Leap::Screen::Screen(ScreenImplementation*);
 %ignore Leap::Frame::Frame(FrameImplementation*);
 %ignore Leap::Controller::Controller(ControllerImplementation*);
 %ignore Leap::Device::Device(DeviceImplementation*);
+%ignore Leap::FailedDevice::FailedDevice(FailedDeviceImplementation*);
 %ignore Leap::InteractionBox::InteractionBox(InteractionBoxImplementation*);
 %ignore Leap::TrackedQuad::TrackedQuad(TrackedQuadImplementation*);
 %ignore Leap::BugReport::BugReport(BugReportImplementation*);
@@ -76,6 +76,7 @@
 %rename(FingerType) Leap::Finger::Type;
 %rename(BoneType) Leap::Bone::Type;
 %rename(DeviceType) Leap::Device::Type;
+%rename(FailureType) Leap::FailedDevice::Failure;
 
 #endif
 
@@ -128,7 +129,6 @@
 %constattrib( Leap::Hand, int, id );
 %leapattrib( Leap::Hand, PointableList, pointables );
 %leapattrib( Leap::Hand, FingerList, fingers );
-%leapattrib( Leap::Hand, ToolList, tools );
 %leapattrib( Leap::Hand, Vector, palmPosition );
 %leapattrib( Leap::Hand, Vector, palmVelocity );
 %leapattrib( Leap::Hand, Vector, palmNormal );
@@ -137,6 +137,8 @@
 %constattrib( Leap::Hand, bool, isValid );
 %leapattrib( Leap::Hand, Vector, sphereCenter );
 %constattrib( Leap::Hand, float, sphereRadius );
+%constattrib( Leap::Hand, float, grabAngle );
+%constattrib( Leap::Hand, float, pinchDistance );
 %constattrib( Leap::Hand, float, grabStrength );
 %constattrib( Leap::Hand, float, pinchStrength );
 %constattrib( Leap::Hand, float, palmWidth );
@@ -217,8 +219,8 @@
 %constattrib( Leap::GestureList, int, count );
 %constattrib( Leap::ImageList, int, count );
 %constattrib( Leap::MaskList, int, count );
-%constattrib( Leap::ScreenList, int, count );
 %constattrib( Leap::DeviceList, int, count );
+%constattrib( Leap::FailedDeviceList, int, count );
 #endif
 
 %constattrib( Leap::PointableList, bool, isEmpty );
@@ -228,8 +230,8 @@
 %constattrib( Leap::GestureList, bool, isEmpty );
 %constattrib( Leap::ImageList, bool, isEmpty );
 %constattrib( Leap::MaskList, bool, isEmpty );
-%constattrib( Leap::ScreenList, bool, isEmpty );
 %constattrib( Leap::DeviceList, bool, isEmpty );
+%constattrib( Leap::FailedDeviceList, bool, isEmpty );
 
 %leapattrib( Leap::PointableList, Pointable, leftmost );
 %leapattrib( Leap::PointableList, Pointable, rightmost );
@@ -252,17 +254,10 @@
 %leapattrib( Leap::Frame, ToolList, tools );
 %leapattrib( Leap::Frame, HandList, hands );
 %leapattrib( Leap::Frame, ImageList, images );
+%leapattrib( Leap::Frame, ImageList, rawImages );
 %constattrib( Leap::Frame, bool, isValid );
 %leapattrib( Leap::Frame, InteractionBox, interactionBox );
 %constattrib( Leap::Frame, int, serializeLength );
-
-%constattrib( Leap::Screen, int32_t, id );
-%leapattrib( Leap::Screen, Vector, horizontalAxis );
-%leapattrib( Leap::Screen, Vector, verticalAxis );
-%leapattrib( Leap::Screen, Vector, bottomLeftCorner );
-%constattrib( Leap::Screen, int, widthPixels );
-%constattrib( Leap::Screen, int, heightPixels );
-%constattrib( Leap::Screen, bool, isValid );
 
 %constattrib( Leap::Device, float, horizontalViewAngle );
 %constattrib( Leap::Device, float, verticalViewAngle );
@@ -271,11 +266,16 @@
 %constattrib( Leap::Device, bool, isValid );
 %constattrib( Leap::Device, bool, isEmbedded );
 %constattrib( Leap::Device, bool, isStreaming );
-%constattrib( Leap::Device, bool, isFlipped );
+%constattrib( Leap::Device, bool, isSmudged );
+%constattrib( Leap::Device, bool, isLightingBad );
+
 %constattrib( Leap::Device, Leap::Device::Type, type );
 %attributestring( Leap::Device, std::string, serialNumber, serialNumber );
 %leapattrib( Leap::Device, Vector, position );
 %leapattrib( Leap::Device, Matrix, orientation );
+
+%attributestring( Leap::FailedDevice, std::string, pnpId, pnpId);
+%constattrib( Leap::FailedDevice, Leap::FailedDevice::FailureType, failure);
 
 %leapattrib( Leap::InteractionBox, Vector, center );
 %constattrib( Leap::InteractionBox, float, width );
@@ -311,7 +311,6 @@
 %staticattrib( Leap::Arm, static const Arm&, invalid);
 %staticattrib( Leap::Gesture, static const Gesture&, invalid);
 %staticattrib( Leap::Image, static const Image&, invalid);
-%staticattrib( Leap::Screen, static const Screen&, invalid );
 %staticattrib( Leap::Device, static const Device&, invalid );
 %staticattrib( Leap::InteractionBox, static const InteractionBox&, invalid );
 %staticattrib( Leap::TrackedQuad, static const TrackedQuad&, invalid );
@@ -329,7 +328,7 @@
 %constattrib( Leap::Controller, Controller::PolicyFlag, policyFlags );
 %leapattrib( Leap::Controller, Config, config );
 %leapattrib( Leap::Controller, ImageList, images );
-%leapattrib( Leap::Controller, ScreenList, locatedScreens );
+%leapattrib( Leap::Controller, ImageList, rawImages );
 %leapattrib( Leap::Controller, DeviceList, devices );
 %leapattrib( Leap::Controller, TrackedQuad, trackedQuad );
 %leapattrib( Leap::Controller, BugReport, bugReport );
@@ -1119,8 +1118,8 @@ extern "C" BOOL WINAPI DllMain(
 %leap_list_helper(Image);
 %leap_list_helper(Mask);
 %leap_list_helper(Hand);
-%leap_list_helper(Screen);
 %leap_list_helper(Device);
+%leap_list_helper(FailedDevice);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Config Helpers
