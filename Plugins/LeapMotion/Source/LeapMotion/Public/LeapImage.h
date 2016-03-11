@@ -143,7 +143,7 @@ public:
 	void SetLeapImage(const class Leap::Image &LeapImage);
 
 private:
-	class PrivateLeapImage* Private;
+	class PrivateLeapImage* Private = nullptr;
 
 	UPROPERTY()
 	UTexture2D* PImagePointer = nullptr;

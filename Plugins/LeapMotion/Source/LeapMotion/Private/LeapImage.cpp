@@ -28,8 +28,9 @@ public:
 	ULeapImage* Self;
 };
 
-ULeapImage::ULeapImage(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateLeapImage())
+ULeapImage::ULeapImage(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer)//, Private(new PrivateLeapImage())
 {
+	Private = new PrivateLeapImage();
 	Private->Self = this;
 
 	//default not using gamma correction
@@ -389,14 +390,14 @@ UTexture2D* ULeapImage::Texture()
 	return Private->Texture32FromLeapImage(Width, Height, (uint8*)Private->LeapImage.data());
 
 	//Enqueued - render thread, Todo: enable a working version of this optimization
-	//return _private->EnqueuedTexture32FromLeapImage(Width, Height, (uint8*)_private->leapImage.data());
+	//return Private->EnqueuedTexture32FromLeapImage(Width, Height, (uint8*)Private->leapImage.data());
 }
 
 UTexture2D* ULeapImage::Distortion()
 {
 	PDistortionPointer = Private->validImagePointer(PDistortionPointer, DistortionWidth / 2, DistortionHeight, PF_A32B32G32R32F);		//32bit per channel
 	
-	//return _private->Texture32FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)_private->leapImage.distortion());	
+	//return Private->Texture32FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)Private->leapImage.distortion());	
 	return Private->Texture128FromLeapDistortion(DistortionWidth, DistortionHeight, (float*)Private->LeapImage.distortion());
 }
 

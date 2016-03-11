@@ -1,0 +1,45 @@
+{
+	"TargetName" : "LeapMotionGithubEditor",
+	"Platform" : "Win64",
+	"Configuration" : "Development",
+	"BuildId" : "336a1f4a-0dba-4c7c-b4a9-f415fd193955",
+	"Version" : 
+	{
+		"MajorVersion" : 4,
+		"MinorVersion" : 11,
+		"PatchVersion" : 0,
+		"Changelist" : 2875303,
+		"IsLicenseeVersion" : 0,
+		"BranchName" : "++UE4+Release-4.11"
+	},
+	"BuildProducts" :
+	[
+		{
+			"Path" : "$(ProjectDir)\\Plugins\\LeapMotion\\Binaries\\Win64\\UE4Editor-LeapMotion.dll",
+			"Type" : "DynamicLibrary"
+		},
+		{
+			"Path" : "$(ProjectDir)\\Plugins\\LeapMotion\\Binaries\\Win64\\UE4Editor-LeapMotion.pdb",
+			"Type" : "SymbolFile"
+		},
+		{
+			"Path" : "$(ProjectDir)\\Plugins\\LeapMotion\\Intermediate\\Build\\Win64\\UE4Editor\\Development\\UE4Editor-LeapMotion.lib",
+			"Type" : "ImportLibrary"
+		},
+		{
+			"Path" : "$(ProjectDir)\\Binaries\\Win64\\UE4Editor-LeapMotionGithub.dll",
+			"Type" : "DynamicLibrary"
+		},
+		{
+			"Path" : "$(ProjectDir)\\Binaries\\Win64\\UE4Editor-LeapMotionGithub.pdb",
+			"Type" : "SymbolFile"
+		},
+		{
+			"Path" : "$(ProjectDir)\\Intermediate\\Build\\Win64\\UE4Editor\\Development\\UE4Editor-LeapMotionGithub.lib",
+			"Type" : "ImportLibrary"
+		}
+	],
+	"RuntimeDependencies" :
+	[
+	]
+}

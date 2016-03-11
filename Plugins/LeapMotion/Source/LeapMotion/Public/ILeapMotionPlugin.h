@@ -3,13 +3,16 @@
 #pragma once
 
 #include "LeapMotionPublicPCH.h"
-#include "InputCoreTypes.h"
+#include "ILeapMotionPlugin.h"
+#include "IInputDeviceModule.h"
+
+
 
 /**
  * The public interface to this module.  In most cases, this interface is only public to sibling modules 
  * within this plugin.
  */
-class LEAPMOTION_API ILeapMotion : public IModuleInterface
+class LEAPMOTION_API ILeapMotionPlugin : public IInputDeviceModule
 {
 
 public:
@@ -20,9 +23,9 @@ public:
 	 *
 	 * @return Returns singleton instance, loading the module on demand if needed
 	 */
-	static inline ILeapMotion& Get()
+	static inline ILeapMotionPlugin& Get()
 	{
-		return FModuleManager::LoadModuleChecked< ILeapMotion >( "LeapMotion" );
+		return FModuleManager::LoadModuleChecked< ILeapMotionPlugin >( "LeapMotion" );
 	}
 
 	/**
@@ -35,6 +38,15 @@ public:
 		return FModuleManager::Get().IsModuleLoaded( "LeapMotion" );
 	}
 
-	virtual class Leap::Controller* Controller(){ return NULL; };
+	//These are typically called by a wrapped class such as LeapController (Actor Component)
+
+	/** Get raw reference to the data and settings toggles*/
+	virtual struct LeapControllerData* ControllerData(){ return nullptr; };
+	
+	/** Attach an event delegate to the leap input device loop*/
+	virtual void AddEventDelegate(UObject* EventDelegate) {};
+
+	/** Remove an event delegate from the leap input device loop*/
+	virtual void RemoveEventDelegate(UObject* EventDelegate) {};
 };
 

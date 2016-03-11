@@ -50,6 +50,7 @@ namespace UnrealBuildTool.Rules
 					"Core",
                     "CoreUObject",
                     "InputCore",
+                    "InputDevice",
                     "Slate",
                     "SlateCore",
                     "HeadMountedDisplay",
