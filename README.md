@@ -1,40 +1,46 @@
 leap-ue4
 ====================
 
-An unofficial event-driven [Leap Motion](http://www.leapmotion.com) plugin for the Unreal Engine 4. 
+An event-driven [Leap Motion](http://www.leapmotion.com) plugin for the Unreal Engine 4. 
 
-Main method of use is by subscribing to events within your blueprint, but it also supports polling through functions called on the LeapController for up to the 60 past frames. You can extend functionality to any blueprint through adding the LeapInterfaceEvent interface then adding the LeapController component to that blueprint. This same architecture is available to C++ if you prefer, which also supports both event-driven and polling style use.
+You can use convenience blueprints to just select and play or use a custom approach via blueprints or C++. See relevant sections for details
+
+You can extend functionality to any blueprint through adding the LeapInterfaceEvent interface then adding the LeapController component to that blueprint. This same architecture is available to C++ if you prefer, which also supports both event-driven and polling style use.
 
 See [unreal thread](https://forums.unrealengine.com/showthread.php?49107-Plugin-Leap-Motion-Event-Driven) for version downloads and development updates.
 
-Since UE 4.7, Leap has an official plugin, which can be [found here](https://community.leapmotion.com/t/official-ue4-plugin/2503).
+Since 4.11 this is now the official plugin!
 
-##How to install it##
+##How to Setup (since 4.11)##
 
 1. Create new or open a project. 
-2. Browse to your project root (typically found at *Documents/Unreal Projects/{Your Project Root}*)
-3. Copy *Plugins* folder into your Project root.
-4. Copy *Binaries* folder into your Project root.
-5. Restart the Editor and open your project again.
-6. Select Window->Plugins. Click on Installed and you should see a category called Input and a plugin called Leap Motion now available. It should be automatically enabled, if not, Select Enabled. The Editor will warn you to restart, click restart.
-7. The plugin should be enabled and ready to use.
+2. Select Window->Plugins. Click on the *Input Devices* category and you should see a plugin called Leap Motion. Select Enabled. The Editor will warn you to restart, click restart.
+3. The plugin should be enabled and ready to use.
 
-<img src="http://i.imgur.com/2In3q5n.png">
+<img src="http://i.imgur.com/h9ib6GP.gif">
 
 
 ##How to use it - Convenience Rigged Characters##
 Since 0.7.10 the plugin includes convenience content for easy reference of say a rigged setup. Since 0.9 these are automatically included as plugin content.
 
-####Rigged Character####
+####Convenience Characters####
 
-To try the rigged character, change your default pawn to LeapRiggedCharacter and change your PlayerController to VRPlayerController (if using hmd)
+To try the rigged or floating hands characters, change your game mode to use *LeapRiggedCharacter* or *LeapFloatingHandsCharacter* as your default pawn.
 
-<img src ="http://i.imgur.com/5fJtEWY.gif">
+<img src ="http://i.imgur.com/3jP66IJ.gif">
 
 That's it! hit play to try it out!
 
 <img src ="http://i.imgur.com/HWVaeid.gif">
 <br>
+
+If you wish to toggle floating hand types, add *ChangeHands* to your input action mapping, e.g. using the keyboard button *H*
+
+####Add Convenience Leap Hands to Custom Character####
+
+1. Add a camera to your pawn/character, parent e.g. *LeapRiggedEchoHandsActor* or *LeapImageHandsActor* to that camera as a child actor.
+2. Optionally modify parameters
+3. Hit play!
 
 ####Collision Character####
 Since 0.9.3 you can add collision by changing your character from LeapRiggedCharacter to LeapCollisionCharacter. If you want to modify the passthrough character or your own sub-class to have collision simply change one setting in your pawn.
@@ -230,20 +236,6 @@ Available blueprint classes branching from LeapController:
 <li>Tool</li>
 <li>ToolList</li>
 </ul>
-
-##Shipping/Packaged Builds##
-<ol>
-<li> Projects require code, if you are using a blueprint only project, add an empty class and compile your project module. You simply do File->Add Code to Project and it can be anything so I usually just pick None->Create Class and then it will ask you to open visual studio where you just hit compile (Build solution). If you haven't added code before follow the unreal engine <a href="https://docs.unrealengine.com/latest/INT/Programming/QuickStart/1/index.html">programming Quick Start</a> guide. Essentially it boils down to downloading the free Visual Studio Community and changing a few small configs.</li>
-<li> Add the following line to your DefaultEngine.ini </li>
-
-<i>EnabledPlugins=LeapMotion</i>
-
-under <i>[Plugins]</i>, create this category if missing.
-
-<li> Package your content</li>
-<li> In your packaged directory drag the <i>Binaries</i> folder from this plugin into your packaged project folder. E.g. if I have a packaged folder called <i>LeapPluginTest</i>
-find <i>WindowsNoEditor/LeapPluginTest</i>, this is your packaged project root. Add the binaries folder there.</li>
-</ol>
 
 ###Shipping Troubleshooting###
 - If you get errors complaining 'Leap Motion' plugin cannot be found, you do not have code in your project.
