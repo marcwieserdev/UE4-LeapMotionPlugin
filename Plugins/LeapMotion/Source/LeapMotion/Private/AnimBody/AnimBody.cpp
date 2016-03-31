@@ -1,13 +1,13 @@
 #include "LeapMotionPrivatePCH.h"
 #include "AnimBody.h"
 
-UAnimBody::UAnimBody(const class FObjectInitializer& PCIP)
-	: Super(PCIP)
+UAnimBody::UAnimBody(const class FObjectInitializer& Init)
+	: Super(Init)
 {
-	Left = PCIP.CreateDefaultSubobject<UAnimHand>(this, TEXT("Left"));
-	Right = PCIP.CreateDefaultSubobject<UAnimHand>(this, TEXT("Right"));
+	Left = Init.CreateDefaultSubobject<UAnimHand>(this, TEXT("Left"));
+	Right = Init.CreateDefaultSubobject<UAnimHand>(this, TEXT("Right"));
 
-	Head = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Head"));
+	Head = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Head"));
 }
 
 
@@ -16,9 +16,9 @@ bool UAnimBody::Enabled()
 	return Alpha == 1.f;
 }
 
-void UAnimBody::SetEnabled(bool enable)
+void UAnimBody::SetEnabled(bool Enable)
 {
-	if (enable)
+	if (Enable)
 	{
 		Alpha = 1.f;
 	}
@@ -28,28 +28,28 @@ void UAnimBody::SetEnabled(bool enable)
 	}
 
 	//Forward to every finger
-	Left->SetEnabled(enable);
-	Right->SetEnabled(enable);
+	Left->SetEnabled(Enable);
+	Right->SetEnabled(Enable);
 
-	Head->SetEnabled(enable);
+	Head->SetEnabled(Enable);
 }
 
-void UAnimBody::TranslateBody(FVector shift)
+void UAnimBody::TranslateBody(FVector Shift)
 {
 	//Shift all hands
-	Left->TranslateHand(shift);
-	Right->TranslateHand(shift);
+	Left->TranslateHand(Shift);
+	Right->TranslateHand(Shift);
 
 	//Shift head
-	Head->TranslateBone(shift);
+	Head->TranslateBone(Shift);
 }
 
-void UAnimBody::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors)
+void UAnimBody::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Change Basis for all hands
-	Left->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Right->ChangeBasis(PreBase, PostBase, adjustVectors);
+	Left->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Right->ChangeBasis(PreBase, PostBase, AdjustVectors);
 
 	//Careful with this tbh...
-	Head->ChangeBasis(PreBase, PostBase, adjustVectors);
+	Head->ChangeBasis(PreBase, PostBase, AdjustVectors);
 }

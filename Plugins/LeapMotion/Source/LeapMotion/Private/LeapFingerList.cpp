@@ -4,132 +4,88 @@
 
 class PrivateFingerList{
 public:
-	void Cleanup()
-	{
-		if (frontmost)
-			frontmost->CleanupRootReferences();
-		if (leftmost)
-			leftmost->CleanupRootReferences();
-		if (rightmost)
-			rightmost->CleanupRootReferences();
-		if (pointableById)
-			pointableById->CleanupRootReferences();
-		if (appendedList)
-			appendedList->CleanupRootReferences();
-		if (extendedList)
-			extendedList->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	~PrivateFingerList()
-	{
-		if(!cleanupCalled)
-			Cleanup();
-	}
-
-	bool cleanupCalled = false;
-	Leap::FingerList fingers;
-	ULeapFinger* frontmost = NULL;
-	ULeapFinger* leftmost = NULL;
-	ULeapFinger* rightmost = NULL;
-	ULeapFinger* pointableById = NULL;
-	ULeapFingerList* appendedList = NULL;
-	ULeapFingerList* extendedList = NULL;
+	Leap::FingerList Fingers;
 };
 
-ULeapFingerList::ULeapFingerList(const FObjectInitializer &init) : UObject(init), _private(new PrivateFingerList())
+ULeapFingerList::ULeapFingerList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateFingerList())
 {
 }
 
 ULeapFingerList::~ULeapFingerList()
 {
-	delete _private;
+	delete Private;
 }
 
-void ULeapFingerList::CleanupRootReferences()
+ULeapFingerList *ULeapFingerList::Append(const ULeapFingerList *List)
 {
-	_private->Cleanup();
-	if (this->HasAnyFlags(RF_RootSet))
-		this->RemoveFromRoot();
-}
-
-ULeapFingerList *ULeapFingerList::append(const ULeapFingerList *list)
-{
-	if (_private->appendedList == NULL)
+	if (PAppendedList == nullptr)
 	{
-		_private->appendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
-		_private->appendedList->SetFlags(RF_RootSet);
+		PAppendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
 	}
-	_private->appendedList->setFingerList(_private->fingers.append(list->_private->fingers));
-	return (_private->appendedList);
+	PAppendedList->SetFingerList(Private->Fingers.append(List->Private->Fingers));
+	return (PAppendedList);
 }
 
-ULeapFingerList *ULeapFingerList::extended()
+ULeapFingerList *ULeapFingerList::Extended()
 {
-	if (_private->extendedList == NULL)
+	if (PExtendedList == nullptr)
 	{
-		_private->extendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
-		_private->extendedList->SetFlags(RF_RootSet);
+		PExtendedList = NewObject<ULeapFingerList>(this, ULeapFingerList::StaticClass());
 	}
-	_private->extendedList->setFingerList(_private->fingers.extended());
-	return (_private->extendedList);
+	PExtendedList->SetFingerList(Private->Fingers.extended());
+	return (PExtendedList);
 }
 
-ULeapFinger *ULeapFingerList::leftmost()
+ULeapFinger *ULeapFingerList::Leftmost()
 {
-	if (_private->leftmost == NULL)
+	if (PLeftmost == nullptr)
 	{
-		_private->leftmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
-		_private->leftmost->SetFlags(RF_RootSet);
+		PLeftmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
 	}
-	_private->leftmost->setFinger(_private->fingers.leftmost());
-	return (_private->leftmost);
+	PLeftmost->SetFinger(Private->Fingers.leftmost());
+	return (PLeftmost);
 }
 
-ULeapFinger *ULeapFingerList::rightmost()
+ULeapFinger *ULeapFingerList::Rightmost()
 {
-	if (_private->rightmost == NULL)
+	if (PRightmost == nullptr)
 	{
-		_private->rightmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
-		_private->rightmost->SetFlags(RF_RootSet);
+		PRightmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
 	}
-	_private->rightmost->setFinger(_private->fingers.rightmost());
-	return (_private->rightmost);
+	PRightmost->SetFinger(Private->Fingers.rightmost());
+	return (PRightmost);
 }
 
 
-ULeapFinger *ULeapFingerList::frontmost()
+ULeapFinger *ULeapFingerList::Frontmost()
 {
-	if (_private->frontmost == NULL)
+	if (PFrontmost == nullptr)
 	{
-		_private->frontmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
-		_private->frontmost->SetFlags(RF_RootSet);
+		PFrontmost = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
 	}
-	_private->frontmost->setFinger(_private->fingers.frontmost());
-	return (_private->frontmost);
+	PFrontmost->SetFinger(Private->Fingers.frontmost());
+	return (PFrontmost);
 }
 
-ULeapFinger *ULeapFingerList::getPointableById(int32 id)
+ULeapFinger *ULeapFingerList::GetPointableById(int32 Id)
 {
-	if (_private->pointableById == NULL)
+	if (PPointableById == nullptr)
 	{
-		_private->pointableById = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
-		//NB: non-temporary so we add it to the rootset and remove it when the object itself gets destroyed. Behaves like a property except allocated only on need.
-		//_private->pointableById->SetFlags(RF_DefaultSubObject);	//causes still PIE attachment error
-		_private->pointableById->SetFlags(RF_RootSet);
+		PPointableById = NewObject<ULeapFinger>(this, ULeapFinger::StaticClass());
 	}
-	_private->pointableById->setFinger(_private->fingers[id]);
-	return (_private->pointableById);
+	PPointableById->SetFinger(Private->Fingers[Id]);
+	return (PPointableById);
 }
 
-void ULeapFingerList::setFingerList(const Leap::FingerList &fingers)
+void ULeapFingerList::SetFingerList(const Leap::FingerList &Fingers)
 {
-	_private->fingers = fingers;
+	Private->Fingers = Fingers;
 
-	Count = _private->fingers.count();
-	IsEmpty = _private->fingers.isEmpty();
+	Count = Private->Fingers.count();
+	IsEmpty = Private->Fingers.isEmpty();
 }
 
-Leap::FingerList* ULeapFingerList::fingerList()
+Leap::FingerList* ULeapFingerList::FingerList()
 {
-	return &(_private->fingers);
+	return &(Private->Fingers);
 }

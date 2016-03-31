@@ -3,8 +3,20 @@
 #include "LeapGesture.h"
 #include "LeapController.generated.h"
 
+/**
+* Leap Controller class wrapped into an Actor Component.
+*
+* The Controller class is your main interface to the Leap Motion Controller.
+* Create an instance of this Controller class to access frames of tracking data
+* and configuration information. Frame data can be polled at any time using the
+* Frame() function. Call Frame() or Frame(0) to get the most recent 
+* frame. Set the history parameter to a positive integer to access previous frames. 
+* A controller stores up to 60 frames in its frame history.
+*
+* Leap API reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.Controller.html
+*/
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
-class ULeapController : public UActorComponent
+class LEAPMOTION_API ULeapController : public UActorComponent
 {
 	GENERATED_UCLASS_BODY()
 
@@ -14,35 +26,93 @@ public:
 	virtual void OnUnregister() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Is Connected", CompactNodeTitle = "", Keywords = "is connected"), Category = "Leap Controller")
+	/**
+	* Reports whether this Controller is connected to the Leap Motion service and the Leap Motion hardware is plugged in.
+	*/
+	UFUNCTION(BlueprintPure, meta = (Keywords = "is connected"), Category = "Leap Controller")
 	bool IsConnected() const;
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get Frame", CompactNodeTitle = "Frame", Keywords = "get frame"), Category = "Leap Controller")
-	class ULeapFrame* Frame(int32 history);
+	/**
+	* Returns a frame of tracking data from the Leap Motion software.
+	* Call frame() or frame(0) to access the most recent frame; call frame(1)
+	* to access the previous frame, and so on. If you use a history value greater 
+	* than the number of stored frames, then the controller returns an invalid frame.
+	*
+	* @param optional history parameter to specify which frame to retrieve. 
+	* @return The specified frame; or, if no history parameter is specified, the newest frame. If a frame is not available at the specified history position, an invalid Frame is returned.
+	*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get Frame", Keywords = "get frame"), Category = "Leap Controller")
+	class ULeapFrame* Frame(int32 History);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "hasFocus", CompactNodeTitle = "", Keywords = "has Focus"), Category = "Leap Controller")
+	/**
+	* Reports whether this application is the focused, foreground application.
+	*
+	* @return True, if application has focus; false otherwise.
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "has Focus"), Category = "Leap Controller")
 	bool HasFocus() const;
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "isServiceConnected", CompactNodeTitle = "", Keywords = "is service connected"), Category = "Leap Controller")
+	/**
+	* Reports whether this Controller is connected to the Leap Motion service and the Leap Motion hardware is plugged in.
+	*
+	* @return True, if connected; false otherwise.
+	*/
+	UFUNCTION(BlueprintPure, meta = (Keywords = "is service connected"), Category = "Leap Controller")
 	bool IsServiceConnected() const;
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "optimizeForHMD", Keywords = "optimize hmd facing top set policy"), Category = "Leap Controller")
-	void OptimizeForHMD(bool useTopdown = false, bool autoRotate = true, bool autoShift = true);
+	/**
+	* Set Flags and tracking for the plugin to use tracking expecting leap mounted on HMD.
+	* Optionally auto-rotate and auto-shift values by the movement of the hmd (useful pre-4.11)
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "optimize hmd facing top set policy"), Category = "Leap Controller")
+	void OptimizeForHMD(bool UseTopdown = false, bool AutoRotate = true, bool AutoShift = true);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableImageSupport", Keywords = "use allow images set policy"), Category = "Leap Controller")
-	void EnableImageSupport(bool allowImages = true, bool emitImageEvents = true);
+	/**
+	* Enable image streaming by the leap motion. Optionally emit raw image events and adjust images by standard gamma correction.
+	*
+	* @param AllowImages enable image support at minimum for polling
+	* @param EmitImageEvents whether to emit raw image event whenever they're ready
+	* @param UseGammaCorrection true if you wish to use image gamma correction
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "use allow images set policy"), Category = "Leap Controller")
+	void EnableImageSupport(bool AllowImages = true, bool EmitImageEvents = true, bool UseGammaCorrection = false);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableBackgroundTracking", Keywords = "enable background tracking"), Category = "Leap Controller")
-	void EnableBackgroundTracking(bool trackInBackground = false);
+	/**
+	*  Requests that your application receives frames when it is not the foreground application for user input.
+	*
+	* @param TrackInBackground toggle to enable or disable
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "enable background tracking"), Category = "Leap Controller")
+	void EnableBackgroundTracking(bool TrackInBackground = false);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "enableGesture", Keywords = "enable gesture"), Category = "Leap Controller")
-	void EnableGesture(enum LeapGestureType type, bool enable = true);
+	/**
+	* Enables or disables reporting of a specified gesture type.
+	*
+	* @param GestureType category of gesture you wish to enable or disable
+	* @param Enable whether the gesture detection should be enabled
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "enable gesture"), Category = "Leap Controller")
+	void EnableGesture(enum LeapGestureType GestureType, bool Enable = true);
 
-	//Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "setDelegate", CompactNodeTitle = "", Keywords = "set delegate self"), Category = "Leap Interface")
-	void SetInterfaceDelegate(UObject* newDelegate);
+	/**
+	* Specify a custom leap to eye offset. Given in UE coordinate system (XForward). 
+	*
+	* @param Offset offset vector, defaults to DK2 value (8cm forward)
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Leap Controller")
+	void SetLeapMountToHMDOffset(FVector Offset = FVector(8,0,0));	//default to the leap dk2 offset
+
+	/**
+	* Leap Event Interface forwarding, automatically set since 0.6.2, available for event redirection
+	*
+	* @param Object	Delegate object for this controller's events
+	*/
+	UFUNCTION(BlueprintCallable, meta = (Keywords = "set delegate self"), Category = "Leap Interface")
+	void SetInterfaceDelegate(UObject* NewDelegate);
 
 private:
-	class LeapControllerPrivate* _private;
-	void InterfaceEventTick(float deltaTime);
+	class LeapControllerPrivate* Private;
+	
+	UPROPERTY()
+	class ULeapFrame* PFrame = nullptr;
 };

@@ -6,7 +6,7 @@
 class PrivateFinger
 {
 public:
-	LeapFingerType ueFingerType(Leap::Finger::Type type){
+	LeapFingerType UEFingerType(Leap::Finger::Type type){
 		switch (type){
 		case Leap::Finger::Type::TYPE_THUMB:
 			return FINGER_TYPE_THUMB;
@@ -30,80 +30,80 @@ public:
 		}
 	}
 
-	Leap::Finger finger;
+	Leap::Finger Finger;
 };
 
-ULeapFinger::ULeapFinger(const FObjectInitializer &init) : ULeapPointable(init), _private(new PrivateFinger())
+ULeapFinger::ULeapFinger(const FObjectInitializer &ObjectInitializer) : ULeapPointable(ObjectInitializer), Private(new PrivateFinger())
 {
 }
 
 ULeapFinger::~ULeapFinger()
 {
-	delete _private;
+	delete Private;
 }
 
-void ULeapFinger::CleanupRootReferences()
+ULeapBone *ULeapFinger::Bone(LeapBoneType Type)
 {
-    ULeapPointable::CleanupRootReferences();
-    
-	if (this->HasAnyFlags(RF_RootSet))
-		this->RemoveFromRoot();
-}
+	Leap::Bone::Type RType;
+	Leap::Bone RBone;
+	ULeapBone *Bone;
 
-ULeapBone *ULeapFinger::Bone(LeapBoneType type)
-{
-	Leap::Bone::Type rtype;
-	Leap::Bone rbone;
-	ULeapBone *bone;
-
-	bone = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
-	switch(type)
+	Bone = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
+	switch(Type)
 	{
 	case TYPE_METACARPAL:
-		rtype = Leap::Bone::TYPE_METACARPAL;
+		RType = Leap::Bone::TYPE_METACARPAL;
 		break;
 	case TYPE_PROXIMAL:
-		rtype = Leap::Bone::TYPE_PROXIMAL;
+		RType = Leap::Bone::TYPE_PROXIMAL;
 		break;
 	case TYPE_INTERMEDIATE:
-		rtype = Leap::Bone::TYPE_INTERMEDIATE;
+		RType = Leap::Bone::TYPE_INTERMEDIATE;
 		break;
 	case TYPE_DISTAL:
-		rtype = Leap::Bone::TYPE_DISTAL;
+		RType = Leap::Bone::TYPE_DISTAL;
 		break;
 	default:
-		rtype = Leap::Bone::TYPE_METACARPAL;
+		RType = Leap::Bone::TYPE_METACARPAL;
 		break;
 	}
-	rbone = _private->finger.bone(rtype);
-	bone->setBone(rbone);
-	return (bone);
+	RBone = Private->Finger.bone(RType);
+	Bone->SetBone(RBone);
+	return (Bone);
 }
 
 
-void ULeapFinger::setFinger(const Leap::Finger &finger)
+void ULeapFinger::SetFinger(const Leap::Finger &Finger)
 {
-	_private->finger = finger;
+	Private->Finger = Finger;
 
-	setPointable(_private->finger);
+	SetPointable(Private->Finger);
 
 	//Set convenience bones
 	if (!Metacarpal)
+	{
 		Metacarpal = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
-	Metacarpal->setBone(_private->finger.bone(Leap::Bone::TYPE_METACARPAL));
+	}
+	Metacarpal->SetBone(Private->Finger.bone(Leap::Bone::TYPE_METACARPAL));
 
 	if (!Proximal)
+	{
 		Proximal = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
-	Proximal->setBone(_private->finger.bone(Leap::Bone::TYPE_PROXIMAL));
+	}
+	Proximal->SetBone(Private->Finger.bone(Leap::Bone::TYPE_PROXIMAL));
 
 	if (!Intermediate)
+	{
 		Intermediate = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
-	Intermediate->setBone(_private->finger.bone(Leap::Bone::TYPE_INTERMEDIATE));
+	}
+	Intermediate->SetBone(Private->Finger.bone(Leap::Bone::TYPE_INTERMEDIATE));
 
-	if (!Distal)
+	if (!Distal) 
+	{
 		Distal = NewObject<ULeapBone>(this, ULeapBone::StaticClass());
-	Distal->setBone(_private->finger.bone(Leap::Bone::TYPE_DISTAL));
+	}
+	Distal->SetBone(Private->Finger.bone(Leap::Bone::TYPE_DISTAL));
 
 	//Set type
-	Type = _private->ueFingerType(_private->finger.type());
+	Type = Private->UEFingerType(Private->Finger.type());
 }

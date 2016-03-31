@@ -3,74 +3,50 @@
 class PrivateLeapImageList
 {
 public:
-	~PrivateLeapImageList()
-	{
-		if (!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (indexImage1)
-			indexImage1->CleanupRootReferences();
-		if (indexImage2)
-			indexImage2->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::ImageList leapImages;
-	ULeapImage* indexImage1 = NULL;
-	ULeapImage* indexImage2 = NULL;
+	Leap::ImageList LeapImages;
 };
 
-ULeapImageList::ULeapImageList(const FObjectInitializer &init) : UObject(init), _private(new PrivateLeapImageList())
+ULeapImageList::ULeapImageList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateLeapImageList())
 {
 }
 
 ULeapImageList::~ULeapImageList()
 {
-	delete _private;
+	delete Private;
 }
 
-void ULeapImageList::CleanupRootReferences()
-{
-	_private->Cleanup();
-	this->RemoveFromRoot();
-}
-
-ULeapImage* ULeapImageList::getIndex(int32 index)
+ULeapImage* ULeapImageList::GetIndex(int32 Index)
 {
 	//We need to use two separate objects to ensure we have two separate images
-	if (index == 0)
+	if (Index == 0)
 	{
-		if (_private->indexImage1 == NULL)
+		if (PIndexImage1 == nullptr)
 		{
-			_private->indexImage1 = NewObject<ULeapImage>(this);
-			_private->indexImage1->SetFlags(RF_RootSet);
+			PIndexImage1 = NewObject<ULeapImage>(this);
 		}
-		_private->indexImage1->setLeapImage(_private->leapImages[index]);
-		return (_private->indexImage1);
+		PIndexImage1->SetLeapImage(Private->LeapImages[Index]);
+		return (PIndexImage1);
 	}
 	else
 	{
-		if (_private->indexImage2 == NULL)
+		if (PIndexImage2 == nullptr)
 		{
-			_private->indexImage2 = NewObject<ULeapImage>(this);
-			_private->indexImage2->SetFlags(RF_RootSet);
+			PIndexImage2 = NewObject<ULeapImage>(this);
 		}
-		_private->indexImage2->setLeapImage(_private->leapImages[index]);
-		return (_private->indexImage2);
+		PIndexImage2->SetLeapImage(Private->LeapImages[Index]);
+		return (PIndexImage2);
 	}
 }
 
-ULeapImage* ULeapImageList::operator[](int index)
+ULeapImage* ULeapImageList::operator[](int Index)
 {
-	return getIndex(index);
+	return GetIndex(Index);
 }
 
-void ULeapImageList::setLeapImageList(const Leap::ImageList &LeapImageList)
+void ULeapImageList::SetLeapImageList(const Leap::ImageList &LeapImageList)
 {
-	_private->leapImages = LeapImageList;
+	Private->LeapImages = LeapImageList;
 
-	Count = _private->leapImages.count();
-	IsEmpty = _private->leapImages.isEmpty();
+	Count = Private->LeapImages.count();
+	IsEmpty = Private->LeapImages.isEmpty();
 }

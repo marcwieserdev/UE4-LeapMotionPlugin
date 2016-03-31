@@ -5,122 +5,87 @@
 class PrivateToolList
 {
 public:
-	~PrivateToolList()
-	{
-		if (!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (frontmost)
-			frontmost->CleanupRootReferences();
-		if (leftmost)
-			leftmost->CleanupRootReferences();
-		if (rightmost)
-			rightmost->CleanupRootReferences();
-		if (pointableById)
-			pointableById->CleanupRootReferences();
-		if (appendedList)
-			appendedList->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::ToolList tools;
-	ULeapTool* leftmost = NULL;
-	ULeapTool* rightmost = NULL;
-	ULeapTool* frontmost = NULL;
-	ULeapTool* pointableById = NULL;
-	ULeapToolList* appendedList = NULL;
+	Leap::ToolList Tools;
 };
 
 
-ULeapToolList::ULeapToolList(const FObjectInitializer &init) : UObject(init), _private(new PrivateToolList())
+ULeapToolList::ULeapToolList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateToolList())
 {
 }
 
 ULeapToolList::~ULeapToolList()
 {
-	delete _private;
-}
-void ULeapToolList::CleanupRootReferences()
-{
-	_private->Cleanup();
-	this->RemoveFromRoot();
+	delete Private;
 }
 
-ULeapToolList *ULeapToolList::append(const ULeapToolList *list)
+ULeapToolList *ULeapToolList::Append(const ULeapToolList *List)
 {
-	if (_private->appendedList == NULL)
+	if (PAppendedList == nullptr)
 	{
-		_private->appendedList = NewObject<ULeapToolList>(this, ULeapToolList::StaticClass());
-		_private->appendedList->SetFlags(RF_RootSet);
+		PAppendedList = NewObject<ULeapToolList>(this, ULeapToolList::StaticClass());
 	}
-	_private->appendedList->setToolList(this->_private->tools.append(list->_private->tools));
-	return (_private->appendedList);
+	PAppendedList->SetToolList(this->Private->Tools.append(List->Private->Tools));
+	return (PAppendedList);
 }
 
 int32 ULeapToolList::Count() const
 {
-	return (_private->tools.count());
+	return (Private->Tools.count());
 }
 
-bool ULeapToolList::isEmpty() const
+bool ULeapToolList::IsEmpty() const
 {
-	return (_private->tools.isEmpty());
+	return (Private->Tools.isEmpty());
 }
 
-ULeapTool* ULeapToolList::leftmost()
+ULeapTool* ULeapToolList::Leftmost()
 {
-	if (_private->leftmost == NULL)
+	if (PLeftmost == nullptr)
 	{
-		_private->leftmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
-		_private->leftmost->SetFlags(RF_RootSet);
+		PLeftmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
 	}
-	_private->leftmost->setTool(_private->tools.leftmost());
-	return (_private->leftmost);
+	PLeftmost->SetTool(Private->Tools.leftmost());
+	return (PLeftmost);
 }
 
-ULeapTool* ULeapToolList::rightmost()
+ULeapTool* ULeapToolList::Rightmost()
 {
-	if (_private->rightmost == NULL)
+	if (PRightmost == nullptr)
 	{
-		_private->rightmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
-		_private->rightmost->SetFlags(RF_RootSet);
+		PRightmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
 	}
-	_private->rightmost->setTool(_private->tools.rightmost());
-	return (_private->rightmost);
+	PRightmost->SetTool(Private->Tools.rightmost());
+	return (PRightmost);
 }
 
 
-ULeapTool* ULeapToolList::frontmost()
+ULeapTool* ULeapToolList::Frontmost()
 {
 
-	if (_private->frontmost == NULL)
+	if (PFrontmost == nullptr)
 	{
-		_private->frontmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
-		_private->frontmost->SetFlags(RF_RootSet);
+		PFrontmost = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
 	}
-	_private->frontmost->setTool(_private->tools.frontmost());
-	return (_private->frontmost);
+	PFrontmost->SetTool(Private->Tools.frontmost());
+	return (PFrontmost);
 }
 
-ULeapPointable* ULeapToolList::getPointableById(int32 id)
+ULeapPointable* ULeapToolList::GetPointableByIndex(int32 Index)
 {
-	if (_private->pointableById == NULL)
+	if (PPointableById == nullptr)
 	{
-		_private->pointableById = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
-		_private->pointableById->SetFlags(RF_RootSet);
+		PPointableById = NewObject<ULeapTool>(this, ULeapTool::StaticClass());
 	}
-	_private->pointableById->setPointable(_private->tools[id]);
-	return (_private->pointableById);
+	PPointableById->SetPointable(Private->Tools[Index]);
+	return (PPointableById);
 }
 
-void ULeapToolList::setToolList(const Leap::ToolList &pointables)
+void ULeapToolList::SetToolList(const Leap::ToolList &Pointables)
 {
-	_private->tools = pointables;
+	Private->Tools = Pointables;
 }
 
-const Leap::ToolList* ULeapToolList::toolList()
+const Leap::ToolList* ULeapToolList::ToolList()
 {
-	return &(_private->tools);
+	return &(Private->Tools);
 }

@@ -3,28 +3,46 @@
 #include "LeapMotionPublicPCH.h"
 #include "LeapGestureList.generated.h"
 
+/**
+* The GestureList class represents a list of Gesture objects.
+*
+* Leap API reference: https://developer.leapmotion.com/documentation/cpp/api/Leap.GestureList.html
+*/
 UCLASS(BlueprintType)
-class ULeapGestureList : public UObject
+class LEAPMOTION_API ULeapGestureList : public UObject
 {
 	GENERATED_UCLASS_BODY()
 public:
 	~ULeapGestureList();
 	
+	/**
+	* Reports whether the list is empty.
+	*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture List")
 	bool IsEmpty;
 
+	/**
+	* The length of this list.
+	*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Leap Gesture List")
 	int32 Count;
 	
+	/**
+	* Access a list member by its position in the list.
+	*
+	* @param index	The zero-based list position index.
+	* @return		The Gesture object at the specified index.
+	*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "getIndex", CompactNodeTitle = "[]", Keywords = "get index"), Category = "Leap Gesture List")
-	class ULeapGesture *getIndex(int32 index);
+	class ULeapGesture *GetIndex(int32 Index);
 
-	ULeapGesture* operator[](int index);
+	ULeapGesture* operator[](int Index);
 
-	void setGestureList(const class Leap::GestureList &gesturelist);
-
-	virtual void CleanupRootReferences();
+	void SetGestureList(const class Leap::GestureList &Gesturelist);
 
 private:
-	class PrivateGestureList* _private;
+	class PrivateGestureList* Private;
+
+	UPROPERTY()
+	ULeapGesture* PGesture = nullptr;
 };

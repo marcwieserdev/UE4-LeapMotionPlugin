@@ -1,194 +1,177 @@
 #include "LeapMotionPrivatePCH.h"
+#include "FLeapMotionInputDevice.h"
 
 class PrivateHand
 {
 public:
-	~PrivateHand()
-	{
-		if(!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (fingers)
-			fingers->CleanupRootReferences();
-		if (frame)
-			frame->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::Hand hand;
-	ULeapFrame* frame = NULL;
-	ULeapFingerList* fingers = NULL;
+	Leap::Hand Hand;
 };
 
-ULeapHand::ULeapHand(const FObjectInitializer &init) : UObject(init), _private(new PrivateHand())
+ULeapHand::ULeapHand(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateHand())
 {
 }
 
 ULeapHand::~ULeapHand()
 {
-	delete _private;
-}
-
-void ULeapHand::CleanupRootReferences()
-{
-	_private->Cleanup();
-	this->RemoveFromRoot();
+	delete Private;
 }
 
 ULeapFrame *ULeapHand::Frame()
 {
-	if (_private->frame == NULL)
+	if (PFrame == nullptr)
 	{
-		_private->frame = NewObject<ULeapFrame>(this);
-		_private->frame->SetFlags(RF_RootSet);
+		PFrame = NewObject<ULeapFrame>(this);
 	}
-	_private->frame->setFrame(_private->hand.frame());
-	return (_private->frame);
+	PFrame->SetFrame(Private->Hand.frame());
+	return (PFrame);
 }
 
 ULeapFingerList* ULeapHand::Fingers()
 {
-	if (_private->fingers == NULL){
-		_private->fingers = NewObject<ULeapFingerList>(this);
-		//_private->fingers->SetFlags(RF_RootSet);
+	if (PFingers == nullptr)
+	{
+		PFingers = NewObject<ULeapFingerList>(this);
 	}
-	_private->fingers->setFingerList(_private->hand.fingers());
-	return (_private->fingers);
+	PFingers->SetFingerList(Private->Hand.fingers());
+	return (PFingers);
 }
 
-float ULeapHand::RotationAngle(ULeapFrame *frame)
+float ULeapHand::RotationAngle(ULeapFrame *Frame)
 {
-	Leap::Frame rframe;
+	Leap::Frame RFrame;
 
-	rframe = frame->getFrame();
-	return (_private->hand.rotationAngle(rframe));
+	RFrame = Frame->GetFrame();
+	return (Private->Hand.rotationAngle(RFrame));
 }
 
-float ULeapHand::RotationAngleWithAxis(class ULeapFrame *frame, const FVector &axis)
+float ULeapHand::RotationAngleWithAxis(class ULeapFrame *Frame, const FVector &Axis)
 {
-	Leap::Frame rframe;
-	Leap::Vector vector;
+	Leap::Frame RFrame;
+	Leap::Vector Vector;
 
-	rframe = frame->getFrame();
-	vector.x = axis.X;
-	vector.y = axis.Y;
-	vector.z = axis.Z;
-	return (_private->hand.rotationAngle(rframe, vector));
+	RFrame = Frame->GetFrame();
+	Vector.x = Axis.X;
+	Vector.y = Axis.Y;
+	Vector.z = Axis.Z;
+	return (Private->Hand.rotationAngle(RFrame, Vector));
 }
 
-FMatrix ULeapHand::RotationMatrix(const ULeapFrame *frame)
+FMatrix ULeapHand::RotationMatrix(const ULeapFrame *Frame)
 {
-	Leap::Frame rframe;
+	Leap::Frame RFrame;
 
-	rframe = frame->getFrame();
-	return convertLeapBasisMatrix(_private->hand.rotationMatrix(rframe));
-}
-
-
-FVector ULeapHand::RotationAxis(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-	Leap::Vector vect;
-
-	rframe = frame->getFrame();
-	vect = _private->hand.rotationAxis(rframe);
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float ULeapHand::RotationProbability(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-
-	rframe = frame->getFrame();
-	return (_private->hand.rotationProbability(rframe));
-}
-
-float ULeapHand::ScaleFactor(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-
-	rframe = frame->getFrame();
-	return (_private->hand.scaleFactor(rframe));
-}
-
-float ULeapHand::ScaleProbability(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-
-	rframe = frame->getFrame();
-	return (_private->hand.scaleProbability(rframe));
-}
-
-FVector ULeapHand::Translation(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-	Leap::Vector vect;
-
-	rframe = frame->getFrame();
-	vect = _private->hand.translation(rframe);
-	return (convertAndScaleLeapToUE(vect));
-}
-
-float ULeapHand::TranslationProbability(const ULeapFrame *frame)
-{
-	Leap::Frame rframe;
-
-	rframe = frame->getFrame();
-	return (_private->hand.translationProbability(rframe));
-}
-
-bool ULeapHand::operator!=(const ULeapHand &hand) const
-{
-	return (hand._private->hand != this->_private->hand);
-}
-
-bool ULeapHand::operator==(const ULeapHand &hand) const
-{
-	return (hand._private->hand == this->_private->hand);
+	RFrame = Frame->GetFrame();
+	return ConvertLeapBasisMatrix(Private->Hand.rotationMatrix(RFrame));
 }
 
 
-void ULeapHand::setHand(const Leap::Hand &hand)
+FVector ULeapHand::RotationAxis(const ULeapFrame *Frame)
 {
-	_private->hand = hand;
+	Leap::Frame RFrame;
+	Leap::Vector Vector;
+
+	RFrame = Frame->GetFrame();
+	Vector = Private->Hand.rotationAxis(RFrame);
+	return (ConvertAndScaleLeapToUE(Vector));
+}
+
+float ULeapHand::RotationProbability(const ULeapFrame *Frame)
+{
+	Leap::Frame RFrame;
+
+	RFrame = Frame->GetFrame();
+	return (Private->Hand.rotationProbability(RFrame));
+}
+
+float ULeapHand::ScaleFactor(const ULeapFrame *Frame)
+{
+	Leap::Frame RFrame;
+
+	RFrame = Frame->GetFrame();
+	return (Private->Hand.scaleFactor(RFrame));
+}
+
+float ULeapHand::ScaleProbability(const ULeapFrame *Frame)
+{
+	Leap::Frame RFrame;
+
+	RFrame = Frame->GetFrame();
+	return (Private->Hand.scaleProbability(RFrame));
+}
+
+FVector ULeapHand::Translation(const ULeapFrame *Frame)
+{
+	Leap::Frame RFrame;
+	Leap::Vector Vector;
+
+	RFrame = Frame->GetFrame();
+	Vector = Private->Hand.translation(RFrame);
+	return (ConvertAndScaleLeapToUE(Vector));
+}
+
+float ULeapHand::TranslationProbability(const ULeapFrame *Frame)
+{
+	Leap::Frame RFrame;
+
+	RFrame = Frame->GetFrame();
+	return (Private->Hand.translationProbability(RFrame));
+}
+
+bool ULeapHand::operator!=(const ULeapHand &Hand) const
+{
+	return (Hand.Private->Hand != this->Private->Hand);
+}
+
+bool ULeapHand::operator==(const ULeapHand &Hand) const
+{
+	return (Hand.Private->Hand == this->Private->Hand);
+}
+
+
+void ULeapHand::SetHand(const Leap::Hand &Hand)
+{
+	Private->Hand = Hand;
 
 	//Set Properties
-	if (Arm == NULL || !Arm->IsValidLowLevel())
+	if (Arm == nullptr || !Arm->IsValidLowLevel())
 		Arm = NewObject<ULeapArm>(this, ULeapArm::StaticClass());
-	Arm->setArm(_private->hand.arm());
+	Arm->setArm(Private->Hand.arm());
 
-	Confidence = _private->hand.confidence();
-	Direction = convertLeapToUE(_private->hand.direction());
-	GrabStrength = _private->hand.grabStrength();
-	IsLeft = _private->hand.isLeft();
-	IsRight = _private->hand.isRight();
-	PalmWidth = _private->hand.palmWidth();
-	PinchStrength = _private->hand.pinchStrength();
-	SphereCenter = convertAndScaleLeapToUE(_private->hand.sphereCenter());
-	SphereRadius = scaleLeapToUE(_private->hand.sphereRadius());
-	StabilizedPalmPosition = convertAndScaleLeapToUE(_private->hand.stabilizedPalmPosition());
-	TimeVisible = _private->hand.timeVisible();
+	Confidence = Private->Hand.confidence();
+	Direction = ConvertLeapToUE(Private->Hand.direction());
+	GrabStrength = Private->Hand.grabStrength();
+	IsLeft = Private->Hand.isLeft();
+	IsRight = Private->Hand.isRight();
+	PalmWidth = ScaleLeapToUE(Private->Hand.palmWidth());
+	PinchStrength = Private->Hand.pinchStrength();
+	SphereCenter = ConvertAndScaleLeapToUE(Private->Hand.sphereCenter());
+	SphereRadius = ScaleLeapToUE(Private->Hand.sphereRadius());
+	StabilizedPalmPosition = ConvertAndScaleLeapToUE(Private->Hand.stabilizedPalmPosition());
+	TimeVisible = Private->Hand.timeVisible();
 
-	PalmNormal = convertLeapToUE(_private->hand.palmNormal());
-	PalmPosition = convertAndScaleLeapToUE(_private->hand.palmPosition());
-	PalmVelocity = convertAndScaleLeapToUE(_private->hand.palmVelocity());
+	PalmNormal = ConvertLeapToUE(Private->Hand.palmNormal());
+	PalmPosition = ConvertAndScaleLeapToUE(Private->Hand.palmPosition());
+	PalmVelocity = ConvertAndScaleLeapToUE(Private->Hand.palmVelocity());
 
 	PalmOrientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
 
-	Basis = convertLeapBasisMatrix(_private->hand.basis());
+	WristPosition = ConvertLeapToUE(Private->Hand.wristPosition());
+
+	Basis = ConvertLeapBasisMatrix(Private->Hand.basis());
 
 	//Convenience Setting, allows for easy branching in blueprint
-	if (IsLeft){
+	if (IsLeft)
+	{
 		HandType = LeapHandType::HAND_LEFT;
 	}
-	else if (IsRight){
+	else if (IsRight)
+	{
 		HandType = LeapHandType::HAND_RIGHT;
 	}
-	else{
+	else
+	{
 		HandType = LeapHandType::HAND_UNKNOWN;
 	}
 
-	Id = _private->hand.id();
+	Id = Private->Hand.id();
 }

@@ -3,11 +3,14 @@
 #include "LeapGesture.h"
 
 DEFINE_LOG_CATEGORY(LeapPluginLog);
+
 #define LEAP_TO_UE_SCALE 0.1f
 #define UE_TO_LEAP_SCALE 10.f
-#define LEAP_MOUNT_OFFSET 8.f	//in cm (UE units) forming FVector(LEAP_MOUNT_OFFSET,0,0) forward vector
+//#define LEAP_MOUNT_OFFSET 8.f	//in cm (UE units) forming FVector(LEAP_MOUNT_OFFSET,0,0) forward vector, deprecated
 
-//NB: localized variable for transforms
+FVector LeapMountOffset = FVector(8.f, 0, 0);
+
+//NB: localized variable for transforms - defaults
 bool LeapShouldAdjustForFacing = false;
 bool LeapShouldAdjustRotationForHMD = false;
 bool LeapShouldAdjustPositionForHMD = false;
@@ -21,59 +24,62 @@ FRotator CombineRotators(FRotator A, FRotator B)
 	return FRotator(BQuat*AQuat);
 }
 
-FVector adjustForLeapFacing(FVector in)
+FVector AdjustForLeapFacing(FVector In)
 {
-	FRotator rotation = FRotator(90.f, 0.f, 180.f);
-	return FQuat(rotation).RotateVector(in);
+	FRotator Rotation = FRotator(90.f, 0.f, 180.f);
+	return FQuat(Rotation).RotateVector(In);
 }
 
-FVector adjustForHMD(FVector in)
+FVector AdjustForHMD(FVector In)
 {
 	if (GEngine->HMDDevice.IsValid())
 	{
-		FQuat orientationQuat;
-		FVector position;
-		GEngine->HMDDevice->GetCurrentOrientationAndPosition(orientationQuat, position);
-		FVector out = orientationQuat.RotateVector(in);
+		FQuat OrientationQuat;
+		FVector Position;
+		GEngine->HMDDevice->GetCurrentOrientationAndPosition(OrientationQuat, Position);
+		FVector Out = OrientationQuat.RotateVector(In);
 		if (LeapShouldAdjustPositionForHMD)
 		{
 			if (LeapShouldAdjustForMountOffset)
-				position += orientationQuat.RotateVector(FVector(LEAP_MOUNT_OFFSET, 0, 0));
-			out += position;
+			{
+				Position += OrientationQuat.RotateVector(LeapMountOffset);
+			}
+			Out += Position;
 		}
-		return out;
+		return Out;
 	}
 	else
-		return in;
-
+	{
+		return In;
+	}
 }
 
-FVector adjustForHMDOrientation(FVector in)
+FVector adjustForHMDOrientation(FVector In)
 {
 	if (GEngine->HMDDevice.IsValid())
 	{
-		FQuat orientationQuat;
-		FVector position;
-		GEngine->HMDDevice->GetCurrentOrientationAndPosition(orientationQuat, position);
-		FVector out = orientationQuat.RotateVector(in);
-		return out;
+		FQuat OrientationQuat;
+		FVector Position;
+		GEngine->HMDDevice->GetCurrentOrientationAndPosition(OrientationQuat, Position);
+		FVector Out = OrientationQuat.RotateVector(In);
+		return Out;
 	}
 	else
-		return in;
+		return In;
 
 }
 
 //Conversion - use find and replace to change behavior, no scaling version is typically used for orientations
-FVector convertLeapToUE(Leap::Vector leapVector)
+FVector ConvertLeapToUE(Leap::Vector LeapVector)
 {
 	//Convert Axis
-	FVector vect = FVector(-leapVector.z, leapVector.x, leapVector.y);
+	FVector ConvertedVector = FVector(-LeapVector.z, LeapVector.x, LeapVector.y);
 
 	//Hmd orientation adjustment
 	if (LeapShouldAdjustForFacing)
 	{
-		FRotator rotation = FRotator(90.f, 0.f, 180.f);
-		vect = FQuat(rotation).RotateVector(vect);
+		FRotator Rotation = FRotator(90.f, 0.f, 180.f);
+		ConvertedVector = FQuat(Rotation).RotateVector(ConvertedVector);
 		
 		if (LeapShouldAdjustRotationForHMD)
 		{
@@ -82,131 +88,139 @@ FVector convertLeapToUE(Leap::Vector leapVector)
 				FQuat orientationQuat;
 				FVector position;
 				GEngine->HMDDevice->GetCurrentOrientationAndPosition(orientationQuat, position);
-				vect = orientationQuat.RotateVector(vect);
+				ConvertedVector = orientationQuat.RotateVector(ConvertedVector);
 			}
 		}
 	}
 
-	return vect;
+	return ConvertedVector;
 }
 
-FVector convertAndScaleLeapToUE(Leap::Vector leapVector)
+FVector ConvertAndScaleLeapToUE(Leap::Vector LeapVector)
 {
 	//Scale from mm to cm (ue default)
-	FVector vect = FVector(-leapVector.z * LEAP_TO_UE_SCALE, leapVector.x * LEAP_TO_UE_SCALE, leapVector.y * LEAP_TO_UE_SCALE);
+	FVector ConvertedVector = FVector(-LeapVector.z * LEAP_TO_UE_SCALE, LeapVector.x * LEAP_TO_UE_SCALE, LeapVector.y * LEAP_TO_UE_SCALE);
 
 	//Front facing leap adjustments
 	if (LeapShouldAdjustForFacing)
 	{
-		vect = adjustForLeapFacing(vect);
+		ConvertedVector = AdjustForLeapFacing(ConvertedVector);
 		if (LeapShouldAdjustRotationForHMD)
-			vect = adjustForHMD(vect);
+		{
+			ConvertedVector = AdjustForHMD(ConvertedVector);
+		}
 	}
-	return vect;
+	return ConvertedVector;
 }
 
-FMatrix convertLeapBasisMatrix(Leap::Matrix leapMatrix)
+FMatrix ConvertLeapBasisMatrix(Leap::Matrix LeapMatrix)
 {
 	/*
 	Leap Basis depends on hand type with -z, x, y as general format. This then needs to be inverted to point correctly (x = forward), which yields the matrix below.
 	*/
-	FVector inX, inY, inZ, inW;
-	inX.Set(leapMatrix.zBasis.z, -leapMatrix.zBasis.x, -leapMatrix.zBasis.y);
-	inY.Set(-leapMatrix.xBasis.z, leapMatrix.xBasis.x, leapMatrix.xBasis.y);
-	inZ.Set(-leapMatrix.yBasis.z, leapMatrix.yBasis.x, leapMatrix.yBasis.y);
-	inW.Set(-leapMatrix.origin.z, leapMatrix.origin.x, leapMatrix.origin.y);
+	FVector InX, InY, InZ, InW;
+	InX.Set(LeapMatrix.zBasis.z, -LeapMatrix.zBasis.x, -LeapMatrix.zBasis.y);
+	InY.Set(-LeapMatrix.xBasis.z, LeapMatrix.xBasis.x, LeapMatrix.xBasis.y);
+	InZ.Set(-LeapMatrix.yBasis.z, LeapMatrix.yBasis.x, LeapMatrix.yBasis.y);
+	InW.Set(-LeapMatrix.origin.z, LeapMatrix.origin.x, LeapMatrix.origin.y);
 
 	if (LeapShouldAdjustForFacing)
 	{
-		inX = adjustForLeapFacing(inX);
-		inY = adjustForLeapFacing(inY);
-		inZ = adjustForLeapFacing(inZ);
-		inW = adjustForLeapFacing(inW);
+		InX = AdjustForLeapFacing(InX);
+		InY = AdjustForLeapFacing(InY);
+		InZ = AdjustForLeapFacing(InZ);
+		InW = AdjustForLeapFacing(InW);
 
-		if (LeapShouldAdjustRotationForHMD){
-			inX = adjustForHMDOrientation(inX);
-			inY = adjustForHMDOrientation(inY);
-			inZ = adjustForHMDOrientation(inZ);
-			inW = adjustForHMDOrientation(inW);
+		if (LeapShouldAdjustRotationForHMD)
+		{
+			InX = adjustForHMDOrientation(InX);
+			InY = adjustForHMDOrientation(InY);
+			InZ = adjustForHMDOrientation(InZ);
+			InW = adjustForHMDOrientation(InW);
 		}
 	}
 
-
-	return (FMatrix(inX, inY, inZ, inW));
+	return (FMatrix(InX, InY, InZ, InW));
 }
-FMatrix swapLeftHandRuleForRight(const FMatrix& ueMatrix)
+FMatrix SwapLeftHandRuleForRight(const FMatrix& UEMatrix)
 {
-	FMatrix matrix = ueMatrix;
+	FMatrix Matrix = UEMatrix;
 	//Convenience method to swap the axis correctly, already in UE format to swap Y instead of leap Z
-	FVector inverseVector = -matrix.GetUnitAxis(EAxis::Y);
-	matrix.SetAxes(NULL, &inverseVector, NULL, NULL);
-	return matrix;
+	FVector InverseVector = -Matrix.GetUnitAxis(EAxis::Y);
+	Matrix.SetAxes(NULL, &InverseVector, NULL, NULL);
+	return Matrix;
 }
 
-Leap::Vector convertUEToLeap(FVector ueVector)
+Leap::Vector ConvertUEToLeap(FVector UEVector)
 {
-	return Leap::Vector(ueVector.Y, ueVector.Z, -ueVector.X);
+	return Leap::Vector(UEVector.Y, UEVector.Z, -UEVector.X);
 }
 
-Leap::Vector convertAndScaleUEToLeap(FVector ueVector)
+Leap::Vector ConvertAndScaleUEToLeap(FVector UEVector)
 {
-	return Leap::Vector(ueVector.Y * UE_TO_LEAP_SCALE, ueVector.Z * UE_TO_LEAP_SCALE, -ueVector.X * UE_TO_LEAP_SCALE);
+	return Leap::Vector(UEVector.Y * UE_TO_LEAP_SCALE, UEVector.Z * UE_TO_LEAP_SCALE, -UEVector.X * UE_TO_LEAP_SCALE);
 }
 
-float scaleLeapToUE(float leapFloat)
+float ScaleLeapToUE(float LeapFloat)
 {
-	return leapFloat * LEAP_TO_UE_SCALE;	//mm->cm
+	return LeapFloat * LEAP_TO_UE_SCALE;	//mm->cm
 }
 
-float scaleUEToLeap(float ueFloat)
+float ScaleUEToLeap(float UEFloat)
 {
-	return ueFloat * UE_TO_LEAP_SCALE;	//mm->cm
+	return UEFloat * UE_TO_LEAP_SCALE;	//mm->cm
 }
 
-void LeapSetShouldAdjustForFacing(bool shouldRotate)
+
+void LeapSetMountToHMDOffset(FVector Offset)
 {
-	LeapShouldAdjustForFacing = shouldRotate;
+	LeapMountOffset = Offset;
 }
 
-void LeapSetShouldAdjustForHMD(bool shouldRotate, bool shouldOffset)
+void LeapSetShouldAdjustForFacing(bool ShouldRotate)
 {
-	LeapShouldAdjustRotationForHMD = shouldRotate;
-	LeapShouldAdjustPositionForHMD = shouldOffset;
+	LeapShouldAdjustForFacing = ShouldRotate;
 }
 
-void LeapSetShouldAdjustForMountOffset(bool shouldAddOffset)
+void LeapSetShouldAdjustForHMD(bool ShouldRotate, bool ShouldOffset)
 {
-	LeapShouldAdjustForMountOffset = shouldAddOffset;
+	LeapShouldAdjustRotationForHMD = ShouldRotate;
+	LeapShouldAdjustPositionForHMD = ShouldOffset;
 }
 
-LeapBasicDirection basicDirection(FVector direction)
+void LeapSetShouldAdjustForMountOffset(bool ShouldAddOffset)
 {
-	float x = FMath::Abs(direction.X);
-	float y = FMath::Abs(direction.Y);
-	float z = FMath::Abs(direction.Z);
+	LeapShouldAdjustForMountOffset = ShouldAddOffset;
+}
+
+LeapBasicDirection LeapBasicVectorDirection(FVector Direction)
+{
+	float x = FMath::Abs(Direction.X);
+	float y = FMath::Abs(Direction.Y);
+	float z = FMath::Abs(Direction.Z);
 
 	//is basic in x?
 	if (x >= y && x >= z)
 	{
-		if (direction.X < -0.5)
+		if (Direction.X < -0.5)
 			return LeapBasicDirection::DIRECTION_TOWARD;
-		else if (direction.X > 0.5)
+		else if (Direction.X > 0.5)
 			return LeapBasicDirection::DIRECTION_AWAY;
 	}
 	//is basic in y?
 	else if (y >= x && y >= z)
 	{
-		if (direction.Y < -0.5)
+		if (Direction.Y < -0.5)
 			return LeapBasicDirection::DIRECTION_LEFT;
-		else if (direction.Y > 0.5)
+		else if (Direction.Y > 0.5)
 			return LeapBasicDirection::DIRECTION_RIGHT;
 	}
 	//is basic in z?
 	else if (z >= x && z >= y)
 	{
-		if (direction.Z < -0.5)
+		if (Direction.Z < -0.5)
 			return LeapBasicDirection::DIRECTION_DOWN;
-		else if (direction.Z > 0.5)
+		else if (Direction.Z > 0.5)
 			return LeapBasicDirection::DIRECTION_UP;
 	}
 	
@@ -215,9 +229,9 @@ LeapBasicDirection basicDirection(FVector direction)
 }
 
 //Utility function used to debug address allocation - helped find the cdcdcdcd allocation error
-void UtilityDebugAddress(void* pointer)
+void UtilityDebugAddress(void* Pointer)
 {
-	const void * address = static_cast<const void*>(pointer);
+	const void * address = static_cast<const void*>(Pointer);
 	std::stringstream ss;
 	ss << address;
 	std::string name = ss.str();
@@ -228,11 +242,11 @@ void UtilityDebugAddress(void* pointer)
 
 //Utility function to handle uncaught GC pointer releases (which will typically pass null checks)
 //This is hacky, but guarantees certain GC releases will be caught, make a pull request if you know a better way to handle these cases
-bool UtilityPointerIsValid(void* pointer)
+bool UtilityPointerIsValid(void* Pointer)
 {
 #if PLATFORM_32BITS
-	return (pointer != nullptr && pointer != (void*)0xdddddddd);
+	return (Pointer != nullptr && Pointer != (void*)0xdddddddd);
 #else
-	return (pointer != nullptr && pointer != (void*)0xdddddddddddddddd);
+	return (Pointer != nullptr && Pointer != (void*)0xdddddddddddddddd);
 #endif
 }

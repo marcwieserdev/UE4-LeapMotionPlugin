@@ -4,58 +4,38 @@
 class PrivateScreenTapGesture
 {
 public:
-	~PrivateScreenTapGesture()
-	{
-		if(!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (pointable)
-			pointable->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::ScreenTapGesture gesture;
-	ULeapPointable* pointable = NULL;
+	Leap::ScreenTapGesture Gesture;
 };
 
-ULeapScreenTapGesture::ULeapScreenTapGesture(const FObjectInitializer &init) : ULeapGesture(init), _private(new PrivateScreenTapGesture())
+ULeapScreenTapGesture::ULeapScreenTapGesture(const FObjectInitializer &ObjectInitializer) : ULeapGesture(ObjectInitializer), Private(new PrivateScreenTapGesture())
 {
 }
 
 ULeapScreenTapGesture::~ULeapScreenTapGesture()
 {
-	delete _private;
-}
-void ULeapScreenTapGesture::CleanupRootReferences()
-{
-	ULeapGesture::CleanupRootReferences();
-	_private->Cleanup();
-	this->RemoveFromRoot();
+	delete Private;
 }
 
 ULeapPointable* ULeapScreenTapGesture::Pointable()
 {
-	if (_private->pointable == NULL)
+	if (PPointable == nullptr)
 	{
-		_private->pointable = NewObject<ULeapPointable>(this);
-		_private->pointable->SetFlags(RF_RootSet);
+		PPointable = NewObject<ULeapPointable>(this);
 	}
-	_private->pointable->setPointable(_private->gesture.pointable());
-	return (_private->pointable);
+	PPointable->SetPointable(Private->Gesture.pointable());
+	return (PPointable);
 }
-void ULeapScreenTapGesture::setGesture(const Leap::ScreenTapGesture &Gesture)
+void ULeapScreenTapGesture::SetGesture(const Leap::ScreenTapGesture &Gesture)
 {
 	//Super
-	ULeapGesture::setGesture(Gesture);
+	ULeapGesture::SetGesture(Gesture);
 
-	_private->gesture = Gesture;
+	Private->Gesture = Gesture;
 
-	Direction = convertLeapToUE(_private->gesture.direction());
-	Position = convertAndScaleLeapToUE(_private->gesture.position());
-	Progress = _private->gesture.progress();
+	Direction = ConvertLeapToUE(Private->Gesture.direction());
+	Position = ConvertAndScaleLeapToUE(Private->Gesture.position());
+	Progress = Private->Gesture.progress();
 
 	//Convenience
-	BasicDirection = basicDirection(Direction);
+	BasicDirection = LeapBasicVectorDirection(Direction);
 }

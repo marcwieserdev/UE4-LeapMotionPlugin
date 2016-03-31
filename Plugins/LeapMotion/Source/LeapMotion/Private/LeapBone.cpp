@@ -4,45 +4,44 @@
 class PrivateBone
 {
 public:
-	Leap::Bone bone;
+	Leap::Bone Bone;
 };
 
-ULeapBone::ULeapBone(const FObjectInitializer &init) : UObject(init), _private(new PrivateBone())
+ULeapBone::ULeapBone(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateBone())
 {
 }
 
 ULeapBone::~ULeapBone()
 {
-	delete _private;
+	delete Private;
 }
 
 
-FRotator ULeapBone::GetOrientation(LeapHandType handType)
+FRotator ULeapBone::GetOrientation(LeapHandType HandType)
 {
-	if (handType == LeapHandType::HAND_LEFT)
-		return swapLeftHandRuleForRight(Basis).Rotator();
+	if (HandType == LeapHandType::HAND_LEFT)
+	{
+		return SwapLeftHandRuleForRight(Basis).Rotator();
+	}
 	else
+	{
 		return Basis.Rotator();
+	}
 }
 
-void ULeapBone::CleanupRootReferences()
+bool ULeapBone::Different(const ULeapBone *Other) const
 {
-	this->RemoveFromRoot();
+	return (Private->Bone != Other->Private->Bone);
 }
 
-bool ULeapBone::different(const ULeapBone *other) const
+bool ULeapBone::Equal(const ULeapBone *Other) const
 {
-	return (_private->bone != other->_private->bone);
+	return (Private->Bone == Other->Private->Bone);
 }
 
-bool ULeapBone::equal(const ULeapBone *other) const
+LeapBoneType ConvertBoneType(Leap::Bone::Type Type)
 {
-	return (_private->bone == other->_private->bone);
-}
-
-LeapBoneType type(Leap::Bone::Type type)
-{
-	switch(type)
+	switch(Type)
 	{
 	case Leap::Bone::TYPE_METACARPAL:
 		return (TYPE_METACARPAL);
@@ -57,18 +56,18 @@ LeapBoneType type(Leap::Bone::Type type)
 	}
 }
 
-void ULeapBone::setBone(const Leap::Bone &bone)
+void ULeapBone::SetBone(const Leap::Bone &Bone)
 {
-	_private->bone = bone;
+	Private->Bone = Bone;
 
-	Basis = convertLeapBasisMatrix(_private->bone.basis());
-	Center = convertAndScaleLeapToUE(_private->bone.center());
-	Direction = convertLeapToUE(_private->bone.direction());
-	//Orientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
-	IsValid = _private->bone.isValid();
-	Length = _private->bone.length();
-	NextJoint = convertAndScaleLeapToUE(_private->bone.nextJoint());
-	PrevJoint = convertAndScaleLeapToUE(_private->bone.prevJoint());
-	Type = type(_private->bone.type());
-	Width = _private->bone.width();
+	Basis = ConvertLeapBasisMatrix(Private->Bone.basis());
+	Center = ConvertAndScaleLeapToUE(Private->Bone.center());
+	Direction = ConvertLeapToUE(Private->Bone.direction());
+	//Orientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator(); use GetOrientation()
+	IsValid = Private->Bone.isValid();
+	Length = ScaleLeapToUE(Private->Bone.length());
+	NextJoint = ConvertAndScaleLeapToUE(Private->Bone.nextJoint());
+	PrevJoint = ConvertAndScaleLeapToUE(Private->Bone.prevJoint());
+	Type = ConvertBoneType(Private->Bone.type());
+	Width = ScaleLeapToUE(Private->Bone.width());
 }
