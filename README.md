@@ -66,7 +66,7 @@ Using collision you can now interact directly with movable actors with physics s
 ####Passthrough Character####
 
 Pass-through is supported from 0.9, useful if you wish to blend real-world for AR purposes or simply wish to see where you type in vr. 
-Simply select LeapPassthroughCharacter as your pawn and keep the controller as VRController
+Simply select LeapPassthroughCharacter as your pawn.
 
 <img src ="http://i.imgur.com/D7ifDlj.gif">
 
