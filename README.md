@@ -43,7 +43,9 @@ If you wish to toggle floating hand types, add *ChangeHands* to your input actio
 3. Hit play!
 
 ####Collision Character####
-Since 0.9.3 you can add collision by changing your character from LeapRiggedCharacter to LeapCollisionCharacter. If you want to modify the passthrough character or your own sub-class to have collision simply change one setting in your pawn.
+Since 2.0 the *LeapRiggedCharacter* and *LeapFloatingHandsCharacter* automatically have collision enabled.
+
+If you want to modify the passthrough character or your own sub-class to have collision simply change one setting in your pawn.
 
 First select your mesh
 
