@@ -155,7 +155,7 @@ void ULeapHand::SetHand(const Leap::Hand &Hand)
 
 	PalmOrientation = FRotationMatrix::MakeFromZX(PalmNormal*-1.f, Direction).Rotator();
 
-	WristPosition = ConvertLeapToUE(Private->Hand.wristPosition());
+	WristPosition = ConvertAndScaleLeapToUE(Private->Hand.wristPosition());
 
 	Basis = ConvertLeapBasisMatrix(Private->Hand.basis());
 

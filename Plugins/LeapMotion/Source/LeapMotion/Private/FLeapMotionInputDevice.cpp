@@ -131,12 +131,12 @@ bool FLeapMotionInputDevice::EmitAnalogInputEventForKey(FKey Key, float Value, i
 //Utility
 bool FLeapMotionInputDevice::HandClosed(float Strength)
 {
-	return (Strength == 1.f);
+	return (Strength > 0.5);
 }
 
 bool FLeapMotionInputDevice::HandPinched(float Strength)
 {
-	return (Strength > 0.8);
+	return (Strength > 0.5);
 }
 
 bool FLeapMotionInputDevice::HandForId(int32 CheckId, Leap::HandList Hands, Leap::Hand& ReturnHand)
