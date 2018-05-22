@@ -3,78 +3,51 @@
 class PrivateGesture
 {
 public:
-	~PrivateGesture()
-	{
-		if (!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (frame)
-			frame->CleanupRootReferences();
-		if (hands)
-			hands->CleanupRootReferences();
-		if (pointables)
-			pointables->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::Gesture gesture;
-	ULeapFrame* frame = NULL;
-	ULeapHandList* hands = NULL;
-	ULeapPointableList* pointables = NULL;
+	Leap::Gesture Gesture;
 };
 
-ULeapGesture::ULeapGesture(const FObjectInitializer &init) : UObject(init), _private(new PrivateGesture())
+ULeapGesture::ULeapGesture(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateGesture())
 {
 }
 
 ULeapGesture::~ULeapGesture()
 {
-	delete _private;
-}
-
-void ULeapGesture::CleanupRootReferences()
-{
-	_private->Cleanup();
+	delete Private;
 }
 
 ULeapFrame* ULeapGesture::Frame()
 {
-	if (_private->frame == NULL)
+	if (PFrame == nullptr)
 	{
-		_private->frame = NewObject<ULeapFrame>(this);
-		_private->frame->SetFlags(RF_RootSet);
+		PFrame = NewObject<ULeapFrame>(this);
 	}
-	_private->frame->setFrame(_private->gesture.frame());
-	return (_private->frame);
+	PFrame->SetFrame(Private->Gesture.frame());
+	return (PFrame);
 }
 
 ULeapHandList* ULeapGesture::Hands()
 {
-	if (_private->hands == NULL)
+	if (PHands == nullptr)
 	{
-		_private->hands = NewObject<ULeapHandList>(this);
-		_private->hands->SetFlags(RF_RootSet);
+		PHands = NewObject<ULeapHandList>(this);
 	}
-	_private->hands->setHandList(_private->gesture.hands());
-	return (_private->hands);
+	PHands->SetHandList(Private->Gesture.hands());
+	return (PHands);
 }
 
 ULeapPointableList* ULeapGesture::Pointables()
 {
-	if (_private->pointables == NULL)
+	if (PPointables == nullptr)
 	{
-		_private->pointables = NewObject<ULeapPointableList>(this);
-		_private->pointables->SetFlags(RF_RootSet);
+		PPointables = NewObject<ULeapPointableList>(this);
 	}
-	_private->pointables->setPointableList(_private->gesture.pointables());
-	return (_private->pointables);
+	PPointables->SetPointableList(Private->Gesture.pointables());
+	return (PPointables);
 }
 
-LeapGestureState gestureState(Leap::Gesture::State state)
+LeapGestureState gestureState(Leap::Gesture::State State)
 {
-	switch (state)
+	switch (State)
 	{
 	case Leap::Gesture::STATE_START:
 		return (GESTURE_STATE_START);
@@ -87,9 +60,9 @@ LeapGestureState gestureState(Leap::Gesture::State state)
 	}
 }
 
-LeapGestureType gestureType(Leap::Gesture::Type type)
+LeapGestureType gestureType(Leap::Gesture::Type Type)
 {
-	switch (type)
+	switch (Type)
 	{
 	case Leap::Gesture::TYPE_CIRCLE:
 		return (GESTURE_TYPE_CIRCLE);
@@ -104,14 +77,14 @@ LeapGestureType gestureType(Leap::Gesture::Type type)
 	}
 }
 
-void ULeapGesture::setGesture(const Leap::Gesture &Gesture)
+void ULeapGesture::SetGesture(const Leap::Gesture &Gesture)
 {
-	_private->gesture = Gesture;
+	Private->Gesture = Gesture;
 
-	Duration = _private->gesture.duration();
-	DurationSeconds = _private->gesture.durationSeconds();
-	Id = _private->gesture.id();
-	IsValid = _private->gesture.isValid();
-	State = gestureState(_private->gesture.state());
-	Type = gestureType(_private->gesture.type());
+	Duration = Private->Gesture.duration();
+	DurationSeconds = Private->Gesture.durationSeconds();
+	Id = Private->Gesture.id();
+	IsValid = Private->Gesture.isValid();
+	State = gestureState(Private->Gesture.state());
+	Type = gestureType(Private->Gesture.type());
 }

@@ -5,3 +5,6 @@
 *.obj
 *.pdb
 *.DS_Store
+
+#folders
+Plugins/LeapMotion/Intermediate

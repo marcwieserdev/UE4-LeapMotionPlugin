@@ -4,21 +4,21 @@
 class PrivateTool
 {
 public:
-	Leap::Tool tool;
+	Leap::Tool Tool;
 };
 
-ULeapTool::ULeapTool(const FObjectInitializer &init) : ULeapPointable(init), _private(new PrivateTool())
+ULeapTool::ULeapTool(const FObjectInitializer &ObjectInitializer) : ULeapPointable(ObjectInitializer), Private(new PrivateTool())
 {
 }
 
 ULeapTool::~ULeapTool()
 {
-	delete _private;
+	delete Private;
 }
 
-void ULeapTool::setTool(const Leap::Tool &tool)
+void ULeapTool::SetTool(const Leap::Tool &Tool)
 {
-	_private->tool = tool;
+	Private->Tool = Tool;
 
-	setPointable(_private->tool);
+	SetPointable(Private->Tool);
 }

@@ -3,57 +3,38 @@
 class PrivateGestureList
 {
 public:
-	~PrivateGestureList()
-	{
-		if (!cleanupCalled)
-			Cleanup();
-	}
-	void Cleanup()
-	{
-		if (gesture)
-			gesture->CleanupRootReferences();
-		cleanupCalled = true;
-	}
-	bool cleanupCalled = false;
-	Leap::GestureList gestures;
-	ULeapGesture* gesture = NULL;
+
+	Leap::GestureList Gestures;
 };
 
-ULeapGestureList::ULeapGestureList(const FObjectInitializer &init) : UObject(init), _private(new PrivateGestureList())
+ULeapGestureList::ULeapGestureList(const FObjectInitializer &ObjectInitializer) : UObject(ObjectInitializer), Private(new PrivateGestureList())
 {
 }
 
 ULeapGestureList::~ULeapGestureList()
 {
-	delete _private;
+	delete Private;
 }
 
-void ULeapGestureList::CleanupRootReferences()
+ULeapGesture* ULeapGestureList::GetIndex(int32 Index)
 {
-	_private->Cleanup();
-	this->RemoveFromRoot();
-}
-
-ULeapGesture* ULeapGestureList::getIndex(int32 index)
-{
-	if (_private->gesture == NULL)
+	if (PGesture == nullptr)
 	{
-		_private->gesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
-		_private->gesture->SetFlags(RF_RootSet);
+		PGesture = NewObject<ULeapGesture>(this, ULeapGesture::StaticClass());
 	}
-	_private->gesture->setGesture(_private->gestures[index]);
-	return (_private->gesture);
+	PGesture->SetGesture(Private->Gestures[Index]);
+	return (PGesture);
 }
 
-ULeapGesture* ULeapGestureList::operator[](int index)
+ULeapGesture* ULeapGestureList::operator[](int Index)
 {
-	return getIndex(index);
+	return GetIndex(Index);
 }
 
-void ULeapGestureList::setGestureList(const Leap::GestureList &GestureList)
+void ULeapGestureList::SetGestureList(const Leap::GestureList &GestureList)
 {
-	_private->gestures = GestureList;
+	Private->Gestures = GestureList;
 
-	Count = _private->gestures.count();
-	IsEmpty = _private->gestures.isEmpty();
+	Count = Private->Gestures.count();
+	IsEmpty = Private->Gestures.isEmpty();
 }

@@ -1,18 +1,19 @@
 #include "LeapMotionPrivatePCH.h"
 #include "AnimHand.h"
+#include "FLeapMotionInputDevice.h"
 
-UAnimHand::UAnimHand(const class FObjectInitializer& PCIP)
-	: Super(PCIP)
+UAnimHand::UAnimHand(const class FObjectInitializer& Init)
+	: Super(Init)
 {
-	Thumb = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Thumb"));
-	Index = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Index"));
-	Middle = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Middle"));
-	Ring = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Ring"));
-	Pinky = PCIP.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Pinky"));
+	Thumb = Init.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Thumb"));
+	Index = Init.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Index"));
+	Middle = Init.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Middle"));
+	Ring = Init.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Ring"));
+	Pinky = Init.CreateDefaultSubobject<UAnimFinger>(this, TEXT("Pinky"));
 
-	Wrist = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Wrist"));
-	LowerArm = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("LowerArm"));
-	Palm = PCIP.CreateDefaultSubobject<UAnimBone>(this, TEXT("Palm"));
+	Wrist = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Wrist"));
+	LowerArm = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("LowerArm"));
+	Palm = Init.CreateDefaultSubobject<UAnimBone>(this, TEXT("Palm"));
 }
 
 bool UAnimHand::Enabled()
@@ -20,9 +21,9 @@ bool UAnimHand::Enabled()
 	return Alpha == 1.f;
 }
 
-void UAnimHand::SetEnabled(bool enable)
+void UAnimHand::SetEnabled(bool Enable)
 {
-	if (enable)
+	if (Enable)
 	{
 		Alpha = 1.f;
 	}
@@ -32,88 +33,135 @@ void UAnimHand::SetEnabled(bool enable)
 	}
 
 	//Forward to every finger
-	Thumb->SetEnabled(enable);
-	Index->SetEnabled(enable);
-	Middle->SetEnabled(enable);
-	Ring->SetEnabled(enable);
-	Pinky->SetEnabled(enable);
+	Thumb->SetEnabled(Enable);
+	Index->SetEnabled(Enable);
+	Middle->SetEnabled(Enable);
+	Ring->SetEnabled(Enable);
+	Pinky->SetEnabled(Enable);
 
 	//Arm/Wrist
-	Wrist->SetEnabled(enable);
-	LowerArm->SetEnabled(enable);
-	Palm->SetEnabled(enable);
+	Wrist->SetEnabled(Enable);
+	LowerArm->SetEnabled(Enable);
+	Palm->SetEnabled(Enable);
 }
 
-void UAnimHand::TranslateHand(FVector shift)
+void UAnimHand::TranslateHand(FVector Shift)
 {
 	//Shift all fingers
-	Thumb->TranslateFinger(shift);
-	Index->TranslateFinger(shift);
-	Middle->TranslateFinger(shift);
-	Ring->TranslateFinger(shift);
-	Pinky->TranslateFinger(shift);
+	Thumb->TranslateFinger(Shift);
+	Index->TranslateFinger(Shift);
+	Middle->TranslateFinger(Shift);
+	Ring->TranslateFinger(Shift);
+	Pinky->TranslateFinger(Shift);
 
 	//Arm/Wrist
-	Wrist->TranslateBone(shift);
-	LowerArm->TranslateBone(shift);
+	Wrist->TranslateBone(Shift);
+	LowerArm->TranslateBone(Shift);
 }
 
-void UAnimHand::ChangeBasis(FRotator PreBase, FRotator PostBase, bool adjustVectors)
+
+void UAnimHand::TransformHand(FTransform& ByTransform)
+{
+	//Shift all fingers
+	Thumb->TransformFinger(ByTransform);
+	Index->TransformFinger(ByTransform);
+	Middle->TransformFinger(ByTransform);
+	Ring->TransformFinger(ByTransform);
+	Pinky->TransformFinger(ByTransform);
+
+	//Arm/Wrist
+	Wrist->TransformBone(ByTransform);
+	LowerArm->TransformBone(ByTransform);
+}
+
+void UAnimHand::ChangeBasis(FRotator PreBase, FRotator PostBase, bool AdjustVectors)
 {
 	//Change Basis for all fingers
-	Thumb->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Index->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Middle->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Ring->ChangeBasis(PreBase, PostBase, adjustVectors);
-	Pinky->ChangeBasis(PreBase, PostBase, adjustVectors);
+	Thumb->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Index->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Middle->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Ring->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	Pinky->ChangeBasis(PreBase, PostBase, AdjustVectors);
 
 	//Arm/Wrist
-	Wrist->ChangeBasis(PreBase, PostBase, adjustVectors);
-	LowerArm->ChangeBasis(PreBase, PostBase, adjustVectors);
+	Wrist->ChangeBasis(PreBase, PostBase, AdjustVectors);
+	LowerArm->ChangeBasis(PreBase, PostBase, AdjustVectors);
 }
 
-void UAnimHand::SetFromLeapHand(ULeapHand* leapHand)
+void UAnimHand::SetFromLeapHand(ULeapHand* LeapHand)
 {
+	//Confidence value
+	Confidence = LeapHand->Confidence;
 
 	//Wrist/Arm
-	Wrist->Orientation = leapHand->PalmOrientation;
-	Wrist->Position = leapHand->Arm->WristPosition;
+	Wrist->Orientation = LeapHand->PalmOrientation;
+	Wrist->Position = LeapHand->Arm->WristPosition;
 
-	Palm->Orientation = leapHand->PalmOrientation; //this works because we derive it from two vectors
-	Palm->Position = leapHand->PalmPosition;
+	Palm->Orientation = LeapHand->PalmOrientation; //this works because we derive it from two vectors
+	Palm->Position = LeapHand->PalmPosition;
+	Palm->Scale = FVector(LeapHand->PalmWidth / 8.5f, LeapHand->PalmWidth / 8.5f, LeapHand->PalmWidth / 8.5f);
 
-	LeapHandType handType = leapHand->HandType;
+	LeapHandType HandType = LeapHand->HandType;
 
 	//Equivalent to elbow in leap
-	LowerArm->Position = leapHand->Arm->ElbowPosition;
-	LowerArm->Orientation = leapHand->Arm->GetOrientation(handType);
+	LowerArm->Position = LeapHand->Arm->ElbowPosition;
+	LowerArm->Orientation = LeapHand->Arm->GetOrientation(HandType);
 
 	//Fingers
-	ULeapFingerList* fingers = leapHand->Fingers();
+	ULeapFingerList* Fingers = LeapHand->Fingers();
 
-
-	for (int i = 0; i < fingers->Count; i++)
+	for (int i = 0; i < Fingers->Count; i++)
 	{
-		ULeapFinger* finger = fingers->getPointableById(i);
-		switch (finger->Type)
+		ULeapFinger* Finger = Fingers->GetPointableById(i);
+		switch (Finger->Type)
 		{
 		case FINGER_TYPE_THUMB:
-			Thumb->SetFromLeapFinger(finger, handType);
+			Thumb->SetFromLeapFinger(Finger, HandType);
 			break;
 		case FINGER_TYPE_INDEX:
-			Index->SetFromLeapFinger(finger, handType);
+			Index->SetFromLeapFinger(Finger, HandType);
 			break;
 		case FINGER_TYPE_MIDDLE:
-			Middle->SetFromLeapFinger(finger, handType);
+			Middle->SetFromLeapFinger(Finger, HandType);
 			break;
 		case FINGER_TYPE_RING:
-			Ring->SetFromLeapFinger(finger, handType);
+			Ring->SetFromLeapFinger(Finger, HandType);
 			break;
 		case FINGER_TYPE_PINKY:
-			Pinky->SetFromLeapFinger(finger, handType);
+			Pinky->SetFromLeapFinger(Finger, HandType);
 			break;
 		default:
 			break;
 		}
 	}
+	
+	//This may be too early if we haven't adjusted our positioning?
+	//ApplyTimewarp();
+
+	LeapControllerData* Data = ILeapMotionPlugin::Get().ControllerData();
+
+	if (Data->bTimeWarpEnabled)
+	{
+		//Transform this hand by timewarp, this will apply it recursively
+		FTransform TimeWarpTransform = Data->TimeWarpSnapshot.Transform();
+
+		//Debug override, what does the transform do?
+		//TimeWarpTransform = FTransform();
+		//TimeWarpTransform.SetRotation(FRotator(0, -90, 0).Quaternion());
+		TransformHand(TimeWarpTransform);
+	}
+}
+
+void UAnimHand::ApplyTimewarp()
+{
+	/*if (ILeapMotionPlugin::Get().ControllerData()->bTimeWarpEnabled)
+	{
+		//Transform this hand by timewarp, this will apply it recursively
+		FTransform TimeWarpTransform = LeapHand->TimewarpSnapshot.Transform();
+
+		//Debug override
+		TimeWarpTransform = FTransform();
+		TimeWarpTransform.SetRotation(FRotator(0,90,0).Quaternion());
+		TransformHand(TimeWarpTransform);
+	}*/
 }
